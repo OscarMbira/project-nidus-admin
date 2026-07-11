@@ -1,0 +1,22 @@
+{
+  "name": "@nidus-admin/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.2",
+    "@nidus-admin/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.5"
+  },
+  "scripts": {
+    "test": "vitest run"
+  }
+}

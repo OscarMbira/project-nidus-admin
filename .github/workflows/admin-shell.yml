@@ -1,0 +1,35 @@
+name: Admin Shell CI/CD
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'shell/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  pull_request:
+    paths:
+      - 'shell/**'
+      - 'packages/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Verify no dev scripts in build
+        run: |
+          if [ -f "dev-start-all.bat" ]; then
+            echo "ERROR: dev-start-all.bat found — remove before deploy"
+            exit 1
+          fi
+      - run: pnpm turbo build --filter=@nidus-admin/shell
+      - run: pnpm audit --audit-level=critical || true
