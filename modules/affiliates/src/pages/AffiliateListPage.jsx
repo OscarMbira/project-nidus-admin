@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   approveAffiliate,
   fetchAffiliateStats,
@@ -19,13 +19,14 @@ import { statusVariant, toError } from '../utils/affiliateUi.js'
 
 export default function AffiliateListPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { showSuccess, showError } = useToast()
   const { confirm, modal } = useConfirmAction()
   const [loading, setLoading] = useState(true)
   const [rows, setRows] = useState([])
   const [statsMap, setStatsMap] = useState({})
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState(() => searchParams.get('status') || 'all')
   const [targetFilter, setTargetFilter] = useState('all')
   const [busyId, setBusyId] = useState('')
 

@@ -12,6 +12,7 @@ export function useAdminListPage({
   defaultView = 'table',
   readSearchFromUrl = false,
   getExtraSearchText,
+  filterParamNames = [],
 }) {
   const [searchParams] = useSearchParams()
   const [rows, setRows] = useState([])
@@ -21,6 +22,19 @@ export function useAdminListPage({
     readSearchFromUrl ? (searchParams.get('search') || '') : ''
   ))
   const [view, setView] = useState(() => localStorage.getItem(storageKey) || defaultView)
+
+  // Only the filter params actually present in the URL — a dashboard card's `?status=open`
+  // style deep link. Caller merges this into its own filter state shape on mount. See
+  // CLAUDE.md rule 17 (clickable dashboard summary cards).
+  const initialFilterFromUrl = useMemo(() => {
+    const result = {}
+    for (const name of filterParamNames) {
+      const v = searchParams.get(name)
+      if (v != null && v !== '') result[name] = v
+    }
+    return result
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, filterParamNames.join(',')])
 
   useEffect(() => {
     localStorage.setItem(storageKey, view)
@@ -60,6 +74,7 @@ export function useAdminListPage({
     view,
     setView,
     total: rows.length,
+    initialFilterFromUrl,
   }
 }
 

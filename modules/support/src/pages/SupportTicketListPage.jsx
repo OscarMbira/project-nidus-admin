@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   assignTicket,
   exportToFile,
@@ -33,9 +33,12 @@ const PRIORITY_FILTERS = ['all', 'low', 'medium', 'high', 'urgent']
 const CATEGORY_FILTERS = ['all', 'billing', 'technical', 'account', 'simulator', 'general']
 const PRIORITY_OPTIONS = ['low', 'medium', 'high', 'urgent']
 const STATUS_OPTIONS = ['open', 'in_progress', 'waiting_user', 'resolved', 'closed']
+// Matches admin.get_dashboard_stats()'s open-ticket definition (v08_dashboard_functions.sql).
+const OPEN_STATUSES = ['open', 'in_progress', 'waiting_user']
 
 export default function SupportTicketListPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
 
@@ -48,6 +51,12 @@ export default function SupportTicketListPage() {
   const [priorityFilter, setPriorityFilter] = useState('all')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [assigneeFilter, setAssigneeFilter] = useState('all')
+  // Composite quick filter that doesn't fit the single-select dropdowns above —
+  // '' | 'open' (open/in_progress/waiting_user) | 'assigned_open' (has an assignee AND open)
+  const [quickFilter, setQuickFilter] = useState(() => {
+    const fromUrl = searchParams.get('filter')
+    return fromUrl === 'open' || fromUrl === 'assigned_open' ? fromUrl : ''
+  })
   const [pendingPriority, setPendingPriority] = useState({})
   const [pendingAssignee, setPendingAssignee] = useState({})
   const [page, setPage] = useState(1)
@@ -101,6 +110,8 @@ export default function SupportTicketListPage() {
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase()
     return rows.filter((row) => {
+      if (quickFilter === 'open' && !OPEN_STATUSES.includes(row.status)) return false
+      if (quickFilter === 'assigned_open' && (!row.assigned_to || !OPEN_STATUSES.includes(row.status))) return false
       if (statusFilter !== 'all' && row.status !== statusFilter) return false
       if (priorityFilter !== 'all' && row.priority !== priorityFilter) return false
       if (categoryFilter !== 'all' && row.category !== categoryFilter) return false
@@ -110,7 +121,7 @@ export default function SupportTicketListPage() {
       return [row.subject, row.category, row.status, row.priority, row.user_id, row.id]
         .some((value) => String(value ?? '').toLowerCase().includes(query))
     })
-  }, [rows, search, statusFilter, priorityFilter, categoryFilter, assigneeFilter])
+  }, [rows, search, statusFilter, priorityFilter, categoryFilter, assigneeFilter, quickFilter])
 
   const bulk = useBulkSelection({ rows: filteredRows, idKey: 'id' })
 
@@ -118,7 +129,7 @@ export default function SupportTicketListPage() {
 
   useEffect(() => {
     setPage(1)
-  }, [search, statusFilter, priorityFilter, categoryFilter, assigneeFilter])
+  }, [search, statusFilter, priorityFilter, categoryFilter, assigneeFilter, quickFilter])
 
   useEffect(() => {
     if (page > totalPages) setPage(totalPages)
@@ -295,11 +306,30 @@ export default function SupportTicketListPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <AdminCard title="Total tickets" value={rows.length} />
+        <AdminCard title="Total tickets" value={rows.length} onClick={() => setQuickFilter('')} />
         <AdminCard title="Filtered tickets" value={filteredRows.length} />
-        <AdminCard title="Open / In Progress" value={rows.filter((r) => ['open', 'in_progress'].includes(r.status)).length} />
-        <AdminCard title="Unassigned" value={rows.filter((r) => !r.assigned_to).length} />
+        <AdminCard
+          title="Open Tickets"
+          value={rows.filter((r) => OPEN_STATUSES.includes(r.status)).length}
+          onClick={() => setQuickFilter('open')}
+        />
+        <AdminCard
+          title="Unassigned"
+          value={rows.filter((r) => !r.assigned_to).length}
+          onClick={() => setAssigneeFilter('unassigned')}
+        />
       </div>
+
+      {quickFilter && (
+        <div className="flex items-center gap-2 text-sm">
+          <span className="rounded bg-gray-800 px-2 py-1 text-gray-200">
+            {quickFilter === 'open' ? 'Open tickets only' : 'Assigned + open only'}
+          </span>
+          <button type="button" onClick={() => setQuickFilter('')} className="text-blue-400 hover:underline">
+            Clear
+          </button>
+        </div>
+      )}
 
       {filteredRows.length === 0 ? (
         <EmptyState title="No support tickets found" description="Try adjusting one or more filters." />

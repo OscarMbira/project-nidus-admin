@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { fetchEnhancedEmailSendLog, getEmailAnalytics } from '@nidus-admin/shared'
 import { AdminCard, LoadingState } from '@nidus-admin/ui'
 
 export default function EmailDashboardPage() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
   const [recent, setRecent] = useState([])
@@ -19,9 +20,10 @@ export default function EmailDashboardPage() {
   if (loading) return <LoadingState message="Loading email dashboard..." />
 
   const cards = [
-    { label: 'Sent (30d)', value: stats.total_sent ?? 0 },
-    { label: 'Failed', value: stats.total_failed ?? 0 },
-    { label: 'Bounced', value: stats.total_bounced ?? 0 },
+    { label: 'Sent (30d)', value: stats.total_sent ?? 0, to: '/email-centre/send-log?status=sent' },
+    { label: 'Failed', value: stats.total_failed ?? 0, to: '/email-centre/send-log?status=failed' },
+    { label: 'Bounced', value: stats.total_bounced ?? 0, to: '/email-centre/send-log?status=bounced' },
+    // Delivery rate is a percentage — no target (v206 rule 17).
     { label: 'Delivery rate', value: `${stats.delivery_rate_pct ?? 0}%` },
   ]
 
@@ -40,7 +42,7 @@ export default function EmailDashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <AdminCard key={c.label} title={c.label}>
+          <AdminCard key={c.label} title={c.label} onClick={c.to ? () => navigate(c.to) : undefined}>
             <p className="text-3xl font-semibold text-gray-100">{c.value}</p>
           </AdminCard>
         ))}

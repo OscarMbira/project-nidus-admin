@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   fetchAffiliateDashboardSummary,
   fetchAffiliateStatsBatch,
+  navId,
   PermissionGate,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import { AdminCard, EmptyState, LoadingState } from '@nidus-admin/ui'
 
 export default function AffiliateDashboardPage() {
+  const navigate = useNavigate()
   const [summaryLoading, setSummaryLoading] = useState(true)
   const [statsLoading, setStatsLoading] = useState(false)
   const [summary, setSummary] = useState(null)
@@ -55,6 +58,9 @@ export default function AffiliateDashboardPage() {
     return () => { cancelled = true }
   }, [])
 
+  const topAffiliateIds = useMemo(() => topStats.map((t) => t.affiliate.id).filter(Boolean), [topStats])
+  const { displayIdMap } = useDisplayIdMap('admin.affiliates', topAffiliateIds)
+
   if (summaryLoading) return <LoadingState message="Loading affiliate dashboard..." />
 
   return (
@@ -72,8 +78,9 @@ export default function AffiliateDashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <AdminCard title="Active Affiliates" value={summary?.activeCount ?? 0} />
-        <AdminCard title="Pending Applications" value={summary?.pendingApps ?? 0} />
+        <AdminCard title="Active Affiliates" value={summary?.activeCount ?? 0} onClick={() => navigate('/affiliates/affiliate-list?status=active')} />
+        <AdminCard title="Pending Applications" value={summary?.pendingApps ?? 0} onClick={() => navigate('/affiliates/applications')} />
+        {/* Commissions Paid/Pending are sums — no onClick (v206 rule 17). */}
         <AdminCard title="Commissions Paid" value={`$${(summary?.paidTotal ?? 0).toFixed(2)}`} />
         <AdminCard title="Pending Commissions" value={`$${(summary?.pendingTotal ?? 0).toFixed(2)}`} />
       </div>
@@ -89,7 +96,7 @@ export default function AffiliateDashboardPage() {
             {topStats.map(({ affiliate, stats }) => (
               <div key={affiliate.id} className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-4 py-3">
                 <div>
-                  <Link to={`/affiliates/affiliate-detail?id=${affiliate.id}`} className="font-medium text-blue-300 hover:text-blue-200">
+                  <Link to={`/affiliates/affiliate-detail?id=${navId(displayIdMap, affiliate.id)}`} className="font-medium text-blue-300 hover:text-blue-200">
                     {affiliate.name}
                   </Link>
                   <p className="font-mono text-xs text-gray-500">{affiliate.code}</p>

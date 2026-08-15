@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   deleteSubscription,
   extendSubscriptionTrial,
@@ -126,6 +126,7 @@ const SubscriptionListActions = memo(function SubscriptionListActions({
 
 export default function SubscriptionListPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
 
@@ -135,7 +136,10 @@ export default function SubscriptionListPage() {
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState(() => {
+    const fromUrl = searchParams.get('status')
+    return fromUrl && STATUS_FILTERS.includes(fromUrl) ? fromUrl : 'all'
+  })
   const [systemFilter, setSystemFilter] = useState('all')
   const [planFilter, setPlanFilter] = useState('all')
   const [page, setPage] = useState(1)

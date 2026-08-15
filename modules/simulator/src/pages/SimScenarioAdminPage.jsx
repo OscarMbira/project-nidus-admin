@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { fetchSimScenarios, formatDate, exportToFile, generateExportFilename, navId, updateSimScenario, useBulkSelection, useDisplayIdMap } from '@nidus-admin/shared'
 import {
   AdminBadge,
@@ -16,6 +16,7 @@ import {
 
 export default function SimScenarioAdminPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { showSuccess, showError } = useToast()
   const { confirm, modal } = useConfirmAction()
 
@@ -23,7 +24,10 @@ export default function SimScenarioAdminPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState(() => {
+    const fromUrl = searchParams.get('status')
+    return fromUrl === 'active' || fromUrl === 'archived' ? fromUrl : 'all'
+  })
   const [difficultyFilter, setDifficultyFilter] = useState('all')
   const [bulkModal, setBulkModal] = useState({ open: false, action: null })
 

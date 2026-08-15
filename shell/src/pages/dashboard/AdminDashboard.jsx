@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAdminAuth } from '../../context/AdminAuthContext.jsx'
 import { AdminCard, LoadingState } from '@nidus-admin/ui'
-import { ROLE_LABELS, fetchDashboardStats } from '@nidus-admin/shared'
+import { ROLE_LABELS, fetchDashboardStats, ReleaseReadinessBannerGate } from '@nidus-admin/shared'
 
 const QUICK_LINKS = {
   super_admin: [
@@ -35,36 +35,39 @@ function formatValue(key, value) {
   return String(value)
 }
 
+// Count/sum cards get a `to` target (v893/rule 17); average/percentage/blended cards and
+// windowed "last N" samples (recent_errors, recent_certificates, leaderboard_top all cap at
+// 10 via LIMIT in get_dashboard_stats() — not a true filterable total) are left without one.
 function buildCards(role, stats) {
   if (!stats) return []
   if (role === 'super_admin') {
     return [
-      { title: 'Active Users', value: stats.active_users, trend: 'Platform auth users' },
+      { title: 'Active Users', value: stats.active_users, trend: 'Platform auth users', to: '/users/user-list' },
       { title: 'MRR Estimate', value: formatValue('mrr', stats.mrr), trend: 'Monthly recurring revenue' },
-      { title: 'Pending Activations', value: stats.pending_activations, trend: 'Awaiting approval' },
-      { title: 'Critical Errors', value: stats.critical_errors, trend: 'Unresolved critical' },
+      { title: 'Pending Activations', value: stats.pending_activations, trend: 'Awaiting approval', to: '/admin-mgmt/pending-activations' },
+      { title: 'Critical Errors', value: stats.critical_errors, trend: 'Unresolved critical', to: '/errors/error-dashboard?severity=critical' },
     ]
   }
   if (role === 'system_admin') {
     const sub = stats.subscription_summary || {}
     return [
-      { title: 'Active Users', value: stats.active_users, trend: 'Platform users' },
-      { title: 'Active Subscriptions', value: sub.active, trend: `${sub.trialing ?? 0} trialing` },
-      { title: 'Open Tickets', value: stats.open_tickets, trend: 'Needs attention' },
-      { title: 'Feature Flags', value: stats.feature_flags_count, trend: 'Total configured' },
+      { title: 'Active Users', value: stats.active_users, trend: 'Platform users', to: '/users/user-list' },
+      { title: 'Active Subscriptions', value: sub.active, trend: `${sub.trialing ?? 0} trialing`, to: '/subscriptions/subscription-list?status=active' },
+      { title: 'Open Tickets', value: stats.open_tickets, trend: 'Needs attention', to: '/support/support-ticket-list?filter=open' },
+      { title: 'Feature Flags', value: stats.feature_flags_count, trend: 'Total configured', to: '/system/feature-flags' },
     ]
   }
   if (role === 'support_admin') {
     return [
-      { title: 'Open Tickets', value: stats.open_tickets, trend: 'All open statuses' },
-      { title: 'Assigned Tickets', value: stats.assigned_tickets, trend: 'Currently assigned' },
+      { title: 'Open Tickets', value: stats.open_tickets, trend: 'All open statuses', to: '/support/support-ticket-list?filter=open' },
+      { title: 'Assigned Tickets', value: stats.assigned_tickets, trend: 'Currently assigned', to: '/support/support-ticket-list?filter=assigned_open' },
       { title: 'Recent Errors', value: (stats.recent_errors || []).length, trend: 'Last 10 aggregations' },
-      { title: 'Impersonations (30d)', value: stats.impersonation_count, trend: 'Audit log entries' },
+      { title: 'Impersonations (30d)', value: stats.impersonation_count, trend: 'Audit log entries', to: '/support/user-impersonation' },
     ]
   }
   return [
-    { title: 'Total Scenarios', value: stats.scenario_count, trend: 'All scenarios' },
-    { title: 'Active Scenarios', value: stats.active_scenarios, trend: 'Currently active' },
+    { title: 'Total Scenarios', value: stats.scenario_count, trend: 'All scenarios', to: '/simulator/sim-scenario-admin' },
+    { title: 'Active Scenarios', value: stats.active_scenarios, trend: 'Currently active', to: '/simulator/sim-scenario-admin?status=active' },
     { title: 'Recent Certificates', value: (stats.recent_certificates || []).length, trend: 'Last 10 issued' },
     { title: 'Leaderboard Top', value: (stats.leaderboard_top || []).length, trend: 'Top entries' },
   ]
@@ -119,9 +122,11 @@ export default function AdminDashboard() {
         {error && <p className="mt-1 text-sm text-amber-400">Stats unavailable: {error}</p>}
       </div>
 
+      <ReleaseReadinessBannerGate variant="card" />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <AdminCard key={c.title} title={c.title} value={c.value ?? '—'} trend={c.trend} />
+          <AdminCard key={c.title} title={c.title} value={c.value ?? '—'} trend={c.trend} to={c.to} />
         ))}
       </div>
 

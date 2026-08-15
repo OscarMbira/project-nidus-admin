@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   PAYMENT_EVENT_TYPE_CONFIG,
   PermissionGate,
@@ -70,6 +70,7 @@ function JourneyPreview({ subscriptionId, targetSystem, onClose }) {
 
 export default function PaymentMonitorPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { showError } = useToast()
   const showErrorRef = useRef(showError)
   showErrorRef.current = showError
@@ -81,7 +82,7 @@ export default function PaymentMonitorPage() {
   const [dateFrom, setDateFrom] = useState(yesterday.toISOString().slice(0, 10))
   const [dateTo, setDateTo] = useState(now.toISOString().slice(0, 10))
   const [gatewayId, setGatewayId] = useState('')
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState(() => searchParams.get('status') || '')
   const [countryCode, setCountryCode] = useState('')
   const [search, setSearch] = useState('')
   const [gateways, setGateways] = useState([])

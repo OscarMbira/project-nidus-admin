@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { fetchEnhancedEmailSendLog } from '@nidus-admin/shared'
 import { AdminBadge, EmptyState, LoadingState, SearchBar, inputClass, useToast } from '@nidus-admin/ui'
 
@@ -13,10 +14,14 @@ const statusVariant = (status) => {
 
 export default function EmailSendLogPage() {
   const { showError } = useToast()
+  const [searchParams] = useSearchParams()
   const [loading, setLoading] = useState(true)
   const [rows, setRows] = useState([])
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState(() => {
+    const fromUrl = searchParams.get('status')
+    return fromUrl && STATUS_FILTERS.includes(fromUrl) ? fromUrl : 'all'
+  })
 
   const load = async () => {
     setLoading(true)

@@ -34,13 +34,19 @@ function TrendArrow({ value }) {
   )
 }
 
-function KpiCard({ label, value, change, suffix = '' }) {
+function KpiCard({ label, value, change, suffix = '', onClick }) {
+  const interactive = Boolean(onClick)
   return (
-    <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!interactive}
+      className={`rounded-lg border border-gray-700 bg-gray-900 p-4 text-left w-full ${interactive ? 'cursor-pointer transition-colors hover:border-blue-500 hover:bg-gray-800' : 'cursor-default'}`}
+    >
       <p className="text-xs uppercase tracking-wide text-gray-500">{label}</p>
       <p className="mt-2 text-2xl font-semibold text-gray-100">{value}{suffix}</p>
       <div className="mt-1"><TrendArrow value={change} /></div>
-    </div>
+    </button>
   )
 }
 
@@ -155,10 +161,16 @@ export default function PaymentDashboardPage() {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {/* Total Revenue/Avg Transaction (sums/averages) and Success Rate/Refund Rate (ratios) are blended metrics — no onClick (v206 rule 17). */}
           <KpiCard label="Total Revenue" value={formatCurrency(kpis.total_revenue, 'USD')} change={kpis.total_revenue_change_pct} />
           <KpiCard label="Success Rate" value={kpis.success_rate ?? 0} suffix="%" change={kpis.success_rate_change_pct} />
-          <KpiCard label="Total Transactions" value={kpis.total_transactions ?? 0} change={kpis.total_transactions_change_pct} />
-          <KpiCard label="Active Retries" value={kpis.active_retries ?? 0} />
+          <KpiCard
+            label="Total Transactions"
+            value={kpis.total_transactions ?? 0}
+            change={kpis.total_transactions_change_pct}
+            onClick={() => navigate('/subscriptions/payment-transactions')}
+          />
+          <KpiCard label="Active Retries" value={kpis.active_retries ?? 0} onClick={() => navigate('/subscriptions/payment-monitor?status=retrying')} />
           <KpiCard label="Avg Transaction" value={formatCurrency(kpis.avg_transaction_value, 'USD')} change={kpis.avg_transaction_value_change_pct} />
           <KpiCard label="Refund Rate" value={kpis.refund_rate ?? 0} suffix="%" change={kpis.refund_rate_change_pct} />
         </div>

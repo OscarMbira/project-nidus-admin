@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   fetchBaseCurrency,
   fetchPaymentTransactions,
@@ -34,6 +35,8 @@ const pickNumber = (source, keys, fallback = 0) => {
 }
 
 export default function RevenueDashboardPage() {
+  const navigate = useNavigate()
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('') // '' | 'paid'
   const today = new Date()
   const thirtyDaysAgo = new Date(today)
   thirtyDaysAgo.setDate(today.getDate() - 30)
@@ -92,6 +95,7 @@ export default function RevenueDashboardPage() {
   }, [summary])
 
   const paidTransactions = paymentRows.filter((row) => row.status === 'paid')
+  const displayPaymentRows = paymentStatusFilter === 'paid' ? paidTransactions : paymentRows
   const paidAmountBase = multiCurrencyRows.reduce(
     (sum, row) => sum + Number(row.total_amount_base || 0),
     0,
@@ -119,20 +123,40 @@ export default function RevenueDashboardPage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* MRR Estimate is a blended sum — no onClick (v206 rule 17). */}
           <AdminCard title="MRR Estimate" value={formatCurrency(metrics.mrrEstimate, baseCurrency)} />
-          <AdminCard title="Active Subscriptions" value={metrics.activeCount} />
-          <AdminCard title="Trialing Subscriptions" value={metrics.trialingCount} />
-          <AdminCard title="Cancelled Subscriptions" value={metrics.cancelledCount} />
+          <AdminCard title="Active Subscriptions" value={metrics.activeCount} onClick={() => navigate('/subscriptions/subscription-list?status=active')} />
+          <AdminCard title="Trialing Subscriptions" value={metrics.trialingCount} onClick={() => navigate('/subscriptions/subscription-list?status=trialing')} />
+          <AdminCard title="Cancelled Subscriptions" value={metrics.cancelledCount} onClick={() => navigate('/subscriptions/subscription-list?status=cancelled')} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <AdminCard title="Payments (Range)" value={paymentRows.length} />
-          <AdminCard title="Paid Transactions" value={paidTransactions.length} />
+          <AdminCard
+            title="Payments (Range)"
+            value={paymentRows.length}
+            onClick={() => {
+              setPaymentStatusFilter('')
+              document.getElementById('revenue-payment-transactions')?.scrollIntoView({ behavior: 'smooth' })
+            }}
+          />
+          <AdminCard
+            title="Paid Transactions"
+            value={paidTransactions.length}
+            onClick={() => {
+              setPaymentStatusFilter('paid')
+              document.getElementById('revenue-payment-transactions')?.scrollIntoView({ behavior: 'smooth' })
+            }}
+          />
+          {/* Paid Amount is a sum — no onClick. */}
           <AdminCard title={`Paid Amount (${baseCurrency})`} value={formatCurrency(paidAmountBase, baseCurrency)} />
-          <AdminCard title="Currency Breakdowns" value={multiCurrencyRows.length} />
+          <AdminCard
+            title="Currency Breakdowns"
+            value={multiCurrencyRows.length}
+            onClick={() => document.getElementById('revenue-multi-currency')?.scrollIntoView({ behavior: 'smooth' })}
+          />
         </div>
 
-        <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+        <div id="revenue-multi-currency" className="rounded-lg border border-gray-700 bg-gray-900 p-4">
           <h2 className="text-sm font-semibold text-gray-200">Multi-Currency Revenue</h2>
           <div className="mt-4">
             {multiCurrencyRows.length === 0 ? (
@@ -151,14 +175,24 @@ export default function RevenueDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-          <h2 className="text-sm font-semibold text-gray-200">Payment Transactions</h2>
+        <div id="revenue-payment-transactions" className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <h2 className="text-sm font-semibold text-gray-200">Payment Transactions</h2>
+            {paymentStatusFilter && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="rounded bg-gray-800 px-2 py-1 text-gray-200">Paid only</span>
+                <button type="button" onClick={() => setPaymentStatusFilter('')} className="text-blue-400 hover:underline">
+                  Clear
+                </button>
+              </div>
+            )}
+          </div>
           <div className="mt-4">
-            {paymentRows.length === 0 ? (
+            {displayPaymentRows.length === 0 ? (
               <EmptyState title="No payments in range" description="Try a wider date range." />
             ) : (
               <AdminTable
-                rows={paymentRows}
+                rows={displayPaymentRows}
                 columns={[
                   { key: 'id', label: 'Payment ID' },
                   { key: 'subscription_id', label: 'Subscription', render: (r) => r.subscription_id || '—' },
