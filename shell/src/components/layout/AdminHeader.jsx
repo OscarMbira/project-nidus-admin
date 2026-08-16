@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAdminAuth } from '../../context/AdminAuthContext.jsx'
 import { ROLE_LABELS, fetchCurrentBusinessDate } from '@nidus-admin/shared'
-import { AdminBadge } from '@nidus-admin/ui'
+import { AdminBadge, AdminAvatarBadge } from '@nidus-admin/ui'
 import NotificationBell from './NotificationBell.jsx'
 
 function MenuIcon({ className = 'h-5 w-5' }) {
@@ -30,6 +30,14 @@ function LogOutIcon({ className = 'h-4 w-4' }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className} aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+    </svg>
+  )
+}
+
+function UserIcon({ className = 'h-4 w-4' }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
     </svg>
   )
 }
@@ -160,6 +168,11 @@ export default function AdminHeader({ sidebarCollapsed, onToggleSidebar }) {
         </div>
 
         <div className="admin-user-menu relative flex shrink-0 items-center gap-2 sm:gap-3">
+          {/* Always-visible so an admin always knows which role they're operating under,
+              without opening the account menu — same pattern as Platform/Simulator's header. */}
+          <div className="hidden sm:block" title={ROLE_LABELS[role] || role}>
+            <AdminBadge label={ROLE_LABELS[role] || role} variant={role} />
+          </div>
           <NotificationBell />
           <div className="hidden text-right sm:block">
             <p className="max-w-[180px] truncate text-sm font-medium text-gray-200 md:max-w-[240px]">
@@ -177,9 +190,7 @@ export default function AdminHeader({ sidebarCollapsed, onToggleSidebar }) {
             aria-label="Admin account menu"
             aria-expanded={menuOpen}
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-violet-600 text-sm font-semibold text-white shadow-md">
-              {initials}
-            </div>
+            <AdminAvatarBadge avatarPath={adminUser?.avatar_url} initials={initials} sizeClassName="h-8 w-8" />
             <ChevronDownIcon className="hidden h-4 w-4 text-gray-400 sm:block" open={menuOpen} />
           </button>
 
@@ -202,6 +213,15 @@ export default function AdminHeader({ sidebarCollapsed, onToggleSidebar }) {
               >
                 <ShieldIcon />
                 <span>Admin Console</span>
+              </Link>
+
+              <Link
+                to="/profile"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 transition-colors hover:bg-gray-800"
+              >
+                <UserIcon />
+                <span>My Profile</span>
               </Link>
 
               <div className="my-1 border-t border-gray-800" />

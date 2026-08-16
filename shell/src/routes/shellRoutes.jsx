@@ -11,6 +11,7 @@ import AccountSetup from '../pages/auth/AccountSetup.jsx'
 import TwoFactorSetup from '../pages/auth/TwoFactorSetup.jsx'
 import FirstLoginTwoFactorSetup from '../pages/auth/FirstLoginTwoFactorSetup.jsx'
 import AdminDashboard from '../pages/dashboard/AdminDashboard.jsx'
+import AdminProfile from '../pages/profile/AdminProfile.jsx'
 import PendingActivation from '../pages/auth/PendingActivation.jsx'
 
 const UsersModule = lazyRemote(() => import('admin_users/routes'))
@@ -78,6 +79,7 @@ export default function ShellRoutes() {
       <Route path="/pending-activation" element={<PendingActivation />} />
       <Route element={<RoleGuard roles={SHELL_ROLES}><AdminLayout /></RoleGuard>}>
         <Route path="/dashboard" element={<AdminDashboard />} />
+        <Route path="/profile" element={<AdminProfile />} />
         {MODULE_ROUTES.map(({ path, module, Component }) => (
           <Route
             key={path}
