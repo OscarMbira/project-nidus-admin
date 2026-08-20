@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { inputClass } from './AdminForm.jsx'
+import { shouldShowCreateOption } from './searchableSelectUtils.js'
 
 const VIEWPORT_PADDING = 12
 const PANEL_GAP = 6
@@ -91,6 +92,8 @@ export function SearchableSelect({
   emptyMessage = 'No matching options.',
   searchPlaceholder = 'Search...',
   groupByCategory = false,
+  allowCreate = false,
+  createLabel = (query) => `Use '${query}'`,
 }) {
   const containerRef = useRef(null)
   const searchRef = useRef(null)
@@ -121,6 +124,11 @@ export function SearchableSelect({
       return haystack.includes(query)
     })
   }, [availableOptions, search])
+
+  const canCreate = useMemo(
+    () => shouldShowCreateOption(allowCreate, search, availableOptions),
+    [allowCreate, search, availableOptions],
+  )
 
   const groupedOptions = useMemo(() => {
     if (!groupByCategory || search.trim()) return null
@@ -242,7 +250,7 @@ export function SearchableSelect({
           style={{ maxHeight: panelLayout.listHeight }}
           role="listbox"
         >
-          {filteredOptions.length === 0 ? (
+          {filteredOptions.length === 0 && !canCreate ? (
             <li className="px-3 py-2 text-sm text-gray-500">{emptyMessage}</li>
           ) : groupedOptions ? (
             Array.from(groupedOptions.entries()).map(([category, categoryOptions]) => (
@@ -257,6 +265,19 @@ export function SearchableSelect({
             ))
           ) : (
             filteredOptions.map((option) => renderOption(option))
+          )}
+          {canCreate && (
+            <li>
+              <button
+                type="button"
+                role="option"
+                aria-selected={false}
+                onClick={() => handleSelect(search.trim())}
+                className="w-full px-3 py-2 text-left text-sm text-emerald-300 transition hover:bg-gray-800"
+              >
+                {createLabel(search.trim())}
+              </button>
+            </li>
           )}
         </ul>
       </div>,

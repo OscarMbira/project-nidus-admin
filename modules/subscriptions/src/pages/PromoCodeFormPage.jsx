@@ -7,7 +7,19 @@ import {
   getPromoCode,
   updatePromoCode,
 } from '@nidus-admin/shared'
-import { AdminCard, AdminField, AdminForm, LoadingState, inputClass, useToast } from '@nidus-admin/ui'
+import {
+  AdminCard,
+  AdminField,
+  AdminForm,
+  LoadingState,
+  inputClass,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
 
@@ -58,6 +70,8 @@ export default function PromoCodeFormPage() {
   const [currentUses, setCurrentUses] = useState(null)
   const [loading, setLoading] = useState(Boolean(promoId))
   const [saving, setSaving] = useState(false)
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   const previewText = useMemo(
     () => discountPreview(form.discount_type, form.discount_value),
@@ -81,7 +95,10 @@ export default function PromoCodeFormPage() {
       if (cancelled) return
       if (error) showError(toError(error, 'Failed to load promo code.'))
       else if (data) setForm(applyPromoToForm(data))
-      if (data) setCurrentUses(data.current_uses ?? 0)
+      if (data) {
+        setCurrentUses(data.current_uses ?? 0)
+        setRecord(data)
+      }
       setLoading(false)
     })
 
@@ -173,6 +190,36 @@ export default function PromoCodeFormPage() {
           </div>
         </div>
 
+        <div className="mx-auto max-w-6xl">
+          <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+        </div>
+
+        {detailTab === 'audit' && !record && (
+          <p className="mx-auto max-w-6xl text-sm text-gray-500 dark:text-gray-400">Audit details appear after this promo code is saved.</p>
+        )}
+
+        {detailTab === 'audit' && record && (
+          <div className="mx-auto max-w-6xl">
+            <AuditDetailsPanel description="Who created or changed this promo code, and how it is classified.">
+              <AuditCard title="Identity" description="How this promo code is labelled.">
+                <AuditField label="Code" value={record.code} />
+                <AuditField label="Name" value={record.name} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this promo code sits.">
+                <AuditField label="Discount type" value={record.discount_type} />
+                <AuditField label="Active" value={record.is_active ? 'Yes' : 'No'} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this promo code was created and last changed.">
+                <AuditField label="Created by" value={record.created_by || null} />
+                <AuditTimestampPair dateLabel="Created at" value={record.created_at} />
+                <AuditField label="Updated by" value={record.updated_by || null} />
+                <AuditTimestampPair dateLabel="Last updated" value={record.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+          </div>
+        )}
+
+        {detailTab === 'details' && (
         <AdminForm id="promo-code-form" onSubmit={handleSubmit} className="mx-auto max-w-6xl">
           <AdminCard className="!p-3">
             <div className="grid gap-4 xl:grid-cols-12">
@@ -287,6 +334,7 @@ export default function PromoCodeFormPage() {
             </div>
           </AdminCard>
         </AdminForm>
+        )}
       </div>
     </PermissionGate>
   )

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useAdminAuth } from '../../context/AdminAuthContext.jsx'
 import { ROLE_LABELS, fetchAdminNavTree, getDefaultAdminNav } from '@nidus-admin/shared'
-import { AdminBadge } from '@nidus-admin/ui'
+import { AdminBadge, AdminSidebarNavTier, AdminSidebarNavTreeRow } from '@nidus-admin/ui'
 import { resolveModuleFromPath } from '../../config/moduleRegistry.js'
 import { prefetchRemoteModule } from '../../utils/prefetchRemote.js'
 
@@ -10,15 +10,9 @@ const STORAGE_KEY = 'nidus-admin-nav-sections'
 
 const FALLBACK_NAV = getDefaultAdminNav()
 
-/** One drill-down tier: guide line + horizontal inset. Nesting tiers compounds indentation. */
-const NAV_TIER = 'mt-1 space-y-0.5 border-l border-gray-700 ml-3 pl-3'
-
-function NavTier({ children, className = '' }) {
-  return <div className={`${NAV_TIER}${className ? ` ${className}` : ''}`}>{children}</div>
-}
-
-/** Sidebar label sizes — section > group > leaf hierarchy. */
+/** Sidebar label sizes — section > subsection > group > leaf hierarchy. */
 const NAV_SECTION_LABEL = 'text-xs font-medium uppercase tracking-wide text-gray-300'
+const NAV_SUBSECTION_LABEL = 'text-xs font-semibold uppercase tracking-wide text-gray-300'
 const NAV_GROUP_LABEL = 'text-xs font-semibold uppercase tracking-wide text-gray-400'
 
 function navLeafRowClass(isActive, { muted = false } = {}) {
@@ -37,8 +31,14 @@ function getGroupId(sectionId, groupLabel) {
   return `${sectionId}::${groupLabel}`
 }
 
+function getSubsectionId(sectionId, subsectionLabel) {
+  return `${sectionId}::sub::${subsectionLabel}`
+}
+
 function getSectionItems(section) {
-  return section.groups.flatMap((group) => group.items)
+  const flat = section.groups.flatMap((group) => group.items)
+  const nested = (section.subsections || []).flatMap((sub) => sub.groups.flatMap((group) => group.items))
+  return [...flat, ...nested]
 }
 
 function canSee(item, role) {
@@ -88,31 +88,51 @@ function sectionHasActiveItem(section, role, pathname) {
   return getActiveSectionItem(pathname, getSectionItems(section), role) !== null
 }
 
+/** Returns which group (flat or nested inside a subsection) matches the route, plus its subsection scope if any. */
 function getActiveGroupId(pathname, section, role) {
   for (const group of section.groups) {
     if (groupHasActiveItem(pathname, group, role)) {
-      return getGroupId(section.id, group.label)
+      return { groupId: getGroupId(section.id, group.label), subsectionId: null }
     }
   }
-  return null
+  for (const subsection of section.subsections || []) {
+    const subScopeId = getSubsectionId(section.id, subsection.label)
+    for (const group of subsection.groups) {
+      if (groupHasActiveItem(pathname, group, role)) {
+        return { groupId: getGroupId(subScopeId, group.label), subsectionId: subScopeId }
+      }
+    }
+  }
+  return { groupId: null, subsectionId: null }
 }
 
-/** Keep only the top-level section and sub-group that match the current route. */
+/** Keep only the top-level section, subsection, and sub-group that match the current route. */
 function buildFocusedNavState(pathname, role, visibleSections) {
   const activeSection = visibleSections.find((section) => sectionHasActiveItem(section, role, pathname))
   if (!activeSection) {
-    return { openSectionId: null, groupOpenState: {} }
+    return { openSectionId: null, groupOpenState: {}, subsectionOpenState: {} }
   }
 
-  const activeGroupId = getActiveGroupId(pathname, activeSection, role)
+  const { groupId: activeGroupId, subsectionId: activeSubsectionId } = getActiveGroupId(pathname, activeSection, role)
   const groupOpenState = {}
+  const subsectionOpenState = {}
 
   for (const group of activeSection.groups) {
     const groupId = getGroupId(activeSection.id, group.label)
     groupOpenState[groupId] = groupId === activeGroupId
   }
 
-  return { openSectionId: activeSection.id, groupOpenState }
+  for (const subsection of activeSection.subsections || []) {
+    const subScopeId = getSubsectionId(activeSection.id, subsection.label)
+    const isActiveSub = subScopeId === activeSubsectionId
+    subsectionOpenState[subScopeId] = isActiveSub
+    for (const group of subsection.groups) {
+      const groupId = getGroupId(subScopeId, group.label)
+      groupOpenState[groupId] = isActiveSub && groupId === activeGroupId
+    }
+  }
+
+  return { openSectionId: activeSection.id, groupOpenState, subsectionOpenState }
 }
 
 function loadNavState(role) {
@@ -134,18 +154,26 @@ function loadNavState(role) {
       return {
         openSectionId,
         groupOpenState: parsed?.groupOpenState ?? {},
+        subsectionOpenState: parsed?.subsectionOpenState ?? {},
       }
     }
   } catch {
     // ignore invalid storage
   }
-  return { openSectionId: null, groupOpenState: {} }
+  return { openSectionId: null, groupOpenState: {}, subsectionOpenState: {} }
 }
 
 function isGroupOpen(sectionId, group, pathname, role, groupOpenState) {
   const groupId = getGroupId(sectionId, group.label)
   if (groupId in groupOpenState) return groupOpenState[groupId]
   return groupHasActiveItem(pathname, group, role)
+}
+
+/** Subsections toggle independently of each other (not an accordion) — only their internal groups accordion. */
+function isSubsectionOpen(sectionId, subsection, pathname, role, subsectionOpenState) {
+  const subScopeId = getSubsectionId(sectionId, subsection.label)
+  if (subScopeId in subsectionOpenState) return subsectionOpenState[subScopeId]
+  return subsection.groups.some((group) => groupHasActiveItem(pathname, group, role))
 }
 
 function Chevron({ open, size = 'md' }) {
@@ -162,7 +190,7 @@ function Chevron({ open, size = 'md' }) {
   )
 }
 
-function NavGroup({ sectionId, group, sectionItems, pathname, role, groupOpenState, onToggleGroup }) {
+function NavGroup({ sectionId, group, siblingGroups, sectionItems, pathname, role, groupOpenState, onToggleGroup }) {
   const groupIsOpen = isGroupOpen(sectionId, group, pathname, role, groupOpenState)
 
   return (
@@ -170,7 +198,7 @@ function NavGroup({ sectionId, group, sectionItems, pathname, role, groupOpenSta
       {group.label && (
         <button
           type="button"
-          onClick={() => onToggleGroup(sectionId, group)}
+          onClick={() => onToggleGroup(sectionId, group, siblingGroups)}
           aria-expanded={groupIsOpen}
           className="flex w-full items-center justify-between rounded py-2 pr-3 text-left hover:bg-gray-800/30"
         >
@@ -181,30 +209,68 @@ function NavGroup({ sectionId, group, sectionItems, pathname, role, groupOpenSta
         </button>
       )}
       {groupIsOpen && (
-        <NavTier>
+        <AdminSidebarNavTier>
           {group.items.map((item) => {
             const isHistoryItem = item.path?.endsWith('-history')
             const isActive = isNavItemActive(pathname, item, sectionItems, role)
             return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                title={item.label}
-                onMouseEnter={() => prefetchModuleForPath(item.path)}
-                onFocus={() => prefetchModuleForPath(item.path)}
-                className={() => navLeafRowClass(isActive, { muted: isHistoryItem })}
-              >
-                {item.label}
-              </NavLink>
+              <AdminSidebarNavTreeRow key={item.path}>
+                <NavLink
+                  to={item.path}
+                  title={item.label}
+                  onMouseEnter={() => prefetchModuleForPath(item.path)}
+                  onFocus={() => prefetchModuleForPath(item.path)}
+                  className={() => navLeafRowClass(isActive, { muted: isHistoryItem })}
+                >
+                  {item.label}
+                </NavLink>
+              </AdminSidebarNavTreeRow>
             )
           })}
-        </NavTier>
+        </AdminSidebarNavTier>
       )}
     </div>
   )
 }
 
-function NavSection({ section, isOpen, pathname, role, groupOpenState, onToggleSection, onToggleGroup }) {
+/** Wraps a cluster of related groups (e.g. Templates, Forms) under one collapsible header. Independent per subsection — opening one doesn't close its siblings. */
+function NavSubsection({ sectionId, subsection, sectionItems, pathname, role, groupOpenState, subsectionOpenState, onToggleGroup, onToggleSubsection }) {
+  const subScopeId = getSubsectionId(sectionId, subsection.label)
+  const isOpen = isSubsectionOpen(sectionId, subsection, pathname, role, subsectionOpenState)
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => onToggleSubsection(sectionId, subsection)}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between rounded py-2 pr-3 text-left hover:bg-gray-800/30"
+      >
+        <span className={NAV_SUBSECTION_LABEL}>{subsection.label}</span>
+        <Chevron open={isOpen} size="sm" />
+      </button>
+      {isOpen && (
+        <AdminSidebarNavTier>
+          {subsection.groups.map((group) => (
+            <NavGroup
+              key={group.label}
+              sectionId={subScopeId}
+              group={group}
+              siblingGroups={subsection.groups}
+              sectionItems={sectionItems}
+              pathname={pathname}
+              role={role}
+              groupOpenState={groupOpenState}
+              onToggleGroup={onToggleGroup}
+            />
+          ))}
+        </AdminSidebarNavTier>
+      )}
+    </div>
+  )
+}
+
+function NavSection({ section, isOpen, pathname, role, groupOpenState, subsectionOpenState, onToggleSection, onToggleGroup, onToggleSubsection }) {
   const sectionItems = getSectionItems(section)
 
   return (
@@ -220,12 +286,13 @@ function NavSection({ section, isOpen, pathname, role, groupOpenState, onToggleS
       </button>
 
       {isOpen && (
-        <NavTier>
+        <AdminSidebarNavTier>
           {section.groups.map((group) => (
             <NavGroup
               key={group.label}
               sectionId={section.id}
               group={group}
+              siblingGroups={section.groups}
               sectionItems={sectionItems}
               pathname={pathname}
               role={role}
@@ -233,7 +300,21 @@ function NavSection({ section, isOpen, pathname, role, groupOpenState, onToggleS
               onToggleGroup={onToggleGroup}
             />
           ))}
-        </NavTier>
+          {(section.subsections || []).map((subsection) => (
+            <NavSubsection
+              key={subsection.label}
+              sectionId={section.id}
+              subsection={subsection}
+              sectionItems={sectionItems}
+              pathname={pathname}
+              role={role}
+              groupOpenState={groupOpenState}
+              subsectionOpenState={subsectionOpenState}
+              onToggleGroup={onToggleGroup}
+              onToggleSubsection={onToggleSubsection}
+            />
+          ))}
+        </AdminSidebarNavTier>
       )}
     </div>
   )
@@ -243,7 +324,7 @@ export default function AdminSidebar({ collapsed }) {
   const { role, logout, adminUser } = useAdminAuth()
   const location = useLocation()
   const [navState, setNavState] = useState(() => loadNavState(role))
-  const { openSectionId, groupOpenState } = navState
+  const { openSectionId, groupOpenState, subsectionOpenState } = navState
   const [navConfig, setNavConfig] = useState(FALLBACK_NAV)
 
   useEffect(() => {
@@ -273,14 +354,25 @@ export default function AdminSidebar({ collapsed }) {
             items: group.items.filter((item) => canSee(item, role)),
           }))
           .filter((group) => group.items.length > 0),
+        subsections: (section.subsections || [])
+          .map((subsection) => ({
+            ...subsection,
+            groups: subsection.groups
+              .map((group) => ({
+                ...group,
+                items: group.items.filter((item) => canSee(item, role)),
+              }))
+              .filter((group) => group.items.length > 0),
+          }))
+          .filter((subsection) => subsection.groups.length > 0),
       }))
-      .filter((section) => section.groups.length > 0),
+      .filter((section) => section.groups.length > 0 || section.subsections.length > 0),
     [role],
   )
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ openSectionId, groupOpenState }))
-  }, [openSectionId, groupOpenState])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ openSectionId, groupOpenState, subsectionOpenState }))
+  }, [openSectionId, groupOpenState, subsectionOpenState])
 
   useEffect(() => {
     setNavState((current) => {
@@ -288,6 +380,7 @@ export default function AdminSidebar({ collapsed }) {
       if (
         current.openSectionId === focused.openSectionId
         && JSON.stringify(current.groupOpenState) === JSON.stringify(focused.groupOpenState)
+        && JSON.stringify(current.subsectionOpenState) === JSON.stringify(focused.subsectionOpenState)
       ) {
         return current
       }
@@ -304,25 +397,34 @@ export default function AdminSidebar({ collapsed }) {
       if (!section) {
         return { ...current, openSectionId: sectionId }
       }
-      const activeGroupId = getActiveGroupId(location.pathname, section, role)
+      const { groupId: activeGroupId, subsectionId: activeSubsectionId } = getActiveGroupId(location.pathname, section, role)
       const groupOpenState = {}
+      const subsectionOpenState = {}
       for (const group of section.groups) {
         const groupId = getGroupId(sectionId, group.label)
         groupOpenState[groupId] = activeGroupId ? groupId === activeGroupId : false
       }
-      return { openSectionId: sectionId, groupOpenState }
+      for (const subsection of section.subsections || []) {
+        const subScopeId = getSubsectionId(sectionId, subsection.label)
+        const isActiveSub = subScopeId === activeSubsectionId
+        subsectionOpenState[subScopeId] = isActiveSub
+        for (const group of subsection.groups) {
+          const groupId = getGroupId(subScopeId, group.label)
+          groupOpenState[groupId] = isActiveSub && groupId === activeGroupId
+        }
+      }
+      return { openSectionId: sectionId, groupOpenState, subsectionOpenState }
     })
   }
 
-  const toggleGroup = (sectionId, group) => {
-    const groupId = getGroupId(sectionId, group.label)
-    const currentlyOpen = isGroupOpen(sectionId, group, location.pathname, role, groupOpenState)
+  const toggleGroup = (scopeId, group, siblingGroups = []) => {
+    const groupId = getGroupId(scopeId, group.label)
+    const currentlyOpen = isGroupOpen(scopeId, group, location.pathname, role, groupOpenState)
     setNavState((current) => {
-      const section = visibleSections.find((s) => s.id === sectionId)
       const nextGroupState = { ...current.groupOpenState }
-      if (section) {
-        for (const sibling of section.groups) {
-          const siblingId = getGroupId(sectionId, sibling.label)
+      if (siblingGroups.length) {
+        for (const sibling of siblingGroups) {
+          const siblingId = getGroupId(scopeId, sibling.label)
           nextGroupState[siblingId] = siblingId === groupId ? !currentlyOpen : false
         }
       } else {
@@ -330,6 +432,17 @@ export default function AdminSidebar({ collapsed }) {
       }
       return { ...current, groupOpenState: nextGroupState }
     })
+  }
+
+  const toggleSubsection = (sectionId, subsection) => {
+    const subScopeId = getSubsectionId(sectionId, subsection.label)
+    setNavState((current) => ({
+      ...current,
+      subsectionOpenState: {
+        ...current.subsectionOpenState,
+        [subScopeId]: !isSubsectionOpen(sectionId, subsection, location.pathname, role, current.subsectionOpenState),
+      },
+    }))
   }
 
   return (
@@ -385,8 +498,10 @@ export default function AdminSidebar({ collapsed }) {
               pathname={location.pathname}
               role={role}
               groupOpenState={groupOpenState}
+              subsectionOpenState={subsectionOpenState}
               onToggleSection={toggleSection}
               onToggleGroup={toggleGroup}
+              onToggleSubsection={toggleSubsection}
             />
           )
         })}

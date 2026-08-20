@@ -1,16 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   createIdGenerationRule,
   findIdGenerationRuleForTable,
   formatDisplayIdError,
+  idGenerationRuleFormPath,
   isIdGenerationRuleAlreadyExistsError,
   parseIdGenerationRuleTableFromExistsError,
+  PermissionGate,
   updateIdGenerationRule,
 } from '@nidus-admin/shared'
-import { AdminForm, EmptyState, LoadingState, useToast } from '@nidus-admin/ui'
+import {
+  AdminForm,
+  AdminIconActionButton,
+  EmptyState,
+  LoadingState,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 import IdGenerationRuleFormFields, { EMPTY_ID_RULE_FORM, ruleToForm } from './idGenerationRuleFormFields.jsx'
-import { applyTableDefaults, getAbbreviationValidationError } from './idGenerationTableDefaults.js'
+import { applyTableDefaults, getAbbreviationValidationError, isAbbreviationOptional } from './idGenerationTableDefaults.js'
 import { isDefaultRule } from './idGenerationPreview.js'
 import { useIdGenerationRuleFormMode } from './useIdGenerationRuleFormMode.js'
 
@@ -20,6 +33,7 @@ export default function IDGenerationRuleFormPage() {
 
   const {
     isEdit,
+    isViewOnly,
     loading,
     resolutionComplete,
     ruleError,
@@ -37,14 +51,28 @@ export default function IDGenerationRuleFormPage() {
   const [form, setForm] = useState(EMPTY_ID_RULE_FORM)
   const [previewKey, setPreviewKey] = useState(0)
   const [capacityBlocked, setCapacityBlocked] = useState(false)
+  const [detailTab, setDetailTab] = useState('details')
+  const formInitializedForRef = useRef(null)
 
+  const abbreviationOptional = isAbbreviationOptional(form)
   const abbreviationError = getAbbreviationValidationError(
     form.table_abbreviation,
     existingRules,
     ruleId,
+    abbreviationOptional,
   )
 
   useEffect(() => {
+    const initKey = isEdit && rule?.id
+      ? `edit:${rule.id}`
+      : (!isEdit && presetTable && resolutionComplete)
+        ? `create:${presetTable}`
+        : null
+
+    if (!initKey || formInitializedForRef.current === initKey) return
+
+    formInitializedForRef.current = initKey
+
     if (isEdit && rule) {
       setForm(ruleToForm(rule))
       return
@@ -73,27 +101,39 @@ export default function IDGenerationRuleFormPage() {
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    if (!isEdit && (!form.target_table || !form.table_abbreviation.trim())) {
-      showError('Target table and abbreviation are required.')
+    if (!isEdit && !form.target_table) {
+      showError('Target table is required.')
       return
     }
-    if (!form.table_abbreviation.trim()) {
+    if (!abbreviationOptional && !form.table_abbreviation.trim()) {
       showError('Abbreviation is required.')
       return
     }
 
-    const segmentType = form.segment_type || 'alphanumeric'
-    if (segmentType === 'numeric' && Number(form.num_digits) < 1) {
-      showError('Digit length must be at least 1 for numeric IDs.')
+    const generationMode = form.generation_mode || 'random'
+    if (form.include_date && !form.date_format) {
+      showError('Date format is required when Include date is enabled.')
       return
     }
-    if (segmentType === 'alpha' && Number(form.num_letters) < 1) {
-      showError('Letter length must be at least 1 for alpha IDs.')
-      return
-    }
-    if (segmentType === 'alphanumeric' && Number(form.num_letters) + Number(form.num_digits) < 1) {
-      showError('Letters plus digits must be at least 1.')
-      return
+    if (generationMode === 'sequential') {
+      if (Number(form.num_digits) < 1) {
+        showError('Sequence width must be at least 1 digit for sequential IDs.')
+        return
+      }
+    } else {
+      const segmentType = form.segment_type || 'alphanumeric'
+      if (segmentType === 'numeric' && Number(form.num_digits) < 1) {
+        showError('Digit length must be at least 1 for numeric IDs.')
+        return
+      }
+      if (segmentType === 'alpha' && Number(form.num_letters) < 1) {
+        showError('Letter length must be at least 1 for alpha IDs.')
+        return
+      }
+      if (segmentType === 'alphanumeric' && Number(form.num_letters) + Number(form.num_digits) < 1) {
+        showError('Letters plus digits must be at least 1.')
+        return
+      }
     }
     if (capacityBlocked) {
       showError('The configured format cannot cover the table\'s current row count. Widen the format before saving.')
@@ -168,14 +208,14 @@ export default function IDGenerationRuleFormPage() {
   }
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-3 p-2 md:p-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-100">
-            {isEdit ? 'Edit ID Generation Rule' : 'Create ID Generation Rule'}
+          <h1 className="text-xl font-semibold text-gray-100">
+            {isViewOnly ? 'View ID Generation Rule' : isEdit ? 'Edit ID Generation Rule' : 'Create ID Generation Rule'}
           </h1>
-          <p className="text-sm text-gray-500">
-            {isEdit
+          <p className="text-xs text-gray-500">
+            {isEdit || isViewOnly
               ? `Configure display ID format for ${rule?.target_table || form.target_table}.`
               : 'Define a human-readable display ID format for an admin panel table or platform/simulator database table.'}
           </p>
@@ -185,30 +225,71 @@ export default function IDGenerationRuleFormPage() {
             </span>
           )}
         </div>
-        <button
-          type="button"
-          className="rounded border border-gray-700 px-3 py-2 text-sm text-gray-300 hover:bg-gray-800"
-          onClick={() => navigate('/system/id-generation-rules')}
-        >
-          Back to ID Rules
-        </button>
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          {isViewOnly && rule && (
+            <PermissionGate permission="system.id_generation.edit">
+              <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(idGenerationRuleFormPath({ rule }))} />
+            </PermissionGate>
+          )}
+          <button
+            type="button"
+            className="rounded border border-gray-700 px-3 py-1.5 text-sm text-gray-300 hover:bg-gray-800"
+            onClick={() => navigate('/system/id-generation-rules')}
+          >
+            Back to ID Rules
+          </button>
+        </div>
       </div>
 
-      <div className="max-w-4xl rounded-lg border border-gray-700 bg-gray-900 p-5 md:p-6">
-        <AdminForm onSubmit={handleSubmit} className="space-y-4">
-          <IdGenerationRuleFormFields
-            form={form}
-            setForm={setForm}
-            tables={tables}
-            tablesLoading={catalogLoading}
-            previewKey={previewKey}
-            lockTargetTable={isEdit}
-            autoFillFromTable={!isEdit}
-            existingRules={existingRules}
-            excludeRuleId={ruleId}
-            onCapacityChange={(data) => setCapacityBlocked(Boolean(data?.capacity_exceeded))}
-          />
-          <div className="flex justify-end gap-2 border-t border-gray-800 pt-4">
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && !rule && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this rule is saved.</p>
+      )}
+
+      {detailTab === 'audit' && rule && (
+        <AuditDetailsPanel description="Who created or changed this ID generation rule, and how it is classified.">
+          <AuditCard title="Identity" description="How this rule is labelled.">
+            <AuditField label="Target table" value={rule.target_table} />
+            <AuditField label="Abbreviation" value={rule.table_abbreviation} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this rule sits.">
+            <AuditField label="Letter case" value={rule.letter_case} />
+            <AuditField label="Active" value={rule.is_active ? 'Yes' : 'No'} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this rule was created and last changed.">
+            <AuditField label="Created by" value={rule.created_by || null} />
+            <AuditTimestampPair dateLabel="Created at" value={rule.created_at} />
+            <AuditField label="Updated by" value={rule.updated_by || null} />
+            <AuditTimestampPair dateLabel="Last updated" value={rule.updated_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <div className="max-w-none rounded-lg border border-gray-700 bg-gray-900 p-3 md:p-4">
+        <AdminForm onSubmit={isViewOnly ? (event) => event.preventDefault() : handleSubmit} className="space-y-3">
+          {isViewOnly && (
+            <div className="rounded-lg border border-gray-600 bg-gray-800/80 px-3 py-2 text-sm text-gray-300">
+              Viewing rule details in read-only mode. Use Edit to make changes.
+            </div>
+          )}
+          <fieldset disabled={isViewOnly} className="border-0 p-0 m-0 min-w-0 disabled:opacity-95">
+            <IdGenerationRuleFormFields
+              form={form}
+              setForm={setForm}
+              tables={tables}
+              tablesLoading={catalogLoading}
+              previewKey={previewKey}
+              lockTargetTable={isEdit}
+              autoFillFromTable={!isEdit}
+              existingRules={existingRules}
+              excludeRuleId={ruleId}
+              onCapacityChange={(data) => setCapacityBlocked(Boolean(data?.capacity_exceeded))}
+            />
+          </fieldset>
+          {!isViewOnly && (
+          <div className="flex justify-end gap-2 border-t border-gray-800 pt-2">
             <button
               type="button"
               onClick={() => navigate('/system/id-generation-rules')}
@@ -226,8 +307,10 @@ export default function IDGenerationRuleFormPage() {
                 : (isEdit ? 'Update' : 'Create')}
             </button>
           </div>
+          )}
         </AdminForm>
       </div>
+      )}
     </div>
   )
 }

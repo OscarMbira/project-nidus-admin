@@ -9,8 +9,20 @@ import {
   saveDocumentationToStorage,
   upsertDocumentationGuide,
 } from '@nidus-admin/shared'
-import { AdminField, AdminForm, EmptyState, inputClass, LoadingState, useToast } from '@nidus-admin/ui'
-import MarkdownView from '../components/MarkdownView.jsx'
+import {
+  AdminField,
+  AdminForm,
+  DocumentationContentView,
+  EmptyState,
+  inputClass,
+  LoadingState,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
@@ -23,6 +35,8 @@ export default function DocsEditorPage() {
     guide_id: '', title: '', file_name: '', module: 'general', category: 'Reference', description: '', sort_order: 0,
   })
   const [markdown, setMarkdown] = useState('# New Guide\n\n')
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadGuides = () => getDocumentationGuides().then(({ data }) => setGuides(data || []))
 
@@ -36,6 +50,8 @@ export default function DocsEditorPage() {
   const selectGuide = async (guideId) => {
     const { data: g } = await getDocumentationGuideById(guideId)
     if (!g) return
+    setRecord(g)
+    setDetailTab('details')
     setForm({
       guide_id: g.guide_id,
       title: g.title,
@@ -91,7 +107,7 @@ export default function DocsEditorPage() {
 
         <div className="grid gap-4 lg:grid-cols-4">
           <aside className="rounded-lg border border-gray-700 bg-gray-900 p-3 lg:col-span-1">
-            <button type="button" className="mb-2 text-sm text-blue-400" onClick={() => { setForm({ guide_id: '', title: '', file_name: '', module: 'general', category: 'Reference', description: '', sort_order: 0 }); setMarkdown('# New Guide\n\n') }}>+ New guide</button>
+            <button type="button" className="mb-2 text-sm text-blue-400" onClick={() => { setForm({ guide_id: '', title: '', file_name: '', module: 'general', category: 'Reference', description: '', sort_order: 0 }); setMarkdown('# New Guide\n\n'); setRecord(null); setDetailTab('details') }}>+ New guide</button>
             {!guides.length ? <EmptyState title="No guides" /> : (
               <ul className="max-h-96 space-y-1 overflow-y-auto text-sm">
                 {guides.map((g) => (
@@ -104,6 +120,33 @@ export default function DocsEditorPage() {
           </aside>
 
           <div className="lg:col-span-3 space-y-4">
+            <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+            {detailTab === 'audit' && !record && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this guide is saved.</p>
+            )}
+
+            {detailTab === 'audit' && record && (
+              <AuditDetailsPanel description="How this guide is labelled and when it last changed.">
+                <AuditCard title="Identity" description="How this guide is labelled.">
+                  <AuditField label="Title" value={record.title} />
+                  <AuditField label="Guide ID" value={record.guide_id} />
+                  <AuditField label="File name" value={record.file_name} />
+                </AuditCard>
+                <AuditCard title="Classification" description="Where this guide sits.">
+                  <AuditField label="Module" value={record.module} />
+                  <AuditField label="Category" value={record.category} />
+                  <AuditField label="Active" value={record.is_active ? 'Yes' : 'No'} />
+                </AuditCard>
+                <AuditCard title="Record history" description="When this guide was created and last changed.">
+                  <AuditTimestampPair dateLabel="Created at" value={record.created_at} />
+                  <AuditTimestampPair dateLabel="Last updated" value={record.updated_at} />
+                </AuditCard>
+              </AuditDetailsPanel>
+            )}
+
+            {detailTab === 'details' && (
+            <>
             <AdminForm onSubmit={handleSave} className="grid gap-3 sm:grid-cols-2">
               <AdminField label="Title"><input className={inputClass} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></AdminField>
               <AdminField label="Module"><input className={inputClass} value={form.module} onChange={(e) => setForm({ ...form, module: e.target.value })} required /></AdminField>
@@ -120,9 +163,11 @@ export default function DocsEditorPage() {
               <textarea className={`${inputClass} min-h-[400px] font-mono text-sm`} value={markdown} onChange={(e) => setMarkdown(e.target.value)} />
               <div className="rounded-lg border border-gray-700 bg-gray-950 p-4 overflow-auto max-h-[500px]">
                 <p className="mb-2 text-xs uppercase text-gray-500">Preview</p>
-                <MarkdownView content={markdown} />
+                <DocumentationContentView content={markdown} fileName={form.file_name} />
               </div>
             </div>
+            </>
+            )}
           </div>
         </div>
       </div>

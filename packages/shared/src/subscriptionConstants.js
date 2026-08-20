@@ -65,8 +65,19 @@ export function statusesForSystem(system) {
 }
 
 export function formatPlanLabel(planType) {
-  if (!planType) return '—'
-  return planType
+  if (planType == null || planType === '') return '—'
+
+  let value = planType
+  if (typeof value === 'object') {
+    value = value.plan_type ?? value.plan_name ?? value.name ?? null
+  } else if (typeof value !== 'string') {
+    value = String(value)
+  }
+
+  const normalized = String(value || '').trim()
+  if (!normalized) return '—'
+
+  return normalized
     .split('_')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')

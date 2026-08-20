@@ -6,6 +6,7 @@ import {
   fetchAdminUsers,
   fetchSupportTickets,
   formatDate,
+  formatDateShort,
   generateExportFilename,
   PermissionGate,
   updateTicketPriority,
@@ -15,15 +16,17 @@ import {
   useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
   AdminModal,
+  AdminRowActions,
   AdminTable,
   BulkActionBar,
   EmptyState,
   LoadingState,
   SearchBar,
-  useConfirmAction,
   useToast,
 } from '@nidus-admin/ui'
 
@@ -39,7 +42,6 @@ const OPEN_STATUSES = ['open', 'in_progress', 'waiting_user']
 export default function SupportTicketListPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
 
   const [rows, setRows] = useState([])
@@ -57,9 +59,14 @@ export default function SupportTicketListPage() {
     const fromUrl = searchParams.get('filter')
     return fromUrl === 'open' || fromUrl === 'assigned_open' ? fromUrl : ''
   })
-  const [pendingPriority, setPendingPriority] = useState({})
-  const [pendingAssignee, setPendingAssignee] = useState({})
   const [page, setPage] = useState(1)
+  const [rowActionModal, setRowActionModal] = useState({
+    open: false,
+    type: null,
+    ticket: null,
+    assigneeId: '',
+    newPriority: 'medium',
+  })
   const [bulkModal, setBulkModal] = useState({
     open: false,
     action: null,
@@ -93,8 +100,6 @@ export default function SupportTicketListPage() {
 
     setRows(ticketRows)
     setAdminUsers(adminRows)
-    setPendingPriority(Object.fromEntries(ticketRows.map((t) => [t.id, t.priority || 'medium'])))
-    setPendingAssignee(Object.fromEntries(ticketRows.map((t) => [t.id, t.assigned_to || 'unassigned'])))
     setLoading(false)
   }
 
@@ -186,49 +191,99 @@ export default function SupportTicketListPage() {
     await loadData()
   }
 
-  const updatePriorityForTicket = (ticket) => {
-    const nextPriority = pendingPriority[ticket.id] || ticket.priority
-    if (!nextPriority || nextPriority === ticket.priority) return
-
-    confirm({
-      title: `Update priority for ticket ${ticket.id}?`,
-      message: `Change priority from "${ticket.priority || '—'}" to "${nextPriority}".`,
-      confirmLabel: 'Update Priority',
-      onConfirm: async () => {
-        const { error: mutationError } = await updateTicketPriority(ticket.id, nextPriority)
-        if (mutationError) {
-          showError(mutationError.message || String(mutationError))
-          return
-        }
-        showSuccess('Ticket priority updated.')
-        await loadData()
-      },
+  const closeRowActionModal = () => {
+    setRowActionModal({
+      open: false,
+      type: null,
+      ticket: null,
+      assigneeId: '',
+      newPriority: 'medium',
     })
+  }
+
+  const openAssignModal = (ticket) => {
+    setRowActionModal({
+      open: true,
+      type: 'assign',
+      ticket,
+      assigneeId: ticket.assigned_to || adminUsers[0]?.id || '',
+      newPriority: ticket.priority || 'medium',
+    })
+  }
+
+  const openPriorityModal = (ticket) => {
+    setRowActionModal({
+      open: true,
+      type: 'priority',
+      ticket,
+      assigneeId: ticket.assigned_to || '',
+      newPriority: ticket.priority || 'medium',
+    })
+  }
+
+  const confirmRowAction = async () => {
+    const { type, ticket, assigneeId, newPriority } = rowActionModal
+    if (!ticket) return
+
+    if (type === 'assign') {
+      if (!assigneeId) {
+        showError('Select an assignee before applying assignment.')
+        return
+      }
+      if (assigneeId === ticket.assigned_to) {
+        closeRowActionModal()
+        return
+      }
+      const { error: mutationError } = await assignTicket(ticket.id, assigneeId)
+      if (mutationError) {
+        showError(mutationError.message || String(mutationError))
+        return
+      }
+      showSuccess('Ticket assigned.')
+    } else if (type === 'priority') {
+      if (!newPriority || newPriority === ticket.priority) {
+        closeRowActionModal()
+        return
+      }
+      const { error: mutationError } = await updateTicketPriority(ticket.id, newPriority)
+      if (mutationError) {
+        showError(mutationError.message || String(mutationError))
+        return
+      }
+      showSuccess('Ticket priority updated.')
+    }
+
+    closeRowActionModal()
+    await loadData()
+  }
+
+  const updatePriorityForTicket = (ticket) => {
+    openPriorityModal(ticket)
   }
 
   const assignTicketToAdmin = (ticket) => {
-    const selected = pendingAssignee[ticket.id]
-    if (!selected || selected === 'unassigned') {
-      showError('Select an assignee before applying assignment.')
-      return
-    }
-    if (selected === ticket.assigned_to) return
-
-    confirm({
-      title: `Assign ticket ${ticket.id}?`,
-      message: `Assign this ticket to ${assigneeMap[selected] || selected}.`,
-      confirmLabel: 'Assign',
-      onConfirm: async () => {
-        const { error: mutationError } = await assignTicket(ticket.id, selected)
-        if (mutationError) {
-          showError(mutationError.message || String(mutationError))
-          return
-        }
-        showSuccess('Ticket assigned.')
-        await loadData()
-      },
-    })
+    openAssignModal(ticket)
   }
+
+  const viewTicketDetail = (ticket) => {
+    navigate(`/support/support-ticket-detail?id=${navId(displayIdMap, ticket.id)}`)
+  }
+
+  const renderTicketActions = (ticket) => (
+    <AdminRowActions>
+      <AdminIconActionButton variant="view" label="View" onClick={() => viewTicketDetail(ticket)} />
+      <PermissionGate permission="support.tickets.assign">
+        <AdminActionButton variant="cyan" onClick={() => assignTicketToAdmin(ticket)}>
+          Assign
+        </AdminActionButton>
+      </PermissionGate>
+      <PermissionGate permission="support.tickets.manage">
+        <AdminActionButton variant="warning" onClick={() => updatePriorityForTicket(ticket)}>
+          Priority
+        </AdminActionButton>
+      </PermissionGate>
+    </AdminRowActions>
+  )
 
   if (loading) return <LoadingState message="Loading support tickets..." />
   if (error) return <div className="p-6 text-red-400">{error}</div>
@@ -344,7 +399,16 @@ export default function SupportTicketListPage() {
             onSelectionChange={bulk.setSelectedIds}
             columns={[
               { key: 'display_id', label: 'Display ID', sortable: false, render: (r) => displayIdMap[r.id] || '—' },
-              { key: 'subject', label: 'Subject', render: (r) => r.subject || '—' },
+              { key: 'subject', label: 'Subject', render: (r) => (
+                <button
+                  type="button"
+                  onClick={() => viewTicketDetail(r)}
+                  className="max-w-xs truncate text-left text-blue-200 hover:text-blue-100 hover:underline"
+                  title={r.subject || undefined}
+                >
+                  {r.subject || '—'}
+                </button>
+              ) },
               {
                 key: 'status',
                 label: 'Status',
@@ -357,63 +421,16 @@ export default function SupportTicketListPage() {
               },
               { key: 'category', label: 'Category', render: (r) => r.category || '—' },
               { key: 'assigned_to', label: 'Assigned To', render: (r) => (r.assigned_to ? assigneeMap[r.assigned_to] || r.assigned_to : 'Unassigned') },
-              { key: 'created_at', label: 'Created', render: (r) => formatDate(r.created_at) },
+              { key: 'created_at', label: 'Created', render: (r) => (
+                <span className="whitespace-nowrap text-gray-400" title={formatDate(r.created_at)}>
+                  {formatDateShort(r.created_at)}
+                </span>
+              ) },
               {
                 key: 'actions',
                 label: 'Actions',
                 sortable: false,
-                render: (r) => (
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      className="rounded border border-blue-700 bg-blue-900/40 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/70"
-                      onClick={() => navigate(`/support/support-ticket-detail?id=${navId(displayIdMap, r.id)}`)}
-                    >
-                      View Detail
-                    </button>
-                    <PermissionGate permission="support.tickets.assign">
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={pendingAssignee[r.id] || 'unassigned'}
-                          onChange={(event) => setPendingAssignee((prev) => ({ ...prev, [r.id]: event.target.value }))}
-                          className="rounded border border-gray-700 bg-gray-900 px-2 py-1 text-xs text-gray-100 focus:border-blue-500 focus:outline-none"
-                        >
-                          <option value="unassigned">Assign to...</option>
-                          {adminUsers.map((admin) => (
-                            <option key={admin.id} value={admin.id}>{admin.full_name || admin.email || admin.id}</option>
-                          ))}
-                        </select>
-                        <button
-                          type="button"
-                          className="rounded border border-cyan-700 bg-cyan-900/30 px-2 py-1 text-xs text-cyan-200 hover:bg-cyan-900/60"
-                          onClick={() => assignTicketToAdmin(r)}
-                        >
-                          Assign
-                        </button>
-                      </div>
-                    </PermissionGate>
-                    <PermissionGate permission="support.tickets.manage">
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={pendingPriority[r.id] || r.priority || 'medium'}
-                          onChange={(event) => setPendingPriority((prev) => ({ ...prev, [r.id]: event.target.value }))}
-                          className="rounded border border-gray-700 bg-gray-900 px-2 py-1 text-xs text-gray-100 focus:border-blue-500 focus:outline-none"
-                        >
-                          {PRIORITY_OPTIONS.map((priority) => (
-                            <option key={priority} value={priority}>{priority}</option>
-                          ))}
-                        </select>
-                        <button
-                          type="button"
-                          className="rounded border border-amber-700 bg-amber-900/30 px-2 py-1 text-xs text-amber-200 hover:bg-amber-900/60"
-                          onClick={() => updatePriorityForTicket(r)}
-                        >
-                          Priority
-                        </button>
-                      </div>
-                    </PermissionGate>
-                  </div>
-                ),
+                render: renderTicketActions,
               },
             ]}
           />
@@ -457,6 +474,56 @@ export default function SupportTicketListPage() {
           { key: 'updatePriority', label: 'Update Priority', onClick: () => setBulkModal({ open: true, action: 'updatePriority', assigneeId: '', newStatus: 'open', newPriority: 'medium' }) },
         ]}
       />
+
+      <AdminModal
+        open={rowActionModal.open && rowActionModal.type === 'assign'}
+        title={rowActionModal.ticket ? `Assign ticket — ${rowActionModal.ticket.subject || displayIdMap[rowActionModal.ticket.id] || rowActionModal.ticket.id}` : 'Assign ticket'}
+        onClose={closeRowActionModal}
+        onConfirm={confirmRowAction}
+        confirmLabel="Assign"
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-gray-400">
+            Current assignee:{' '}
+            {rowActionModal.ticket?.assigned_to
+              ? assigneeMap[rowActionModal.ticket.assigned_to] || rowActionModal.ticket.assigned_to
+              : 'Unassigned'}
+          </p>
+          <select
+            value={rowActionModal.assigneeId}
+            onChange={(event) => setRowActionModal((prev) => ({ ...prev, assigneeId: event.target.value }))}
+            className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100"
+          >
+            <option value="">Select assignee...</option>
+            {adminUsers.map((admin) => (
+              <option key={admin.id} value={admin.id}>{admin.full_name || admin.email || admin.id}</option>
+            ))}
+          </select>
+        </div>
+      </AdminModal>
+
+      <AdminModal
+        open={rowActionModal.open && rowActionModal.type === 'priority'}
+        title={rowActionModal.ticket ? `Update priority — ${rowActionModal.ticket.subject || displayIdMap[rowActionModal.ticket.id] || rowActionModal.ticket.id}` : 'Update priority'}
+        onClose={closeRowActionModal}
+        onConfirm={confirmRowAction}
+        confirmLabel="Update Priority"
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-gray-400">
+            Current priority: {rowActionModal.ticket?.priority || '—'}
+          </p>
+          <select
+            value={rowActionModal.newPriority}
+            onChange={(event) => setRowActionModal((prev) => ({ ...prev, newPriority: event.target.value }))}
+            className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100"
+          >
+            {PRIORITY_OPTIONS.map((priority) => (
+              <option key={priority} value={priority}>{priority}</option>
+            ))}
+          </select>
+        </div>
+      </AdminModal>
 
       <AdminModal
         open={bulkModal.open && bulkModal.action === 'assign'}
@@ -515,8 +582,6 @@ export default function SupportTicketListPage() {
           ))}
         </select>
       </AdminModal>
-
-      {modal}
     </div>
   )
 }

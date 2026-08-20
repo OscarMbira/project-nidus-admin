@@ -844,6 +844,9 @@ export function formatDisplayIdError(error) {
 }
 
 function idRuleParams(data, adminUserId) {
+  const generationMode = data.generation_mode ?? 'random'
+  const isSequential = generationMode === 'sequential'
+
   return {
     p_target_table: data.target_table,
     p_table_abbreviation: data.table_abbreviation,
@@ -851,13 +854,17 @@ function idRuleParams(data, adminUserId) {
     p_separator: data.separator ?? '-',
     p_suffix: data.suffix ?? '',
     p_letter_case: data.letter_case ?? 'uppercase',
-    p_segment_type: data.segment_type ?? 'alphanumeric',
-    p_num_letters: data.num_letters ?? 3,
-    p_num_digits: data.num_digits ?? 4,
-    p_excluded_chars: data.excluded_chars ?? '',
+    p_segment_type: isSequential ? 'numeric' : (data.segment_type ?? 'alphanumeric'),
+    p_num_letters: isSequential ? 0 : (data.num_letters ?? 3),
+    p_num_digits: data.num_digits ?? (isSequential ? 3 : 4),
+    p_excluded_chars: isSequential ? '' : (data.excluded_chars ?? ''),
     p_seed_value: data.seed_value ?? 1,
     p_is_active: data.is_active ?? true,
     p_admin_user_id: adminUserId,
+    p_generation_mode: generationMode,
+    p_include_date: Boolean(data.include_date),
+    p_date_format: data.include_date ? (data.date_format ?? 'YYYY') : null,
+    p_scope_column: isSequential ? (data.scope_column || null) : null,
   }
 }
 

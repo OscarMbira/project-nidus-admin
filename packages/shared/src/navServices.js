@@ -28,33 +28,44 @@ export function buildAdminNavTree(nodes) {
       badge: n.badge || undefined,
     }))
 
+  const buildGroups = (parentKey) => sorted
+    .filter((n) => n.node_type === 'group' && n.parent_key === parentKey)
+    .map((group) => ({
+      label: group.label,
+      items: sorted
+        .filter((n) => n.node_type === 'item' && n.parent_key === group.node_key)
+        .map((item) => ({
+          label: item.label,
+          path: item.path,
+          roles: item.roles || [],
+          activePaths: item.active_paths?.length ? item.active_paths : undefined,
+          badge: item.badge || undefined,
+        })),
+    }))
+    .filter((g) => g.items.length > 0)
+
   const sections = sorted
     .filter((n) => n.node_type === 'section')
     .map((section) => {
-      const groups = sorted
-        .filter((n) => n.node_type === 'group' && n.parent_key === section.node_key)
-        .map((group) => ({
-          label: group.label,
-          items: sorted
-            .filter((n) => n.node_type === 'item' && n.parent_key === group.node_key)
-            .map((item) => ({
-              label: item.label,
-              path: item.path,
-              roles: item.roles || [],
-              activePaths: item.active_paths?.length ? item.active_paths : undefined,
-              badge: item.badge || undefined,
-            })),
+      const groups = buildGroups(section.node_key)
+
+      const subsections = sorted
+        .filter((n) => n.node_type === 'subsection' && n.parent_key === section.node_key)
+        .map((subsection) => ({
+          label: subsection.label,
+          groups: buildGroups(subsection.node_key),
         }))
-        .filter((g) => g.items.length > 0)
+        .filter((sub) => sub.groups.length > 0)
 
       return {
         id: section.node_key,
         label: section.label,
         roles: section.roles || [],
         groups,
+        subsections,
       }
     })
-    .filter((s) => s.groups.length > 0)
+    .filter((s) => s.groups.length > 0 || s.subsections.length > 0)
 
   if (!standalone.length && !sections.length) {
     return { standalone: DEFAULT_STANDALONE, sections: DEFAULT_NAV_SECTIONS }

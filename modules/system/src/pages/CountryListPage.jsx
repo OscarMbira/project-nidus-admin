@@ -13,13 +13,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const REGIONS = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']
@@ -55,6 +61,7 @@ export default function CountryListPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -96,6 +103,7 @@ export default function CountryListPage() {
 
   const openEdit = (country) => {
     setEditingCountry(country)
+    setEditTab('details')
     setEditForm({
       country_code: country.country_code || '',
       country_name: country.country_name || '',
@@ -353,8 +361,8 @@ export default function CountryListPage() {
                     <div className="flex flex-wrap justify-end gap-2">
                       <button type="button" disabled={busyId === country.id} onClick={() => handleToggleSystem(country, 'platform', !country.platform_allowed)} className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-60">Platform</button>
                       <button type="button" disabled={busyId === country.id} onClick={() => handleToggleSystem(country, 'simulator', !country.simulator_allowed)} className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-60">Simulator</button>
-                      <button type="button" onClick={() => openEdit(country)} className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</button>
-                      <button type="button" disabled={busyId === country.id} onClick={() => handleDelete(country)} className="rounded border border-red-700 bg-red-900/30 px-2 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60">Delete</button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(country)} />
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(country)} disabled={busyId === country.id} />
                     </div>
                   </td>
                 </tr>
@@ -375,6 +383,30 @@ export default function CountryListPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingCountry)} title={`Edit ${editingCountry?.country_name || 'Country'}`} onClose={() => setEditingCountry(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingCountry && (
+          <AuditDetailsPanel description="Who created or changed this country, and how it is classified.">
+            <AuditCard title="Identity" description="How this country is labelled.">
+              <AuditField label="Country code" value={editingCountry.country_code} />
+              <AuditField label="Country name" value={editingCountry.country_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this country sits.">
+              <AuditField label="Region" value={editingCountry.region} />
+              <AuditField label="Active" value={editingCountry.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this country was created and last changed.">
+              <AuditField label="Created by" value={editingCountry.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingCountry.created_at} />
+              <AuditField label="Updated by" value={editingCountry.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingCountry.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           {renderFormFields(editForm, setEditForm, true)}
           <div className="flex justify-end gap-2">
@@ -382,6 +414,7 @@ export default function CountryListPage() {
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

@@ -1,7 +1,14 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { cancelEmailCampaign, deleteEmailCampaign, fetchEmailCampaigns } from '@nidus-admin/shared'
-import { AdminBadge, EmptyState, LoadingState, useConfirmAction, useToast } from '@nidus-admin/ui'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { cancelEmailCampaign, deleteEmailCampaign, fetchEmailCampaigns, navId, useDisplayIdMap } from '@nidus-admin/shared'
+import {
+  AdminBadge,
+  AdminIconActionButton,
+  EmptyState,
+  LoadingState,
+  useConfirmAction,
+  useToast,
+} from '@nidus-admin/ui'
 
 const statusVariant = (status) => {
   if (status === 'sent') return 'active'
@@ -26,6 +33,9 @@ export default function CampaignListPage() {
   }
 
   useEffect(() => { load() }, [])
+
+  const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
+  const { displayIdMap } = useDisplayIdMap('admin.email_campaigns', rowIds)
 
   if (loading) return <LoadingState message="Loading campaigns..." />
 
@@ -63,9 +73,9 @@ export default function CampaignListPage() {
                   <td className="px-4 py-3">{row.total_recipients}</td>
                   <td className="px-4 py-3">{row.sent_count} / {row.failed_count} failed</td>
                   <td className="px-4 py-3 space-x-2">
-                    <Link to={`/email-centre/campaign-editor?id=${row.id}`} className="text-blue-400 hover:underline">Edit</Link>
+                    <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/email-centre/campaign-editor?id=${navId(displayIdMap, row.id)}`)} />
                     {row.status === 'draft' && (
-                      <button type="button" className="text-red-400 hover:underline" onClick={() => confirm({
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => confirm({
                         title: 'Delete campaign?',
                         message: row.campaign_name,
                         danger: true,
@@ -75,7 +85,7 @@ export default function CampaignListPage() {
                           showSuccess('Campaign deleted.')
                           load()
                         },
-                      })}>Delete</button>
+                      })} />
                     )}
                     {['scheduled', 'sending'].includes(row.status) && (
                       <button type="button" className="text-amber-400 hover:underline" onClick={() => confirm({

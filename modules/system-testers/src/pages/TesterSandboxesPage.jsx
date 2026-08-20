@@ -16,6 +16,7 @@ import {
   LoadingState,
   inputClass,
   useToast,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import { toError } from '../utils/testerUi.js'
 
@@ -35,6 +36,7 @@ export default function TesterSandboxesPage() {
     notes: '',
   })
   const [busyId, setBusyId] = useState('')
+  const [createTab, setCreateTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -141,6 +143,15 @@ export default function TesterSandboxesPage() {
       )}
 
       <AdminModal open={showCreate} onClose={() => setShowCreate(false)} title="Create sandbox">
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={createTab} onChange={setCreateTab} />
+        </div>
+
+        {createTab === 'audit' && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this sandbox is created.</p>
+        )}
+
+        {createTab === 'details' && (
         <AdminForm onSubmit={handleCreate}>
           <AdminField label="Organisation">
             <select className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value })} required>
@@ -166,6 +177,7 @@ export default function TesterSandboxesPage() {
           </AdminField>
           <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-sm text-white">Create</button>
         </AdminForm>
+        )}
       </AdminModal>
 
       <AdminModal open={!!membersSandbox} onClose={() => setMembersSandbox(null)} title="Sandbox members">

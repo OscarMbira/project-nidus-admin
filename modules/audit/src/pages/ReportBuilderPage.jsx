@@ -9,13 +9,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const REPORT_TYPES = [
@@ -59,6 +65,7 @@ export default function ReportBuilderPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -83,6 +90,7 @@ export default function ReportBuilderPage() {
 
   const openEdit = (report) => {
     setEditingReport(report)
+    setEditTab('details')
     setEditForm({
       report_name: report.report_name || '',
       report_key: report.report_key || '',
@@ -277,8 +285,8 @@ export default function ReportBuilderPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <button type="button" onClick={() => openEdit(report)} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</button>
-                      <button type="button" disabled={busyId === report.id} onClick={() => handleDelete(report)} className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60">Delete</button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(report)} />
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(report)} disabled={busyId === report.id} />
                     </div>
                   </td>
                 </tr>
@@ -296,10 +304,36 @@ export default function ReportBuilderPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingReport)} title={`Edit ${editingReport?.report_name || 'Report'}`} size="full" hideFooter onClose={() => setEditingReport(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingReport && (
+          <AuditDetailsPanel description="Who created or changed this report definition, and how it is classified.">
+            <AuditCard title="Identity" description="How this report is labelled.">
+              <AuditField label="Report name" value={editingReport.report_name} />
+              <AuditField label="Report key" value={editingReport.report_key} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this report sits.">
+              <AuditField label="Report type" value={editingReport.report_type} />
+              <AuditField label="Chart type" value={editingReport.chart_type} />
+              <AuditField label="Target system" value={editingReport.target_system} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this report was created and last changed.">
+              <AuditField label="Created by" value={editingReport.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingReport.created_at} />
+              <AuditField label="Updated by" value={editingReport.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingReport.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="flex h-full min-h-0 flex-col gap-4">
           {renderFormFields(editForm, setEditForm, true)}
           {renderFormActions(() => setEditingReport(null), 'Save', 'Saving...')}
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

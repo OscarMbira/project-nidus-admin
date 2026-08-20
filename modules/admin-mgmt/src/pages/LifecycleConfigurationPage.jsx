@@ -5,7 +5,19 @@ import {
   fetchLifecycleConfigs,
   upsertLifecycleConfig,
 } from '@nidus-admin/shared'
-import { AdminField, AdminForm, EmptyState, LoadingState, inputClass, useToast } from '@nidus-admin/ui'
+import {
+  AdminField,
+  AdminForm,
+  EmptyState,
+  LoadingState,
+  inputClass,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const EMPTY = {
   table_name: 'subscription_plans',
@@ -23,6 +35,8 @@ export default function LifecycleConfigurationPage() {
   const [configs, setConfigs] = useState([])
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [editingRow, setEditingRow] = useState(null)
+  const [configTab, setConfigTab] = useState('details')
 
   const load = async () => {
     setLoading(true)
@@ -44,6 +58,8 @@ export default function LifecycleConfigurationPage() {
       archive_retention_years: row.archive_retention_years ?? '',
       is_active: row.is_active,
     })
+    setEditingRow(row)
+    setConfigTab('details')
   }
 
   const save = async (event) => {
@@ -61,6 +77,7 @@ export default function LifecycleConfigurationPage() {
     }
     showSuccess('Lifecycle configuration saved')
     setForm(EMPTY)
+    setEditingRow(null)
     load()
   }
 
@@ -101,6 +118,34 @@ export default function LifecycleConfigurationPage() {
 
           <section className="rounded-lg border border-gray-700 bg-gray-900 p-5">
             <h2 className="mb-4 text-sm font-semibold text-gray-200">Edit configuration</h2>
+
+            <div className="mb-4">
+              <DetailAuditTabList activeTab={configTab} onChange={setConfigTab} />
+            </div>
+
+            {configTab === 'audit' && !editingRow && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this configuration is saved.</p>
+            )}
+
+            {configTab === 'audit' && editingRow && (
+              <AuditDetailsPanel description="Who configured this table's lifecycle settings, and how it is classified.">
+                <AuditCard title="Identity" description="How this configuration is labelled.">
+                  <AuditField label="Table" value={editingRow.table_name} />
+                </AuditCard>
+                <AuditCard title="Classification" description="Where this configuration sits.">
+                  <AuditField label="Approval enabled" value={editingRow.approval_enabled ? 'Yes' : 'No'} />
+                  <AuditField label="Level mode" value={editingRow.level_approval_mode} />
+                  <AuditField label="Active" value={editingRow.is_active ? 'Yes' : 'No'} />
+                </AuditCard>
+                <AuditCard title="Record history" description="When this configuration was set and last changed.">
+                  <AuditField label="Configured by" value={editingRow.configured_by || null} />
+                  <AuditTimestampPair dateLabel="Created at" value={editingRow.created_at} />
+                  <AuditTimestampPair dateLabel="Last updated" value={editingRow.updated_at} />
+                </AuditCard>
+              </AuditDetailsPanel>
+            )}
+
+            {configTab === 'details' && (
             <AdminForm onSubmit={save}>
               <AdminField label="Table">
                 <select className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
@@ -131,6 +176,7 @@ export default function LifecycleConfigurationPage() {
                 {saving ? 'Saving…' : 'Save configuration'}
               </button>
             </AdminForm>
+            )}
           </section>
         </div>
       </div>

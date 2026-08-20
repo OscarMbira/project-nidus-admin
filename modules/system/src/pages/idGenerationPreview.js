@@ -1,3 +1,13 @@
+import {
+  buildRandomDateMiddle,
+  buildSequentialIdPreview,
+  computeSequentialKeyspaceSize,
+  formatRandomPreviewPattern,
+  formatSequentialPreviewPattern,
+  isSequentialMode,
+} from '@nidus-admin/shared'
+import { isAbbreviationOptional } from './idGenerationTableDefaults.js'
+
 const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const DIGITS = '0123456789'
 const MAX_KEYSPACE = 9223372036854775807n
@@ -27,6 +37,10 @@ function powBigInt(base, exponent) {
 }
 
 export function computeKeyspaceSize(form) {
+  if (isSequentialMode(form)) {
+    return computeSequentialKeyspaceSize(form.num_digits)
+  }
+
   const segmentType = form.segment_type || 'alphanumeric'
   const numLetters = Math.max(0, Number(form.num_letters) || 0)
   const numDigits = Math.max(0, Number(form.num_digits) || 0)
@@ -124,17 +138,21 @@ function buildSampleCode(numLetters, numDigits, letterCase, excluded, segmentTyp
 }
 
 export function formatPreviewPattern(form) {
-  const type = form.segment_type || 'alphanumeric'
-  const letters = Math.max(0, Number(form.num_letters) || 0)
-  const digits = Math.max(0, Number(form.num_digits) || 0)
-  if (type === 'numeric') return `[D${digits}]`
-  if (type === 'alpha') return `[L${letters}]`
-  return `[L${letters}D${digits}]`
+  if (isSequentialMode(form)) {
+    return formatSequentialPreviewPattern(form)
+  }
+
+  return formatRandomPreviewPattern(form)
 }
 
 export function buildIdPreview(form) {
-  const abbrev = String(form.table_abbreviation || 'ABC').toUpperCase().slice(0, 4) || 'ABC'
-  const separator = form.separator ?? '-'
+  if (isSequentialMode(form)) {
+    return buildSequentialIdPreview(form)
+  }
+
+  const noAbbrev = isAbbreviationOptional(form) && !String(form.table_abbreviation || '').trim()
+  const abbrev = noAbbrev ? '' : (String(form.table_abbreviation || 'ABC').toUpperCase().slice(0, 4) || 'ABC')
+  const separator = noAbbrev ? '' : (form.separator ?? '-')
   const suffix = form.suffix || ''
   const segmentType = form.segment_type || 'alphanumeric'
   const letters = Math.min(10, Math.max(0, Number(form.num_letters) || 0))
@@ -145,9 +163,12 @@ export function buildIdPreview(form) {
   const code = length > 0
     ? buildSampleCode(letters, digits, letterCase, excluded, segmentType)
     : 'X'
-  return `${abbrev}${separator}${code}${suffix}`
+  const dateMiddle = buildRandomDateMiddle(form)
+  return `${abbrev}${separator}${dateMiddle}${code}${suffix}`
 }
 
 export function isDefaultRule(rule) {
   return !rule.created_by && String(rule.table_description || '').includes('Auto-generated default')
 }
+
+export { isSequentialMode } from '@nidus-admin/shared'

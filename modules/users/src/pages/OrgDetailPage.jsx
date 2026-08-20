@@ -10,7 +10,19 @@ import {
   useDisplayId,
   verifyOrganisation,
 } from '@nidus-admin/shared'
-import { AdminBadge, AdminCard, AdminTable, EmptyState, LoadingState, useConfirmAction } from '@nidus-admin/ui'
+import {
+  AdminBadge,
+  AdminCard,
+  AdminTable,
+  EmptyState,
+  LoadingState,
+  useConfirmAction,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 export default function OrgDetailPage() {
   const [searchParams] = useSearchParams()
@@ -25,6 +37,7 @@ export default function OrgDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [actionError, setActionError] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadData = async () => {
     if (!accountId) {
@@ -150,6 +163,30 @@ export default function OrgDetailPage() {
 
       {actionError && <div className="rounded border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{actionError}</div>}
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <AuditDetailsPanel description="Who created or changed this organisation, and how it is classified.">
+          <AuditCard title="Identity" description="How this organisation is labelled.">
+            <AuditField label="Account name" value={account.account_name} />
+            <AuditField label="Account code" value={account.account_code} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this organisation sits.">
+            <AuditField label="Account type" value={account.account_type} />
+            <AuditField label="Verified" value={account.is_verified ? 'Yes' : 'No'} />
+            <AuditField label="Suspended" value={account.is_suspended ? 'Yes' : 'No'} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this organisation was created and last changed.">
+            <AuditField label="Created by" value={account.created_by || null} />
+            <AuditTimestampPair dateLabel="Created at" value={account.created_at} />
+            <AuditField label="Updated by" value={account.updated_by || null} />
+            <AuditTimestampPair dateLabel="Last updated" value={account.updated_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AdminCard title="Members" value={members.length} />
         <AdminCard title="Subscriptions" value={subscriptions.length} />
@@ -227,6 +264,8 @@ export default function OrgDetailPage() {
           />
         )}
       </div>
+      </>
+      )}
 
       {modal}
     </div>

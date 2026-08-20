@@ -14,6 +14,7 @@ vi.mock('@nidus-admin/shared', () => ({
   saveAdminAvatar: (...args) => saveAdminAvatar(...args),
   removeAdminAvatar: (...args) => removeAdminAvatar(...args),
   getAdminAvatarSignedUrl: (...args) => getAdminAvatarSignedUrl(...args),
+  peekAdminAvatarDisplayUrl: () => null,
   validateAdminAvatarFile: (file) => {
     if (!file) return 'No file selected.'
     if (!['image/png', 'image/jpeg', 'image/gif', 'image/webp'].includes(file.type)) {

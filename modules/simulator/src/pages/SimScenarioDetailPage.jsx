@@ -1,7 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { fetchSimLeaderboard, fetchSimScenarioById, formatDate, updateSimScenario, useDisplayId } from '@nidus-admin/shared'
-import { AdminCard, EmptyState, LoadingState, useToast } from '@nidus-admin/ui'
+import {
+  AdminCard,
+  AdminIconActionButton,
+  EmptyState,
+  LoadingState,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const EDITABLE_FIELDS = ['name', 'description', 'difficulty_level', 'target_role', 'duration_minutes']
 
@@ -31,6 +42,7 @@ export default function SimScenarioDetailPage() {
   const [form, setForm] = useState({})
   const [isEditing, setIsEditing] = useState(startsInEditMode)
   const [leaderboardRows, setLeaderboardRows] = useState([])
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadScenario = async () => {
     if (!scenarioId) {
@@ -152,13 +164,7 @@ export default function SimScenarioDetailPage() {
             Back to list
           </button>
           {!isEditing ? (
-            <button
-              type="button"
-              onClick={() => setIsEditing(true)}
-              className="rounded border border-blue-700 bg-blue-900/40 px-3 py-2 text-sm text-blue-200 hover:bg-blue-900/70"
-            >
-              Edit
-            </button>
+            <AdminIconActionButton variant="edit" label="Edit" onClick={() => setIsEditing(true)} />
           ) : (
             <button
               type="button"
@@ -179,6 +185,29 @@ export default function SimScenarioDetailPage() {
         <AdminCard title="Created at" value={formatDate(scenario.created_at)} />
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <AuditDetailsPanel description="How this scenario is classified and when it last changed.">
+          <AuditCard title="Identity" description="How this scenario is labelled.">
+            <AuditField label="Name" value={scenario.name} />
+            <AuditField label="Scenario ID" value={scenario.id} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this scenario sits.">
+            <AuditField label="Difficulty" value={scenario.difficulty_level} />
+            <AuditField label="Target role" value={scenario.target_role} />
+            <AuditField label="Active" value={scenario.is_active ? 'Yes' : 'No'} />
+            <AuditField label="Published" value={scenario.is_published ? 'Yes' : 'No'} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this scenario was created and last changed.">
+            <AuditTimestampPair dateLabel="Created at" value={scenario.created_at} />
+            <AuditTimestampPair dateLabel="Last updated" value={scenario.updated_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <>
       <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-gray-400">Scenario metadata</h2>
         <div className="grid gap-4 md:grid-cols-2">
@@ -242,6 +271,8 @@ export default function SimScenarioDetailPage() {
           </pre>
         </div>
       </div>
+      </>
+      )}
     </div>
   )
 }

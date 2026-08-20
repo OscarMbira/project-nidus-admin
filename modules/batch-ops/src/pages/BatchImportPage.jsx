@@ -13,6 +13,7 @@ import {
   inviteAdminUser,
   parseCSV,
   updateBatchJobItem,
+  useDisplayId,
   validateImportRows,
 } from '@nidus-admin/shared'
 import {
@@ -87,6 +88,7 @@ export default function BatchImportPage() {
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [results, setResults] = useState(null)
   const [jobId, setJobId] = useState(null)
+  const { displayId: resultsJobDisplayId } = useDisplayId('admin.batch_jobs', results?.jobId || null)
 
   const schema = schemaKey ? IMPORT_SCHEMAS[schemaKey] : null
   const schemaOptions = useMemo(
@@ -395,7 +397,7 @@ export default function BatchImportPage() {
             {results.jobId && (
               <button
                 type="button"
-                onClick={() => navigate(`/batch-ops/batch-job-detail?id=${encodeURIComponent(results.jobId)}`)}
+                onClick={() => navigate(`/batch-ops/batch-job-detail?id=${encodeURIComponent(resultsJobDisplayId || results.jobId)}`)}
                 className="rounded border border-blue-700 bg-blue-900/30 px-3 py-2 text-sm text-blue-200 hover:bg-blue-900/50"
               >
                 View Batch Job

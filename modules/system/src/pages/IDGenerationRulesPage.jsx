@@ -8,13 +8,17 @@ import {
   fetchIdGenerationRuleUsage,
   fetchIdGenerationRules,
   findIdGenerationRuleForTable,
+  formatRuleModeBadge,
   idGenerationRuleFormPath,
   normalizeTargetTable,
   PermissionGate,
   toggleIdGenerationRule,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminCard,
+  AdminIconActionButton,
+  AdminRowActions,
   EmptyState,
   LoadingState,
   SearchBar,
@@ -31,20 +35,29 @@ import {
   RULE_TABS,
 } from './idGenerationConstants.js'
 
+function rulePreviewForm(rule) {
+  if (!rule) return null
+  return {
+    table_abbreviation: rule.table_abbreviation,
+    separator: rule.separator,
+    suffix: rule.suffix,
+    generation_mode: rule.generation_mode,
+    include_date: rule.include_date,
+    date_format: rule.date_format,
+    scope_column: rule.scope_column,
+    segment_type: rule.segment_type,
+    letter_case: rule.letter_case,
+    num_letters: rule.num_letters,
+    num_digits: rule.num_digits,
+    excluded_chars: rule.excluded_chars,
+    seed_value: rule.seed_value,
+  }
+}
+
 function entrySearchText(entry) {
   const { rule, targetTable, tableName, schema } = entry
-  const preview = rule
-    ? buildIdPreview({
-      table_abbreviation: rule.table_abbreviation,
-      separator: rule.separator,
-      suffix: rule.suffix,
-      segment_type: rule.segment_type,
-      letter_case: rule.letter_case,
-      num_letters: rule.num_letters,
-      num_digits: rule.num_digits,
-      excluded_chars: rule.excluded_chars,
-    })
-    : ''
+  const preview = rule ? buildIdPreview(rulePreviewForm(rule)) : ''
+  const modeBadge = rule ? formatRuleModeBadge(rule).label : ''
   const status = !rule ? 'unconfigured' : rule.is_active ? 'active' : 'inactive'
 
   return [
@@ -53,6 +66,10 @@ function entrySearchText(entry) {
     schema,
     rule?.table_abbreviation,
     rule?.table_description,
+    rule?.generation_mode,
+    rule?.scope_column,
+    rule?.date_format,
+    modeBadge,
     rule?.separator,
     preview,
     status,
@@ -61,44 +78,30 @@ function entrySearchText(entry) {
     .join(' ')
 }
 
-function RuleActions({ rule, isBusy, onToggle, onEdit, onDelete }) {
+function RuleActions({ rule, isBusy, onView, onToggle, onEdit, onDelete }) {
   if (!rule) {
     return (
-      <button
-        type="button"
-        onClick={onEdit}
-        className="rounded border border-blue-700 bg-blue-900/30 px-2.5 py-1 text-xs text-blue-200 hover:bg-blue-900/50"
-      >
-        Configure Rule
-      </button>
+      <AdminRowActions>
+        <AdminActionButton variant="primary" onClick={onEdit}>
+          Configure Rule
+        </AdminActionButton>
+      </AdminRowActions>
     )
   }
 
   return (
-    <div className="flex justify-end gap-2">
-      <button
-        type="button"
+    <AdminRowActions>
+      <AdminIconActionButton variant="view" label="View" onClick={onView} />
+      <AdminActionButton
+        variant="default"
         disabled={isBusy}
         onClick={() => onToggle(rule.id)}
-        className="rounded border border-blue-700 bg-blue-900/30 px-2.5 py-1 text-xs text-blue-200 hover:bg-blue-900/50 disabled:opacity-60"
       >
         {isBusy ? 'Working...' : 'Toggle'}
-      </button>
-      <button
-        type="button"
-        onClick={onEdit}
-        className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-      >
-        Edit
-      </button>
-      <button
-        type="button"
-        onClick={() => onDelete(rule)}
-        className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50"
-      >
-        Delete
-      </button>
-    </div>
+      </AdminActionButton>
+      <AdminIconActionButton variant="edit" label="Edit" onClick={onEdit} />
+      <AdminIconActionButton variant="delete" label="Delete" onClick={() => onDelete(rule)} />
+    </AdminRowActions>
   )
 }
 
@@ -214,6 +217,10 @@ export default function IDGenerationRulesPage() {
 
   const openEditRule = (rule) => {
     navigate(idGenerationRuleFormPath({ rule }))
+  }
+
+  const openViewRule = (rule) => {
+    navigate(idGenerationRuleFormPath({ rule, view: true }))
   }
 
   const handleToggle = async (ruleId) => {
@@ -391,7 +398,7 @@ export default function IDGenerationRulesPage() {
                 <th className="px-4 py-3">Format Preview</th>
                 <th className="px-4 py-3">Usage</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -401,18 +408,8 @@ export default function IDGenerationRulesPage() {
                 const isBusy = rule && busyId === rule.id
                 const usage = usageByTable[targetTable]
                 const usagePct = usage?.usage_pct != null ? Number(usage.usage_pct) : null
-                const preview = rule
-                  ? buildIdPreview({
-                    table_abbreviation: rule.table_abbreviation,
-                    separator: rule.separator,
-                    suffix: rule.suffix,
-                    segment_type: rule.segment_type,
-                    letter_case: rule.letter_case,
-                    num_letters: rule.num_letters,
-                    num_digits: rule.num_digits,
-                    excluded_chars: rule.excluded_chars,
-                  })
-                  : '—'
+                const modeBadge = rule ? formatRuleModeBadge(rule) : null
+                const preview = rule ? buildIdPreview(rulePreviewForm(rule)) : '—'
 
                 return (
                   <tr key={targetTable} className="border-t border-gray-800">
@@ -433,6 +430,11 @@ export default function IDGenerationRulesPage() {
                       {rule && isDefaultRule(rule) && (
                         <span className="mt-1 inline-flex rounded border border-amber-700 bg-amber-900/30 px-2 py-0.5 text-xs text-amber-200">
                           Default
+                        </span>
+                      )}
+                      {modeBadge && (
+                        <span className={`mt-1 inline-flex rounded border px-2 py-0.5 text-xs ${modeBadge.className}`}>
+                          {modeBadge.label}
                         </span>
                       )}
                     </td>
@@ -474,6 +476,7 @@ export default function IDGenerationRulesPage() {
                       <RuleActions
                         rule={rule}
                         isBusy={isBusy}
+                        onView={() => openViewRule(rule)}
                         onToggle={handleToggle}
                         onEdit={() => (rule ? openEditRule(rule) : openRuleForm(targetTable))}
                         onDelete={handleDelete}

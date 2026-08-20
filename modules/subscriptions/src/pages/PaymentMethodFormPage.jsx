@@ -16,6 +16,11 @@ import {
   LoadingState,
   inputClass,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
@@ -43,6 +48,8 @@ export default function PaymentMethodFormPage() {
   const [currencies, setCurrencies] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   const selectedGateway = useMemo(
     () => gateways.find((g) => g.id === form.gateway_id) || null,
@@ -77,6 +84,7 @@ export default function PaymentMethodFormPage() {
           if (!existing) {
             showError('Payment method not found.')
           } else {
+            setRecord(existing)
             setForm({
               gateway_id: existing.gateway_id || '',
               method_type: existing.method_type || '',
@@ -224,6 +232,36 @@ export default function PaymentMethodFormPage() {
           </div>
         </div>
 
+        <div className="mx-auto max-w-6xl">
+          <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+        </div>
+
+        {detailTab === 'audit' && !record && (
+          <p className="mx-auto max-w-6xl text-sm text-gray-500 dark:text-gray-400">Audit details appear after this payment method is saved.</p>
+        )}
+
+        {detailTab === 'audit' && record && (
+          <div className="mx-auto max-w-6xl">
+            <AuditDetailsPanel description="Who created or changed this payment method, and how it is classified.">
+              <AuditCard title="Identity" description="How this method is labelled.">
+                <AuditField label="Display name" value={record.display_name} />
+                <AuditField label="Method type" value={record.method_type} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this method sits.">
+                <AuditField label="Fee type" value={record.fee_type} />
+                <AuditField label="Enabled" value={record.is_enabled ? 'Yes' : 'No'} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this method was created and last changed.">
+                <AuditField label="Created by" value={record.created_by || null} />
+                <AuditTimestampPair dateLabel="Created at" value={record.created_at} />
+                <AuditField label="Updated by" value={record.updated_by || null} />
+                <AuditTimestampPair dateLabel="Last updated" value={record.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+          </div>
+        )}
+
+        {detailTab === 'details' && (
         <AdminForm id="payment-method-form" onSubmit={handleSubmit} className="mx-auto max-w-6xl">
           <AdminCard className="!p-3">
             <div className="grid gap-4 xl:grid-cols-12">
@@ -377,6 +415,7 @@ export default function PaymentMethodFormPage() {
             </div>
           </AdminCard>
         </AdminForm>
+        )}
       </div>
     </PermissionGate>
   )

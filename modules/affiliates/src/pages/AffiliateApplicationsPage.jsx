@@ -12,12 +12,19 @@ import {
 import {
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+  humanizeAuditToken,
 } from '@nidus-admin/ui'
 import { statusVariant, toError } from '../utils/affiliateUi.js'
 
@@ -29,6 +36,7 @@ export default function AffiliateApplicationsPage() {
   const [editing, setEditing] = useState(null)
   const [editForm, setEditForm] = useState({ name: '', email: '', application_notes: '' })
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -47,6 +55,7 @@ export default function AffiliateApplicationsPage() {
       email: row.email || '',
       application_notes: row.application_notes || '',
     })
+    setEditTab('details')
   }
 
   const handleEditSave = async (event) => {
@@ -135,7 +144,7 @@ export default function AffiliateApplicationsPage() {
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
                       <PermissionGate permission="affiliate:update">
-                        <button type="button" onClick={() => openEdit(row)} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300">Edit</button>
+                        <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(row)} />
                       </PermissionGate>
                       <PermissionGate permission="affiliate:approve">
                         <button type="button" disabled={busyId === row.id} onClick={() => runAction({
@@ -171,6 +180,31 @@ export default function AffiliateApplicationsPage() {
       )}
 
       <AdminModal open={Boolean(editing)} title={`Edit ${editing?.name || 'Application'}`} onClose={() => setEditing(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editing && (
+          <AuditDetailsPanel description="Who created or changed this application, and how it is classified.">
+            <AuditCard title="Identity" description="How this application is labelled.">
+              <AuditField label="Name" value={editing.name} />
+              <AuditField label="Code" value={editing.code} />
+              <AuditField label="Email" value={editing.email} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this application sits.">
+              <AuditField label="Status" value={humanizeAuditToken(editing.status)} />
+              <AuditField label="Target system" value={humanizeAuditToken(editing.target_system)} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this application was created and last changed.">
+              <AuditField label="Created by" value={editing.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editing.created_at} />
+              <AuditField label="Updated by" value={editing.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editing.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           <AdminField label="Name" required><input className={inputClass} value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} required /></AdminField>
           <AdminField label="Email" required><input type="email" className={inputClass} value={editForm.email} onChange={(e) => setEditForm((p) => ({ ...p, email: e.target.value }))} required /></AdminField>
@@ -180,6 +214,7 @@ export default function AffiliateApplicationsPage() {
             <button type="submit" disabled={busyId === editing?.id} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white">Save</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
       {modal}
     </div>

@@ -48,12 +48,22 @@ export const LIFECYCLE_REVIEW_FIELDS = {
     { key: 'sort_order', label: 'Sort Order' },
     { key: 'is_active', label: 'Active', type: 'boolean' },
   ],
+  global_template_library: [
+    { key: 'name', label: 'Name' },
+    { key: 'domain', label: 'Domain' },
+    { key: 'category', label: 'Category' },
+    { key: 'description', label: 'Description' },
+    { key: 'payload', label: 'Fields payload', type: 'json' },
+    { key: 'record_version', label: 'Version' },
+    { key: 'record_status', label: 'Record Status' },
+  ],
 }
 
 const ADMIN_RECORD_TABLES = {
   affiliates: 'affiliates',
   payment_gateways: 'payment_gateways',
   cancellation_reason_categories: 'cancellation_reason_categories',
+  global_template_library: 'global_template_library',
 }
 
 function reviewValuesEqual(current, next) {

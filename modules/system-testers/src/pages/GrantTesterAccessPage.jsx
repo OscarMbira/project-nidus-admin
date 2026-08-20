@@ -15,6 +15,7 @@ import {
   LoadingState,
   inputClass,
   useToast,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import TesterCapacityBar from '../components/TesterCapacityBar.jsx'
 import { ORG_ROLES, PROJECT_ROLES, toError } from '../utils/testerUi.js'
@@ -39,6 +40,7 @@ export default function GrantTesterAccessPage() {
     project_role: 'team_member',
   })
   const [busy, setBusy] = useState(false)
+  const [detailTab, setDetailTab] = useState('details')
 
   const atLimit = capacity.activeCount >= capacity.maxTesters
 
@@ -123,6 +125,15 @@ export default function GrantTesterAccessPage() {
 
       <TesterCapacityBar activeCount={capacity.activeCount} maxTesters={capacity.maxTesters} />
 
+      <div className="max-w-2xl">
+        <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+      </div>
+
+      {detailTab === 'audit' && (
+        <p className="max-w-2xl text-sm text-gray-500 dark:text-gray-400">Audit details appear after access is granted.</p>
+      )}
+
+      {detailTab === 'details' && (
       <AdminForm onSubmit={handleSubmit} className="max-w-2xl space-y-4 rounded-lg border border-gray-700 bg-gray-900 p-6">
         <AdminField label="Search user (email or name)">
           <input className={inputClass} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." />
@@ -211,6 +222,7 @@ export default function GrantTesterAccessPage() {
           {atLimit ? 'At tester limit' : 'Grant access'}
         </button>
       </AdminForm>
+      )}
 
       {!accounts.length && <EmptyState title="No organisations" description="Create organisations before assigning testers." />}
     </div>

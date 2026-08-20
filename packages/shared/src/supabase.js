@@ -39,3 +39,5 @@ function getSchemaClient(schema) {
 export const getAdminDb = () => getSchemaClient('admin')
 export const getPublicDb = () => getSchemaClient('public')
 export const getSimDb = () => getSchemaClient('sim')
+/** Auth-aware client with Storage (bucket ops are not schema-scoped). */
+export const getAdminStorageClient = () => getBaseClient()

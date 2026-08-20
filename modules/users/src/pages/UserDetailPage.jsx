@@ -13,9 +13,25 @@ import {
   resetUserPassword,
   useDisplayId,
 } from '@nidus-admin/shared'
-import { AdminBadge, AdminTable, EmptyState, LoadingState, useConfirmAction } from '@nidus-admin/ui'
+import {
+  AdminBadge,
+  AdminTable,
+  EmptyState,
+  LoadingState,
+  useConfirmAction,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
-const TABS = ['Profile', 'Subscriptions', 'Projects', 'Activity']
+const CONTENT_TABS = [
+  { value: 'Profile', label: 'Profile' },
+  { value: 'Subscriptions', label: 'Subscriptions' },
+  { value: 'Projects', label: 'Projects' },
+  { value: 'audit', label: 'Audit details' },
+]
 
 export default function UserDetailPage() {
   const [searchParams] = useSearchParams()
@@ -239,22 +255,7 @@ export default function UserDetailPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-b border-gray-800 pb-3">
-        {TABS.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActiveTab(tab)}
-            className={`rounded border px-3 py-1.5 text-xs font-medium ${
-              activeTab === tab
-                ? 'border-blue-500 bg-blue-600/20 text-blue-200'
-                : 'border-gray-700 bg-gray-900 text-gray-400 hover:border-gray-500 hover:text-gray-200'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <DetailAuditTabList activeTab={activeTab} onChange={setActiveTab} tabs={CONTENT_TABS} />
 
       {activeTab === 'Profile' && (
         <div className="grid gap-4 lg:grid-cols-2">
@@ -332,20 +333,42 @@ export default function UserDetailPage() {
           )
       )}
 
-      {activeTab === 'Activity' && (
-        activity.length === 0
-          ? <EmptyState title="No activity found" description="No audit entries for this user yet." />
-          : (
-            <AdminTable
-              rows={activity}
-              columns={[
-                { key: 'action', label: 'Action' },
-                { key: 'admin_role', label: 'Admin Role' },
-                { key: 'target_type', label: 'Target Type' },
-                { key: 'created_at', label: 'When', render: (r) => formatDate(r.created_at) },
-              ]}
-            />
-          )
+      {activeTab === 'audit' && (
+        <div className="space-y-4">
+          <AuditDetailsPanel description="Who created or changed this user, and how it is classified.">
+            <AuditCard title="Identity" description="How this user is identified.">
+              <AuditField label="Full name" value={user.full_name} />
+              <AuditField label="Email" value={user.email} />
+              <AuditField label="User ID" value={user.id} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this user sits.">
+              <AuditField label="Status" value={user.is_suspended ? 'Suspended' : user.is_active ? 'Active' : 'Inactive'} />
+              <AuditField label="Account" value={account?.account_name || null} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this user was created and last changed.">
+              <AuditField label="Created by" value={user.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={user.created_at} />
+              <AuditField label="Updated by" value={user.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={user.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h2 className="mb-3 text-sm font-semibold text-gray-200">Activity log</h2>
+            {activity.length === 0
+              ? <EmptyState title="No activity found" description="No audit entries for this user yet." />
+              : (
+                <AdminTable
+                  rows={activity}
+                  columns={[
+                    { key: 'action', label: 'Action' },
+                    { key: 'admin_role', label: 'Admin Role' },
+                    { key: 'target_type', label: 'Target Type' },
+                    { key: 'created_at', label: 'When', render: (r) => formatDate(r.created_at) },
+                  ]}
+                />
+              )}
+          </div>
+        </div>
       )}
 
       {modal}

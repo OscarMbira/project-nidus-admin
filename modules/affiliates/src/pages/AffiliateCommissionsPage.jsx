@@ -5,8 +5,10 @@ import {
   fetchAffiliates,
   fetchAllAffiliatePayouts,
   markAffiliatePayoutPaid,
+  navId,
   notifyEmailEvent,
   PermissionGate,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
@@ -40,6 +42,12 @@ export default function AffiliateCommissionsPage() {
   }
 
   useEffect(() => { loadData() }, [])
+
+  const referencedAffiliateIds = useMemo(
+    () => [...new Set(payouts.map((p) => p.affiliate_id).filter(Boolean))],
+    [payouts],
+  )
+  const { displayIdMap } = useDisplayIdMap('admin.affiliates', referencedAffiliateIds)
 
   const filteredRows = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -123,7 +131,7 @@ export default function AffiliateCommissionsPage() {
                 return (
                   <tr key={row.id} className="border-t border-gray-800">
                     <td className="px-4 py-3">
-                      <Link to={`/affiliates/affiliate-detail?id=${row.affiliate_id}`} className="font-medium text-blue-300 hover:text-blue-200">{affiliate?.name || '—'}</Link>
+                      <Link to={`/affiliates/affiliate-detail?id=${navId(displayIdMap, row.affiliate_id)}`} className="font-medium text-blue-300 hover:text-blue-200">{affiliate?.name || '—'}</Link>
                       <div className="font-mono text-xs text-gray-500">{affiliate?.code}</div>
                     </td>
                     <td className="px-4 py-3">{row.period_start} → {row.period_end}</td>

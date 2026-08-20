@@ -1,21 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  PermissionGate,
   deactivatePlatformUser,
   exportToFile,
   fetchUsers,
   formatDate,
+  formatDateShort,
   generateExportFilename,
   navId,
   reactivatePlatformUser,
   resetUserPassword,
   useBulkSelection,
+  useCurrentAdmin,
   useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -59,6 +64,7 @@ export default function UserListPage() {
   const navigate = useNavigate()
   const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
+  const { hasPermission } = useCurrentAdmin()
   const [rows, setRows] = useState([])
   const [bulkModal, setBulkModal] = useState({ open: false, action: null, reason: '' })
   const [loading, setLoading] = useState(true)
@@ -66,6 +72,7 @@ export default function UserListPage() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [page, setPage] = useState(1)
+  const [manageRow, setManageRow] = useState(null)
   const [actionError, setActionError] = useState(null)
 
   const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
@@ -112,6 +119,48 @@ export default function UserListPage() {
   useEffect(() => {
     if (page > totalPages) setPage(totalPages)
   }, [page, totalPages])
+
+  const buildUserManageActions = (row) => {
+    if (!row) return []
+    const actions = []
+    if (row.is_active && !row.is_suspended && hasPermission('users.deactivate')) {
+      actions.push({
+        key: 'deactivate',
+        label: 'Deactivate',
+        variant: 'danger',
+        onClick: () => handleDeactivate(row),
+      })
+    }
+    if (row.is_active && !row.is_suspended && hasPermission('users.suspend')) {
+      actions.push({
+        key: 'suspend',
+        label: 'Suspend',
+        variant: 'warning',
+        onClick: () => handleSuspend(row),
+      })
+    }
+    if (row.is_suspended && hasPermission('users.reactivate')) {
+      actions.push({
+        key: 'reactivate',
+        label: 'Reactivate',
+        variant: 'success',
+        onClick: () => handleReactivate(row),
+      })
+    }
+    if (hasPermission('users.password_reset')) {
+      actions.push({
+        key: 'resetPassword',
+        label: 'Reset password',
+        variant: 'warning',
+        onClick: () => handleResetPassword(row),
+      })
+    }
+    return actions
+  }
+
+  const viewUserDetail = (row) => {
+    navigate(`/users/user-detail?id=${navId(displayIdMap, row.id)}`)
+  }
 
   const handleSuspend = (row) => {
     navigate(`/users/user-suspend?id=${navId(displayIdMap, row.id)}`)
@@ -287,7 +336,15 @@ export default function UserListPage() {
             onSelectionChange={bulk.setSelectedIds}
             columns={[
               { key: 'display_id', label: 'Display ID', sortable: false, render: (r) => displayIdMap[r.id] || '—' },
-              { key: 'full_name', label: 'Full Name', render: (r) => r.full_name || '—' },
+              { key: 'full_name', label: 'Full Name', render: (r) => (
+                <button
+                  type="button"
+                  className="text-left text-blue-300 hover:underline"
+                  onClick={() => viewUserDetail(r)}
+                >
+                  {r.full_name || '—'}
+                </button>
+              ) },
               { key: 'email', label: 'Email' },
               {
                 key: 'status',
@@ -300,63 +357,26 @@ export default function UserListPage() {
                   />
                 ),
               },
-              { key: 'last_login_at', label: 'Last Login', render: (r) => formatDate(r.last_login_at) },
+              {
+                key: 'last_login_at',
+                label: 'Last Login',
+                render: (r) => (
+                  <span title={formatDate(r.last_login_at)}>{formatDateShort(r.last_login_at)}</span>
+                ),
+              },
               {
                 key: 'actions',
                 label: 'Actions',
                 sortable: false,
                 render: (r) => (
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className="rounded border border-blue-700 bg-blue-900/40 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/70"
-                      onClick={() => navigate(`/users/user-detail?id=${navId(displayIdMap, r.id)}`)}
-                    >
-                      View Detail
-                    </button>
-                    <PermissionGate permission="users.deactivate">
-                      {r.is_active && !r.is_suspended && (
-                        <button
-                          type="button"
-                          className="rounded border border-red-700 bg-red-900/40 px-2 py-1 text-xs text-red-200 hover:bg-red-900/70"
-                          onClick={() => handleDeactivate(r)}
-                        >
-                          Deactivate
-                        </button>
-                      )}
-                    </PermissionGate>
-                    <PermissionGate permission="users.suspend">
-                      {r.is_active && !r.is_suspended && (
-                        <button
-                          type="button"
-                          className="rounded border border-orange-700 bg-orange-900/40 px-2 py-1 text-xs text-orange-200 hover:bg-orange-900/70"
-                          onClick={() => handleSuspend(r)}
-                        >
-                          Suspend
-                        </button>
-                      )}
-                    </PermissionGate>
-                    <PermissionGate permission="users.reactivate">
-                      {r.is_suspended && (
-                        <button
-                          type="button"
-                          className="rounded border border-emerald-700 bg-emerald-900/40 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/70"
-                          onClick={() => handleReactivate(r)}
-                        >
-                          Reactivate
-                        </button>
-                      )}
-                    </PermissionGate>
-                    <PermissionGate permission="users.password_reset">
-                      <button
-                        type="button"
-                        className="rounded border border-amber-700 bg-amber-900/40 px-2 py-1 text-xs text-amber-200 hover:bg-amber-900/70"
-                        onClick={() => handleResetPassword(r)}
-                      >
-                        Reset Password
-                      </button>
-                    </PermissionGate>
-                  </div>
+                  <AdminRowActions>
+                    <AdminIconActionButton variant="view" label="View" onClick={() => viewUserDetail(r)} />
+                    {buildUserManageActions(r).length > 0 && (
+                      <AdminActionButton variant="default" onClick={() => setManageRow(r)}>
+                        Manage
+                      </AdminActionButton>
+                    )}
+                  </AdminRowActions>
                 ),
               },
             ]}
@@ -429,6 +449,14 @@ export default function UserListPage() {
         onConfirm={confirmBulkAction}
         onClose={() => setBulkModal({ open: false, action: null, reason: '' })}
         processing={bulk.processing}
+      />
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage user"
+        subtitle={manageRow ? (manageRow.full_name || manageRow.email) : ''}
+        onClose={() => setManageRow(null)}
+        actions={buildUserManageActions(manageRow)}
       />
 
       {modal}

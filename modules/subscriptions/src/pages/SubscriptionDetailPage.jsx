@@ -19,6 +19,7 @@ import {
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
+  AdminIconActionButton,
   AdminModal,
   AuditTrailWidget,
   EmptyState,
@@ -26,9 +27,19 @@ import {
   SubscriptionFeaturesList,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
-const TABS = ['Overview', 'Billing', 'Payments', 'Audit']
+const CONTENT_TABS = [
+  { value: 'Overview', label: 'Overview' },
+  { value: 'Billing', label: 'Billing' },
+  { value: 'Payments', label: 'Payments' },
+  { value: 'audit', label: 'Audit details' },
+]
 const STATUS_OPTIONS = ['active', 'trialing', 'past_due', 'expired', 'cancelled', 'paused']
 
 const toErrorMessage = (error, fallback) => {
@@ -232,10 +243,10 @@ export default function SubscriptionDetailPage() {
 
           <PermissionGate permission="subscriptions.edit">
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => navigate(editUrl)} className="rounded border border-cyan-700 bg-cyan-900/40 px-3 py-1.5 text-xs font-medium text-cyan-200 hover:bg-cyan-900/70">Edit</button>
+              <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(editUrl)} />
               <button type="button" onClick={() => setTrialModal({ open: true, extensionDays: '7', reason: '', submitting: false })} className="rounded border border-amber-700 bg-amber-900/40 px-3 py-1.5 text-xs font-medium text-amber-200 hover:bg-amber-900/70">Extend Trial</button>
               <PermissionGate permission="subscriptions.delete">
-                <button type="button" onClick={handleDelete} className="rounded border border-rose-800 bg-rose-950/40 px-3 py-1.5 text-xs font-medium text-rose-200 hover:bg-rose-950/70">Delete</button>
+                <AdminIconActionButton variant="delete" label="Delete" onClick={handleDelete} />
               </PermissionGate>
             </div>
           </PermissionGate>
@@ -284,20 +295,7 @@ export default function SubscriptionDetailPage() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 border-b border-gray-800 pb-2">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setActiveTab(tab)}
-              className={`rounded px-3 py-1.5 text-sm transition ${
-                activeTab === tab ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+        <DetailAuditTabList activeTab={activeTab} onChange={setActiveTab} tabs={CONTENT_TABS} />
 
         {activeTab === 'Overview' && (
           <div className="grid gap-4 lg:grid-cols-2">
@@ -372,9 +370,30 @@ export default function SubscriptionDetailPage() {
           </div>
         )}
 
-        {activeTab === 'Audit' && (
-          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-            <AuditTrailWidget entries={auditTrail} />
+        {activeTab === 'audit' && (
+          <div className="space-y-4">
+            <AuditDetailsPanel description="Who created or changed this subscription, and how it is classified.">
+              <AuditCard title="Identity" description="How this subscription is identified.">
+                <AuditField label="Subscription ID" value={subscription.id} />
+                <AuditField label="User email" value={merged.user_email} />
+                <AuditField label="User ID" value={merged.user_id} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this subscription sits.">
+                <AuditField label="System" value={systemLabel(targetSystem)} />
+                <AuditField label="Plan type" value={merged.plan_type} />
+                <AuditField label="Status" value={merged.subscription_status || merged.status} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this subscription was created and last changed.">
+                <AuditField label="Created by" value={merged.created_by || null} />
+                <AuditTimestampPair dateLabel="Created at" value={merged.created_at} />
+                <AuditField label="Updated by" value={merged.updated_by || null} />
+                <AuditTimestampPair dateLabel="Last updated" value={merged.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+            <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+              <h2 className="mb-3 text-sm font-semibold text-gray-200">Audit trail</h2>
+              <AuditTrailWidget entries={auditTrail} />
+            </div>
           </div>
         )}
 

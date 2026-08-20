@@ -58,6 +58,44 @@ Use **Configure all unconfigured (N)** on the ID Rules list to create default ru
 
 **SQL (manual):** `pnpm run admin:migrate-id-generation-bulk-seed` installs the RPC. **v148 does not insert rules** — run `pnpm run admin:seed-id-generation-bulk-run` (v149) or use the UI button to execute it.
 
+## Backfill display IDs for zero-usage rules
+
+After bulk rule creation, **Usage** may show **0%** for every table even when rows already exist — rules were created but `admin.generated_ids` was never populated.
+
+Run:
+
+```bash
+# 1) Install RPCs — paste SQL/v154_id_generation_display_id_backfill_seed.sql in Supabase SQL Editor
+#    OR, if local Postgres is configured: pnpm run admin:migrate-id-generation-display-id-backfill
+
+# 2) Backfill (uses service role — no database password needed)
+pnpm run admin:seed-id-generation-display-id-backfill
+```
+
+Check connectivity:
+
+```bash
+pnpm run admin:db-doctor
+```
+
+This applies **v154**, which:
+
+- Targets every **active** rule with **zero** generated IDs (`admin.v_id_generation_rule_usage`)
+- Creates **up to 10 display IDs per table** by default (enough for Usage & capacity preview without timing out)
+- Processes **25 tables per batch** via a Node runner (avoids Supabase SQL editor timeouts)
+- Skips missing or empty tables (`skipped_missing` / `skipped_empty`)
+- Is **idempotent** — safe to re-run; existing display IDs are unchanged
+
+**Environment overrides** (optional):
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `ID_GEN_BACKFILL_LIMIT` | `10` | Max display IDs created per table per run |
+| `ID_GEN_BACKFILL_BATCH` | `25` | Tables processed per batch |
+| `ID_GEN_BACKFILL_TIMEOUT_MS` | `120000` | Statement timeout per batch |
+
+**SQL (single batch in editor):** `SELECT admin.backfill_zero_usage_display_ids_batch(10, 25, NULL, TRUE);` — repeat with the returned `last_target_table` as the third argument while `has_more` is true.
+
 ## When generation fails: `ID_KEYSPACE_EXHAUSTED`
 
 If all retry attempts collide, `generate_display_id` raises:

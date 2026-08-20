@@ -4,11 +4,14 @@ import {
   approveAffiliate,
   fetchAffiliateStats,
   fetchAffiliates,
+  navId,
   PermissionGate,
   suspendAffiliate,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
+  AdminIconActionButton,
   EmptyState,
   LoadingState,
   SearchBar,
@@ -29,6 +32,9 @@ export default function AffiliateListPage() {
   const [statusFilter, setStatusFilter] = useState(() => searchParams.get('status') || 'all')
   const [targetFilter, setTargetFilter] = useState('all')
   const [busyId, setBusyId] = useState('')
+
+  const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
+  const { displayIdMap } = useDisplayIdMap('admin.affiliates', rowIds)
 
   const loadData = async () => {
     setLoading(true)
@@ -127,7 +133,7 @@ export default function AffiliateListPage() {
               {filteredRows.map((row) => {
                 const stats = statsMap[row.id]
                 return (
-                  <tr key={row.id} className="cursor-pointer border-t border-gray-800 hover:bg-gray-800/50" onClick={() => navigate(`/affiliates/affiliate-detail?id=${row.id}`)}>
+                  <tr key={row.id} className="cursor-pointer border-t border-gray-800 hover:bg-gray-800/50" onClick={() => navigate(`/affiliates/affiliate-detail?id=${navId(displayIdMap, row.id)}`)}>
                     <td className="px-4 py-3 font-mono text-xs">{row.code}</td>
                     <td className="px-4 py-3">
                       <div className="font-medium">{row.name}</div>
@@ -140,9 +146,9 @@ export default function AffiliateListPage() {
                     <td className="px-4 py-3">{row.commission_rate_pct}%</td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex justify-end gap-2">
-                        <Link to={`/affiliates/affiliate-detail?id=${row.id}`} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800">View</Link>
+                        <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/affiliates/affiliate-detail?id=${navId(displayIdMap, row.id)}`)} />
                         <PermissionGate permission="affiliate:update">
-                          <Link to={`/affiliates/affiliate-form?id=${row.id}`} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</Link>
+                          <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/affiliates/affiliate-form?id=${navId(displayIdMap, row.id)}`)} />
                         </PermissionGate>
                         {row.status === 'pending' && (
                           <PermissionGate permission="affiliate:approve">

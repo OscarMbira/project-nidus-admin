@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   deleteCancellationRequest,
   fetchCancellationCategoriesAdmin,
@@ -17,16 +17,22 @@ import {
   AdminCard,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   AdminTable,
   EmptyState,
+  inputClass,
   LoadingState,
   RecordLifecyclePanel,
   RecordStatusBadge,
   RecordVersionHistory,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const SYSTEM_FILTERS = ['all', 'platform', 'simulator']
@@ -39,6 +45,7 @@ const toErrorMessage = (error, fallback) => {
 }
 
 export default function CancellationReasonsPage() {
+  const navigate = useNavigate()
   const { showSuccess, showError } = useToast()
   const { confirm, modal } = useConfirmAction()
   const [tab, setTab] = useState('submissions')
@@ -58,6 +65,8 @@ export default function CancellationReasonsPage() {
   const [savingCategory, setSavingCategory] = useState(false)
   const [categoryLifecycleMeta, setCategoryLifecycleMeta] = useState(null)
   const [categoryLifecycleLogs, setCategoryLifecycleLogs] = useState([])
+  const [categoryRecord, setCategoryRecord] = useState(null)
+  const [categoryTab, setCategoryTab] = useState('details')
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -109,6 +118,8 @@ export default function CancellationReasonsPage() {
     setCategoryForm(EMPTY_CATEGORY_FORM)
     setCategoryLifecycleMeta(null)
     setCategoryLifecycleLogs([])
+    setCategoryRecord(null)
+    setCategoryTab('details')
     setCategoryModal({ mode: 'create' })
   }
 
@@ -128,6 +139,8 @@ export default function CancellationReasonsPage() {
     fetchLifecycleLogs('cancellation_reason_categories', rootId).then(({ data }) => {
       setCategoryLifecycleLogs(data || [])
     })
+    setCategoryRecord(row)
+    setCategoryTab('details')
     setCategoryModal({ mode: 'edit', id: row.id })
   }
 
@@ -140,6 +153,7 @@ export default function CancellationReasonsPage() {
       record_status: row.record_status || 'live',
       root_record_id: rootId,
     })
+    setCategoryRecord(row)
     const { data } = await fetchLifecycleLogs('cancellation_reason_categories', rootId)
     setCategoryLifecycleLogs(data || [])
   }
@@ -296,12 +310,7 @@ export default function CancellationReasonsPage() {
                     render: (r) => (
                       r.subscription_id
                         ? (
-                          <Link
-                            to={`/subscriptions/subscription-detail?id=${r.subscription_id}`}
-                            className="font-mono text-xs text-blue-400 hover:underline"
-                          >
-                            View
-                          </Link>
+                          <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/subscriptions/subscription-detail?id=${r.subscription_id}`)} />
                         )
                         : '—'
                     ),
@@ -312,14 +321,7 @@ export default function CancellationReasonsPage() {
                     label: '',
                     render: (r) => (
                       <PermissionGate permission="cancellation:delete">
-                        <button
-                          type="button"
-                          disabled={busyId === r.id}
-                          onClick={() => handleDeleteSubmission(r)}
-                          className="text-xs text-red-400 hover:text-red-300"
-                        >
-                          Delete
-                        </button>
+                        <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDeleteSubmission(r)} disabled={busyId === r.id} />
                       </PermissionGate>
                     ),
                   },
@@ -366,13 +368,7 @@ export default function CancellationReasonsPage() {
                     key: 'edit',
                     label: '',
                     render: (r) => (
-                      <button
-                        type="button"
-                        onClick={() => openEditCategory(r)}
-                        className="text-xs text-blue-400 hover:text-blue-300"
-                      >
-                        Edit
-                      </button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEditCategory(r)} />
                     ),
                   },
                 ]}
@@ -392,6 +388,33 @@ export default function CancellationReasonsPage() {
               This record is locked for editing until the pending change is approved or rejected.
             </div>
           )}
+
+          <div className="mb-4">
+            <DetailAuditTabList activeTab={categoryTab} onChange={setCategoryTab} />
+          </div>
+
+          {categoryTab === 'audit' && categoryModal?.mode !== 'edit' && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this category is saved.</p>
+          )}
+
+          {categoryTab === 'audit' && categoryModal?.mode === 'edit' && (
+            <AuditDetailsPanel description="Who created or changed this category, and how it is classified.">
+              <AuditCard title="Identity" description="How this category is labelled.">
+                <AuditField label="Code" value={categoryRecord?.code} />
+                <AuditField label="Label" value={categoryRecord?.label} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this category sits.">
+                <AuditField label="Sort order" value={categoryRecord?.sort_order} />
+                <AuditField label="Active" value={categoryRecord?.is_active ? 'Yes' : 'No'} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this category was created and last changed.">
+                <AuditTimestampPair dateLabel="Created at" value={categoryRecord?.created_at} />
+                <AuditTimestampPair dateLabel="Last updated" value={categoryRecord?.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+          )}
+
+          {categoryTab === 'details' && (
           <AdminForm
             onSubmit={
               categoryModal?.mode === 'edit' && categoryLifecycleMeta?.record_status === 'unauthorised'
@@ -469,6 +492,7 @@ export default function CancellationReasonsPage() {
               </button>
             </div>
           </AdminForm>
+          )}
         </AdminModal>
 
         {modal}

@@ -8,15 +8,21 @@ import {
   deactivateAdminUser,
   fetchAdminUsers,
   formatDate,
+  formatDateShort,
   navId,
   reactivateAdminUser,
   suspendAdminUser,
   useBulkSelection,
+  useCurrentAdmin,
   useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -41,6 +47,7 @@ export default function AdminUserListPage() {
   const navigate = useNavigate()
   const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
+  const { hasPermission } = useCurrentAdmin()
 
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
@@ -49,6 +56,7 @@ export default function AdminUserListPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [roleFilter, setRoleFilter] = useState('all')
   const [page, setPage] = useState(1)
+  const [manageRow, setManageRow] = useState(null)
   const [bulkModal, setBulkModal] = useState({ open: false, action: null, reason: '' })
 
   const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
@@ -180,6 +188,36 @@ export default function AdminUserListPage() {
     })
   }
 
+  const buildAdminManageActions = (row) => {
+    if (!row) return []
+    const actions = []
+    if (row.activation_status === 'active' && hasPermission('admins.suspend')) {
+      actions.push({
+        key: 'suspend',
+        label: 'Suspend',
+        variant: 'warning',
+        onClick: () => handleSuspend(row),
+      })
+    }
+    if (['suspended', 'deactivated', 'rejected'].includes(row.activation_status) && hasPermission('admins.reactivate')) {
+      actions.push({
+        key: 'reactivate',
+        label: 'Reactivate',
+        variant: 'success',
+        onClick: () => handleReactivate(row),
+      })
+    }
+    if (!['deactivated', 'rejected'].includes(row.activation_status) && hasPermission('admins.deactivate')) {
+      actions.push({
+        key: 'deactivate',
+        label: 'Deactivate',
+        variant: 'danger',
+        onClick: () => handleDeactivate(row),
+      })
+    }
+    return actions
+  }
+
   const activeCount = rows.filter((row) => row.activation_status === 'active').length
   const invitedCount = rows.filter((row) => row.activation_status === 'invited').length
   const suspendedCount = rows.filter((row) => row.activation_status === 'suspended').length
@@ -277,56 +315,25 @@ export default function AdminUserListPage() {
                   />
                 ),
               },
-              { key: 'last_login_at', label: 'Last Login', render: (r) => formatDate(r.last_login_at) },
+              { key: 'last_login_at', label: 'Last Login', render: (r) => (
+                <span title={formatDate(r.last_login_at)}>{formatDateShort(r.last_login_at)}</span>
+              ) },
               {
                 key: 'actions',
                 label: 'Actions',
                 sortable: false,
                 render: (r) => (
-                  <div className="flex flex-wrap gap-2">
+                  <AdminRowActions>
+                    <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`../admin-user-edit?id=${navId(displayIdMap, r.id)}&view=1`, { relative: 'path' })} />
                     <PermissionGate permission="admins.edit">
-                      <button
-                        type="button"
-                        className="rounded border border-blue-700 bg-blue-900/40 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/70"
-                        onClick={() => navigate(`../admin-user-edit?id=${navId(displayIdMap, r.id)}`, { relative: 'path' })}
-                      >
-                        Edit
-                      </button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`../admin-user-edit?id=${navId(displayIdMap, r.id)}`, { relative: 'path' })} />
                     </PermissionGate>
-                    {r.activation_status === 'active' && (
-                      <PermissionGate permission="admins.suspend">
-                        <button
-                          type="button"
-                          className="rounded border border-amber-700 bg-amber-900/40 px-2 py-1 text-xs text-amber-200 hover:bg-amber-900/70"
-                          onClick={() => handleSuspend(r)}
-                        >
-                          Suspend
-                        </button>
-                      </PermissionGate>
+                    {buildAdminManageActions(r).length > 0 && (
+                      <AdminActionButton variant="default" onClick={() => setManageRow(r)}>
+                        Manage
+                      </AdminActionButton>
                     )}
-                    {['suspended', 'deactivated', 'rejected'].includes(r.activation_status) && (
-                      <PermissionGate permission="admins.reactivate">
-                        <button
-                          type="button"
-                          className="rounded border border-emerald-700 bg-emerald-900/40 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/70"
-                          onClick={() => handleReactivate(r)}
-                        >
-                          Reactivate
-                        </button>
-                      </PermissionGate>
-                    )}
-                    {!['deactivated', 'rejected'].includes(r.activation_status) && (
-                      <PermissionGate permission="admins.deactivate">
-                        <button
-                          type="button"
-                          className="rounded border border-red-700 bg-red-900/40 px-2 py-1 text-xs text-red-200 hover:bg-red-900/70"
-                          onClick={() => handleDeactivate(r)}
-                        >
-                          Deactivate
-                        </button>
-                      </PermissionGate>
-                    )}
-                  </div>
+                  </AdminRowActions>
                 ),
               },
             ]}
@@ -394,6 +401,14 @@ export default function AdminUserListPage() {
         onConfirm={confirmBulkAction}
         onClose={() => setBulkModal({ open: false, action: null, reason: '' })}
         processing={bulk.processing}
+      />
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage admin user"
+        subtitle={manageRow ? (manageRow.full_name || manageRow.email) : ''}
+        onClose={() => setManageRow(null)}
+        actions={buildAdminManageActions(manageRow)}
       />
 
       {modal}

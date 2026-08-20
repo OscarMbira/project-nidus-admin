@@ -8,6 +8,7 @@ import {
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
+  AdminIconActionButton,
   EmptyState,
   LoadingState,
   SearchBar,
@@ -177,13 +178,7 @@ export default function PromoCodeListPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => navigate(`/subscriptions/promo-code-form?id=${row.id}`)}
-                          className={`${actionBtnClass} border-gray-600 text-gray-300 hover:bg-gray-800`}
-                        >
-                          Edit
-                        </button>
+                        <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/subscriptions/promo-code-form?id=${row.id}`)} />
                         <PermissionGate permission="billing.payment_config.edit">
                           <button
                             type="button"
@@ -193,14 +188,7 @@ export default function PromoCodeListPage() {
                           >
                             {row.is_active ? 'Deactivate' : 'Activate'}
                           </button>
-                          <button
-                            type="button"
-                            disabled={busyId === row.id}
-                            onClick={() => handleDelete(row)}
-                            className={`${actionBtnClass} border-red-700 text-red-200 hover:bg-red-900/40 disabled:opacity-50`}
-                          >
-                            Delete
-                          </button>
+                          <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(row)} disabled={busyId === row.id} />
                         </PermissionGate>
                       </div>
                     </td>

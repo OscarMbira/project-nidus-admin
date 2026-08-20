@@ -18,6 +18,7 @@ import {
   inputClass,
   useConfirmAction,
   useToast,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import { ORG_ROLES, PROJECT_ROLES, toError } from '../utils/testerUi.js'
 
@@ -41,6 +42,7 @@ export default function TesterAssignmentsPage() {
     notes: '',
   })
   const [busy, setBusy] = useState(false)
+  const [createTab, setCreateTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -164,6 +166,15 @@ export default function TesterAssignmentsPage() {
       {modal}
 
       <AdminModal open={showCreate} onClose={() => setShowCreate(false)} title="Create assignment">
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={createTab} onChange={setCreateTab} />
+        </div>
+
+        {createTab === 'audit' && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this assignment is created.</p>
+        )}
+
+        {createTab === 'details' && (
         <AdminForm onSubmit={handleCreate}>
           <label className="mb-2 flex items-center gap-2 text-sm text-gray-300">
             <input type="checkbox" checked={bulkMode} onChange={(e) => setBulkMode(e.target.checked)} />
@@ -229,6 +240,7 @@ export default function TesterAssignmentsPage() {
 
           <button type="submit" disabled={busy} className="rounded bg-blue-600 px-4 py-2 text-sm text-white">Create</button>
         </AdminForm>
+        )}
       </AdminModal>
     </div>
   )

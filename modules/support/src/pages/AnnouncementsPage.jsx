@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  PermissionGate,
   archiveAnnouncement,
   createAnnouncement,
   fetchAnnouncements,
   formatDate,
-  PermissionGate,
+  formatDateShort,
   publishAnnouncement,
   updateAnnouncement,
   useBulkSelection,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminField,
+  AdminIconActionButton,
   AdminModal,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -22,6 +27,11 @@ import {
   SearchBar,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const PAGE_SIZE = 12
@@ -50,9 +60,12 @@ export default function AnnouncementsPage() {
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
   const [editTarget, setEditTarget] = useState(null)
+  const [viewTarget, setViewTarget] = useState(null)
+  const [manageRow, setManageRow] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [submitting, setSubmitting] = useState(false)
   const [bulkModal, setBulkModal] = useState({ open: false, action: null })
+  const [viewTab, setViewTab] = useState('details')
 
   const loadAnnouncements = async () => {
     setLoading(true)
@@ -126,16 +139,32 @@ export default function AnnouncementsPage() {
     setCreateOpen(true)
   }
 
+  const openViewModal = (row) => {
+    setViewTarget(row)
+    setViewTab('details')
+  }
+
+  const openEditFromView = () => {
+    if (!viewTarget) return
+    const row = viewTarget
+    setViewTarget(null)
+    openEditModal(row)
+  }
+
+  const toDatetimeLocal = (value) => (value ? new Date(value).toISOString().slice(0, 16) : '')
+
+  const rowToForm = (row) => ({
+    title: row.title || '',
+    body: row.body || '',
+    announcement_type: row.announcement_type || 'info',
+    target_audience: row.target_audience || 'all',
+    publish_at: toDatetimeLocal(row.publish_at),
+    expires_at: toDatetimeLocal(row.expires_at),
+  })
+
   const openEditModal = (row) => {
     setEditTarget(row)
-    setForm({
-      title: row.title || '',
-      body: row.body || '',
-      announcement_type: row.announcement_type || 'info',
-      target_audience: row.target_audience || 'all',
-      publish_at: row.publish_at ? new Date(row.publish_at).toISOString().slice(0, 16) : '',
-      expires_at: row.expires_at ? new Date(row.expires_at).toISOString().slice(0, 16) : '',
-    })
+    setForm(rowToForm(row))
     setCreateOpen(true)
   }
 
@@ -216,6 +245,28 @@ export default function AnnouncementsPage() {
     })
   }
 
+  const buildAnnouncementManageActions = (row) => {
+    if (!row) return []
+    const actions = []
+    if (['draft', 'scheduled'].includes(row.status)) {
+      actions.push({
+        key: 'publish',
+        label: 'Publish',
+        variant: 'success',
+        onClick: () => handlePublish(row),
+      })
+    }
+    if (!['archived'].includes(row.status)) {
+      actions.push({
+        key: 'archive',
+        label: 'Archive',
+        variant: 'danger',
+        onClick: () => handleArchive(row),
+      })
+    }
+    return actions
+  }
+
   if (loading) return <LoadingState message="Loading announcements..." />
   if (error) return <div className="p-6 text-red-400">{error}</div>
 
@@ -265,7 +316,16 @@ export default function AnnouncementsPage() {
             selectedIds={bulk.selectedIds}
             onSelectionChange={bulk.setSelectedIds}
             columns={[
-              { key: 'title', label: 'Title', render: (r) => r.title || '—' },
+              { key: 'title', label: 'Title', render: (r) => (
+                <button
+                  type="button"
+                  className="max-w-xs truncate text-left text-blue-300 hover:underline"
+                  onClick={() => openEditModal(r)}
+                  title={r.title || '—'}
+                >
+                  {r.title || '—'}
+                </button>
+              ) },
               {
                 key: 'status',
                 label: 'Status',
@@ -273,42 +333,28 @@ export default function AnnouncementsPage() {
               },
               { key: 'announcement_type', label: 'Type', render: (r) => r.announcement_type || '—' },
               { key: 'target_audience', label: 'Audience', render: (r) => r.target_audience || '—' },
-              { key: 'publish_at', label: 'Publish At', render: (r) => formatDate(r.publish_at) },
-              { key: 'expires_at', label: 'Expires At', render: (r) => formatDate(r.expires_at) },
+              { key: 'publish_at', label: 'Publish At', render: (r) => (
+                <span title={formatDate(r.publish_at)}>{formatDateShort(r.publish_at)}</span>
+              ) },
+              { key: 'expires_at', label: 'Expires At', render: (r) => (
+                <span title={formatDate(r.expires_at)}>{formatDateShort(r.expires_at)}</span>
+              ) },
               {
                 key: 'actions',
                 label: 'Actions',
                 sortable: false,
                 render: (r) => (
-                  <PermissionGate permission="support.announcements.create">
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEditModal(r)}
-                        className="rounded border border-blue-700 bg-blue-900/30 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/60"
-                      >
-                        Edit
-                      </button>
-                      {['draft', 'scheduled'].includes(r.status) && (
-                        <button
-                          type="button"
-                          onClick={() => handlePublish(r)}
-                          className="rounded border border-emerald-700 bg-emerald-900/30 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/60"
-                        >
-                          Publish
-                        </button>
+                  <AdminRowActions>
+                    <AdminIconActionButton variant="view" label="View" onClick={() => openViewModal(r)} />
+                    <PermissionGate permission="support.announcements.create">
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEditModal(r)} />
+                      {buildAnnouncementManageActions(r).length > 0 && (
+                        <AdminActionButton variant="default" onClick={() => setManageRow(r)}>
+                          Manage
+                        </AdminActionButton>
                       )}
-                      {!['archived'].includes(r.status) && (
-                        <button
-                          type="button"
-                          onClick={() => handleArchive(r)}
-                          className="rounded border border-red-700 bg-red-900/30 px-2 py-1 text-xs text-red-200 hover:bg-red-900/60"
-                        >
-                          Archive
-                        </button>
-                      )}
-                    </div>
-                  </PermissionGate>
+                    </PermissionGate>
+                  </AdminRowActions>
                 ),
               },
             ]}
@@ -365,6 +411,80 @@ export default function AnnouncementsPage() {
         onClose={() => setBulkModal({ open: false, action: null })}
         processing={bulk.processing}
       />
+
+      <AdminModal
+        open={Boolean(viewTarget)}
+        title={viewTarget ? `View ${viewTarget.title}` : 'View Announcement'}
+        onClose={() => setViewTarget(null)}
+      >
+        {viewTarget && (
+          <div className="space-y-3">
+            <AdminBadge label={viewTarget.status || 'unknown'} variant={viewTarget.status || 'default'} />
+
+            <DetailAuditTabList activeTab={viewTab} onChange={setViewTab} />
+
+            {viewTab === 'audit' && (
+              <AuditDetailsPanel description="Who created or changed this announcement, and how it is classified.">
+                <AuditCard title="Identity" description="How this announcement is labelled.">
+                  <AuditField label="Title" value={viewTarget.title} />
+                </AuditCard>
+                <AuditCard title="Classification" description="Where this announcement sits.">
+                  <AuditField label="Type" value={viewTarget.announcement_type} />
+                  <AuditField label="Audience" value={viewTarget.target_audience} />
+                  <AuditField label="Status" value={viewTarget.status} />
+                </AuditCard>
+                <AuditCard title="Record history" description="When this announcement was created and last changed.">
+                  <AuditField label="Created by" value={viewTarget.created_by || null} />
+                  <AuditTimestampPair dateLabel="Created at" value={viewTarget.created_at} />
+                  <AuditField label="Updated by" value={viewTarget.updated_by || null} />
+                  <AuditTimestampPair dateLabel="Last updated" value={viewTarget.updated_at} />
+                </AuditCard>
+              </AuditDetailsPanel>
+            )}
+
+            {viewTab === 'details' && (
+            <>
+            <fieldset disabled className="space-y-3 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
+              <AdminField label="Title">
+                <input value={viewTarget.title || ''} readOnly className={inputClass} />
+              </AdminField>
+              <AdminField label="Body">
+                <textarea rows={4} value={viewTarget.body || ''} readOnly className={inputClass} />
+              </AdminField>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <AdminField label="Type">
+                  <input value={viewTarget.announcement_type || ''} readOnly className={inputClass} />
+                </AdminField>
+                <AdminField label="Audience">
+                  <input value={viewTarget.target_audience || ''} readOnly className={inputClass} />
+                </AdminField>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <AdminField label="Publish At">
+                  <input value={toDatetimeLocal(viewTarget.publish_at)} readOnly className={inputClass} />
+                </AdminField>
+                <AdminField label="Expires At">
+                  <input value={toDatetimeLocal(viewTarget.expires_at)} readOnly className={inputClass} />
+                </AdminField>
+              </div>
+            </fieldset>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setViewTarget(null)}
+                className="rounded px-3 py-2 text-sm text-gray-400 hover:text-gray-200"
+              >
+                Close
+              </button>
+              <PermissionGate permission="support.announcements.create">
+                <AdminIconActionButton variant="edit" label="Edit" onClick={openEditFromView} />
+              </PermissionGate>
+            </div>
+            </>
+            )}
+          </div>
+        )}
+      </AdminModal>
 
       <AdminModal
         open={createOpen}
@@ -445,6 +565,14 @@ export default function AnnouncementsPage() {
           </div>
         </form>
       </AdminModal>
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage announcement"
+        subtitle={manageRow?.title}
+        onClose={() => setManageRow(null)}
+        actions={buildAnnouncementManageActions(manageRow)}
+      />
 
       {modal}
     </div>

@@ -10,11 +10,17 @@ import {
 import {
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const toLocalInput = (value) => {
@@ -48,6 +54,7 @@ export default function ExchangeRateListPage() {
   const [editingRate, setEditingRate] = useState(null)
   const [editForm, setEditForm] = useState({ rate: '', source: 'manual', source_detail: '' })
   const [saving, setSaving] = useState(false)
+  const [editTab, setEditTab] = useState('details')
 
   const currencyCodes = useMemo(() => currencies.map((c) => c.currency_code), [currencies])
 
@@ -184,16 +191,11 @@ export default function ExchangeRateListPage() {
                     <td className="px-4 py-3 text-gray-400">{formatDate(rate.effective_from)}</td>
                     <td className="px-4 py-3">{rate.source || 'manual'}</td>
                     <td className="px-4 py-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => {
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => {
                           setEditingRate(rate)
+                          setEditTab('details')
                           setEditForm({ rate: String(rate.rate), source: rate.source || 'manual', source_detail: rate.source_detail || '' })
-                        }}
-                        className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                      >
-                        Edit
-                      </button>
+                        }} />
                     </td>
                   </tr>
                 ))}
@@ -289,6 +291,28 @@ export default function ExchangeRateListPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingRate)} title="Edit Exchange Rate" onClose={() => setEditingRate(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingRate && (
+          <AuditDetailsPanel description="Who created this exchange rate, and how it is classified.">
+            <AuditCard title="Identity" description="How this rate is labelled.">
+              <AuditField label="From currency" value={editingRate.from_currency} />
+              <AuditField label="To currency" value={editingRate.to_currency} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this rate sits.">
+              <AuditField label="Source" value={editingRate.source} />
+              <AuditField label="Active" value={editingRate.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this rate was created.">
+              <AuditField label="Created by" value={editingRate.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingRate.created_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           <p className="text-xs text-gray-400">Pair: {editingRate?.from_currency} → {editingRate?.to_currency} (pair cannot be changed)</p>
           <AdminField label="Rate" required>
@@ -308,6 +332,7 @@ export default function ExchangeRateListPage() {
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
     </div>
   )

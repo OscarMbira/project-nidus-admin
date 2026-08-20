@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   approveAffiliate,
   approveAffiliatePayout,
@@ -9,28 +9,39 @@ import {
   fetchAffiliateStats,
   formatDate,
   markAffiliatePayoutPaid,
+  navId,
   PermissionGate,
   regenerateAffiliateCode,
   suspendAffiliate,
   terminateAffiliate,
+  useDisplayId,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+  humanizeAuditToken,
 } from '@nidus-admin/ui'
 import { statusVariant, toError } from '../utils/affiliateUi.js'
 
 export default function AffiliateDetailPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const id = searchParams.get('id')
+  const idParam = searchParams.get('id')
+  const { uuid: id, loading: resolving } = useDisplayId('admin.affiliates', idParam)
   const { showSuccess, showError } = useToast()
   const { confirm, modal } = useConfirmAction()
   const [loading, setLoading] = useState(true)
@@ -40,6 +51,7 @@ export default function AffiliateDetailPage() {
   const [showPayout, setShowPayout] = useState(false)
   const [payoutForm, setPayoutForm] = useState({ period_start: '', period_end: '', commission_amount: '', gross_revenue: '', notes: '' })
   const [busy, setBusy] = useState(false)
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadDetail = async () => {
     if (!id) {
@@ -64,6 +76,8 @@ export default function AffiliateDetailPage() {
   }
 
   useEffect(() => { loadDetail() }, [id])
+
+  const { displayIdMap } = useDisplayIdMap('admin.affiliates', useMemo(() => (affiliate?.id ? [affiliate.id] : []), [affiliate?.id]))
 
   const runAction = (options) => {
     confirm({
@@ -106,7 +120,7 @@ export default function AffiliateDetailPage() {
     await loadDetail()
   }
 
-  if (loading) return <LoadingState message="Loading affiliate detail..." />
+  if (loading || resolving) return <LoadingState message="Loading affiliate detail..." />
   if (!affiliate) {
     return (
       <div className="p-4 md:p-6">
@@ -133,7 +147,7 @@ export default function AffiliateDetailPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           <PermissionGate permission="affiliate:update">
-            <Link to={`/affiliates/affiliate-form?id=${affiliate.id}`} className="rounded border border-gray-600 px-3 py-1.5 text-sm text-gray-200 hover:bg-gray-800">Edit</Link>
+            <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/affiliates/affiliate-form?id=${navId(displayIdMap, affiliate.id)}`)} />
           </PermissionGate>
           {affiliate.status === 'pending' && (
             <PermissionGate permission="affiliate:approve">
@@ -189,6 +203,31 @@ export default function AffiliateDetailPage() {
         </div>
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <AuditDetailsPanel description="Who created or changed this affiliate, and how it is classified.">
+          <AuditCard title="Identity" description="How this affiliate is labelled.">
+            <AuditField label="Name" value={affiliate.name} />
+            <AuditField label="Code" value={affiliate.code} />
+            <AuditField label="Email" value={affiliate.email} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this affiliate sits.">
+            <AuditField label="Status" value={humanizeAuditToken(affiliate.status)} />
+            <AuditField label="Target system" value={humanizeAuditToken(affiliate.target_system)} />
+            <AuditField label="Payout method" value={humanizeAuditToken(affiliate.payout_method)} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this affiliate was created and last changed.">
+            <AuditField label="Created by" value={affiliate.created_by || null} />
+            <AuditTimestampPair dateLabel="Created at" value={affiliate.created_at} />
+            <AuditField label="Updated by" value={affiliate.updated_by || null} />
+            <AuditTimestampPair dateLabel="Last updated" value={affiliate.updated_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <>
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-lg border border-gray-700 bg-gray-900 p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Profile</h2>
@@ -295,6 +334,8 @@ export default function AffiliateDetailPage() {
           </div>
         </AdminForm>
       </AdminModal>
+      </>
+      )}
       {modal}
     </div>
   )

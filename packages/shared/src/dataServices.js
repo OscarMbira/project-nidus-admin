@@ -1,4 +1,6 @@
 import { getAdminDb, getPublicDb, getSimDb } from './supabase.js'
+import { getCurrentAdminUserId } from './adminContext.jsx'
+import { countsToSeverityMap, evaluateErrorReleaseReadiness } from './errorReadinessUtils.js'
 import {
   findIdGenerationRuleForTable,
   normalizeTargetTable,
@@ -426,6 +428,39 @@ export const fetchLatestErrorLogEntry = (errorHash) =>
 export const fetchErrorAlertRules = () =>
   q(getAdminDb(), 'error_alert_rules', '*', { order: { column: 'rule_name' } })
 
+export async function fetchErrorReadinessSummary() {
+  const db = getAdminDb()
+  if (!db) return { data: null, error: 'Database not configured' }
+
+  const adminUserId = await getCurrentAdminUserId()
+  if (!adminUserId) return { data: null, error: 'Not authenticated' }
+
+  const [summaryRes, thresholdRes] = await Promise.all([
+    db.rpc('get_error_readiness_summary', { p_admin_user_id: adminUserId }),
+    q(db, 'system_settings', 'setting_value', {
+      filters: [{ op: 'eq', col: 'setting_key', val: 'errors.release_gate_severity_threshold' }],
+      limit: 1,
+    }),
+  ])
+
+  if (summaryRes.error) {
+    return { data: null, error: summaryRes.error.message || summaryRes.error }
+  }
+
+  const threshold = thresholdRes.data?.[0]?.setting_value || 'critical'
+  const counts = countsToSeverityMap(summaryRes.data || [])
+  const readiness = evaluateErrorReleaseReadiness(counts, threshold)
+
+  return {
+    data: {
+      ...readiness,
+      threshold,
+      rows: summaryRes.data || [],
+    },
+    error: null,
+  }
+}
+
 export const fetchAllProjects = (opts = {}) =>
   q(getPublicDb(), 'projects', 'id, project_name, status_id, priority, created_at, account_id, project_manager_user_id', {
     order: { column: 'created_at', asc: false },
@@ -834,16 +869,36 @@ export const resolveIdGenerationRuleByAbbreviation = async (abbreviation) => {
 export const previewIdGenerationCapacity = async (form) => {
   const db = getAdminDb()
   if (!db) return { data: null, error: 'Database not configured' }
+  const generationMode = form.generation_mode ?? 'random'
+  const isSequential = generationMode === 'sequential'
   const { data, error } = await db.rpc('preview_id_generation_capacity', {
     p_target_table: form.target_table,
-    p_num_letters: form.num_letters ?? 0,
+    p_num_letters: isSequential ? 0 : (form.num_letters ?? 0),
     p_num_digits: form.num_digits ?? 0,
     p_letter_case: form.letter_case ?? 'uppercase',
-    p_excluded_chars: form.excluded_chars ?? '',
-    p_segment_type: form.segment_type ?? 'alphanumeric',
+    p_excluded_chars: isSequential ? '' : (form.excluded_chars ?? ''),
+    p_segment_type: isSequential ? 'numeric' : (form.segment_type ?? 'alphanumeric'),
+    p_generation_mode: generationMode,
+    p_include_date: Boolean(form.include_date),
+    p_scope_column: isSequential ? (form.scope_column || null) : null,
   })
   const row = Array.isArray(data) ? data[0] : data
   return { data: row ?? null, error: error?.message || error || null }
+}
+
+export const fetchScopableColumns = async (targetTable) => {
+  const db = getAdminDb()
+  if (!db) return { data: [], error: 'Database not configured' }
+  if (!targetTable) return { data: [], error: null }
+
+  const { data, error } = await db.rpc('get_scopable_columns', {
+    p_target_table: targetTable,
+  })
+
+  return {
+    data: (data || []).map((row) => row.column_name || row).filter(Boolean),
+    error: error?.message || error || null,
+  }
 }
 
 // ─── Notifications & Alerts ──────────────────────────────────────────────────

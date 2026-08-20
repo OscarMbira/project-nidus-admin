@@ -11,20 +11,28 @@ import {
   formatDate,
   issueInvoice,
   markInvoicePaid,
+  navId,
   PermissionGate,
   updateInvoice,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import InvoiceLineItemsEditor from '../components/InvoiceLineItemsEditor.jsx'
 import {
@@ -113,6 +121,10 @@ export default function InvoiceListPage() {
   const [refundForm, setRefundForm] = useState(EMPTY_REFUND_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [viewTab, setViewTab] = useState('details')
+
+  const refundIds = useMemo(() => refunds.map((r) => r.id).filter(Boolean), [refunds])
+  const { displayIdMap: refundDisplayIdMap } = useDisplayIdMap('admin.refunds', refundIds)
 
   const refundsByInvoice = useMemo(() => {
     const map = new Map()
@@ -359,22 +371,9 @@ export default function InvoiceListPage() {
 
     return (
       <div className="flex flex-wrap justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => setViewingInvoice(invoice)}
-          className={actionClass.neutral}
-        >
-          View
-        </button>
+        <AdminIconActionButton variant="view" label="View" onClick={() => { setViewingInvoice(invoice); setViewTab('details') }} />
         {canEdit && (
-          <button
-            type="button"
-            disabled={busyId === invoice.id}
-            onClick={() => openEdit(invoice)}
-            className={actionClass.edit}
-          >
-            Edit
-          </button>
+          <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(invoice)} disabled={busyId === invoice.id} />
         )}
         {invoice.status === 'draft' && (
           <button
@@ -422,7 +421,7 @@ export default function InvoiceListPage() {
         {invoiceRefunds.length > 0 && (
           <button
             type="button"
-            onClick={() => navigate(`/subscriptions/refund-detail?id=${invoiceRefunds[0].id}`)}
+            onClick={() => navigate(`/subscriptions/refund-detail?id=${navId(refundDisplayIdMap, invoiceRefunds[0].id)}`)}
             className={actionClass.neutral}
           >
             Refunds ({invoiceRefunds.length})
@@ -501,6 +500,30 @@ export default function InvoiceListPage() {
               <AdminBadge label={viewingInvoice.status} variant={statusVariant(viewingInvoice.status)} />
               <span className="text-gray-400">{viewingInvoice.target_system}</span>
             </div>
+
+            <DetailAuditTabList activeTab={viewTab} onChange={setViewTab} />
+
+            {viewTab === 'audit' && (
+              <AuditDetailsPanel description="Who created or changed this invoice, and how it is classified.">
+                <AuditCard title="Identity" description="How this invoice is identified.">
+                  <AuditField label="Invoice number" value={viewingInvoice.invoice_number} />
+                  <AuditField label="User ID" value={viewingInvoice.user_id} />
+                </AuditCard>
+                <AuditCard title="Classification" description="Where this invoice sits.">
+                  <AuditField label="Target system" value={viewingInvoice.target_system} />
+                  <AuditField label="Status" value={viewingInvoice.status} />
+                </AuditCard>
+                <AuditCard title="Record history" description="When this invoice was created and last changed.">
+                  <AuditField label="Created by" value={viewingInvoice.created_by || null} />
+                  <AuditTimestampPair dateLabel="Created at" value={viewingInvoice.created_at} />
+                  <AuditField label="Updated by" value={viewingInvoice.updated_by || null} />
+                  <AuditTimestampPair dateLabel="Last updated" value={viewingInvoice.updated_at} />
+                </AuditCard>
+              </AuditDetailsPanel>
+            )}
+
+            {viewTab === 'details' && (
+            <>
             <dl className="grid gap-3 sm:grid-cols-2">
               <div>
                 <dt className="text-xs uppercase text-gray-500">User ID</dt>
@@ -572,7 +595,7 @@ export default function InvoiceListPage() {
                         type="button"
                         onClick={() => {
                           setViewingInvoice(null)
-                          navigate(`/subscriptions/refund-detail?id=${refund.id}`)
+                          navigate(`/subscriptions/refund-detail?id=${navId(refundDisplayIdMap, refund.id)}`)
                         }}
                         className="text-xs text-blue-300 hover:text-blue-200"
                       >
@@ -582,6 +605,8 @@ export default function InvoiceListPage() {
                   ))}
                 </ul>
               </div>
+            )}
+            </>
             )}
           </div>
         )}

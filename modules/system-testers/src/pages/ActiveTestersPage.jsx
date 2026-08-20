@@ -13,12 +13,18 @@ import {
 import {
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import TesterCapacityBar from '../components/TesterCapacityBar.jsx'
 import { statusVariant, toError } from '../utils/testerUi.js'
@@ -41,6 +47,7 @@ export default function ActiveTestersPage() {
   const [extendRow, setExtendRow] = useState(null)
   const [extendMonths, setExtendMonths] = useState(3)
   const [busyId, setBusyId] = useState('')
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -155,7 +162,7 @@ export default function ActiveTestersPage() {
                     </td>
                     <td className="px-4 py-3 capitalize">{row.status}</td>
                     <td className="px-4 py-3 text-right space-x-1">
-                      <button type="button" className="text-xs text-blue-400" onClick={() => setDetail(row)}>View</button>
+                      <AdminIconActionButton variant="view" label="View" onClick={() => { setDetail(row); setDetailTab('details') }} />
                       {row.status === 'active' && (
                         <>
                           <button type="button" className="text-xs text-amber-400" onClick={() => setExtendRow(row)}>Extend</button>
@@ -201,12 +208,36 @@ export default function ActiveTestersPage() {
 
       <AdminModal open={!!detail} onClose={() => setDetail(null)} title="Tester detail">
         {detail && (
-          <div className="space-y-2 text-sm text-gray-300">
-            <p><strong>Name:</strong> {detail.full_name}</p>
-            <p><strong>Email:</strong> {detail.email}</p>
-            <p><strong>Systems:</strong> {(detail.target_systems || []).join(', ')}</p>
-            <p><strong>Moratorium:</strong> {detail.moratorium_months} months</p>
-            <p><strong>Note:</strong> {detail.grant_note || '—'}</p>
+          <div className="space-y-3">
+            <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+            {detailTab === 'audit' && (
+              <AuditDetailsPanel description="Who granted this tester access, and how it is classified.">
+                <AuditCard title="Identity" description="How this tester is identified.">
+                  <AuditField label="Name" value={detail.full_name} />
+                  <AuditField label="Email" value={detail.email} />
+                </AuditCard>
+                <AuditCard title="Classification" description="Where this tester sits.">
+                  <AuditField label="Systems" value={(detail.target_systems || []).join(', ')} />
+                  <AuditField label="Status" value={detail.status} />
+                </AuditCard>
+                <AuditCard title="Record history" description="When this tester was granted access and last changed.">
+                  <AuditField label="Granted by" value={detail.granted_by || null} />
+                  <AuditTimestampPair dateLabel="Created at" value={detail.created_at} />
+                  <AuditTimestampPair dateLabel="Last updated" value={detail.updated_at} />
+                </AuditCard>
+              </AuditDetailsPanel>
+            )}
+
+            {detailTab === 'details' && (
+            <div className="space-y-2 text-sm text-gray-300">
+              <p><strong>Name:</strong> {detail.full_name}</p>
+              <p><strong>Email:</strong> {detail.email}</p>
+              <p><strong>Systems:</strong> {(detail.target_systems || []).join(', ')}</p>
+              <p><strong>Moratorium:</strong> {detail.moratorium_months} months</p>
+              <p><strong>Note:</strong> {detail.grant_note || '—'}</p>
+            </div>
+            )}
           </div>
         )}
       </AdminModal>

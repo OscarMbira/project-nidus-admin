@@ -10,6 +10,7 @@ import {
   LoadingState,
   inputClass,
   useToast,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const EMPTY = {
@@ -29,6 +30,7 @@ export default function TestFixPatternsPage() {
   const [showCreate, setShowCreate] = useState(false)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [createTab, setCreateTab] = useState('details')
 
   const load = async () => {
     setLoading(true)
@@ -96,6 +98,15 @@ export default function TestFixPatternsPage() {
       <AdminTable columns={columns} rows={rows} />
 
       <AdminModal open={showCreate} onClose={() => setShowCreate(false)} title="Create Fix Pattern">
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={createTab} onChange={setCreateTab} />
+        </div>
+
+        {createTab === 'audit' && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this pattern is saved.</p>
+        )}
+
+        {createTab === 'details' && (
         <AdminForm onSubmit={handleCreate}>
           <AdminField label="Pattern Name" required>
             <input className={inputClass} value={form.patternName} onChange={(e) => setForm({ ...form, patternName: e.target.value })} />
@@ -117,6 +128,7 @@ export default function TestFixPatternsPage() {
             {saving ? 'Saving...' : 'Create'}
           </button>
         </AdminForm>
+        )}
       </AdminModal>
     </div>
   )

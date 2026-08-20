@@ -9,12 +9,18 @@ import {
 import {
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
   LoadingState,
   SearchBar,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const ERROR_TYPES = ['', 'js_error', 'api_error', 'slow_load', 'rls_error', 'route_error', 'render_error']
@@ -44,6 +50,7 @@ export default function ErrorAlertRulesPage() {
   const [editingRule, setEditingRule] = useState(null)
   const [form, setForm] = useState(DEFAULT_FORM)
   const [busy, setBusy] = useState('')
+  const [ruleTab, setRuleTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -75,12 +82,14 @@ export default function ErrorAlertRulesPage() {
   const openCreate = () => {
     setEditingRule(null)
     setForm(DEFAULT_FORM)
+    setRuleTab('details')
     setShowCreate(true)
   }
 
   const openEdit = (rule) => {
     setShowCreate(false)
     setEditingRule(rule)
+    setRuleTab('details')
     setForm({
       rule_name: rule.rule_name || '',
       error_type: rule.error_type || '',
@@ -222,20 +231,8 @@ export default function ErrorAlertRulesPage() {
                       >
                         {rule.is_active ? 'Disable' : 'Enable'}
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => openEdit(rule)}
-                        className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(rule)}
-                        className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50"
-                      >
-                        Delete
-                      </button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(rule)} />
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(rule)} />
                     </div>
                   </td>
                 </tr>
@@ -246,6 +243,32 @@ export default function ErrorAlertRulesPage() {
       )}
 
       <AdminModal open={showCreate || Boolean(editingRule)} title={editingRule ? 'Edit Alert Rule' : 'Create Alert Rule'} onClose={closeModal}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={ruleTab} onChange={setRuleTab} />
+        </div>
+
+        {ruleTab === 'audit' && !editingRule && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this rule is saved.</p>
+        )}
+
+        {ruleTab === 'audit' && editingRule && (
+          <AuditDetailsPanel description="How this alert rule is classified and when it last changed.">
+            <AuditCard title="Identity" description="How this rule is labelled.">
+              <AuditField label="Rule name" value={editingRule.rule_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this rule sits.">
+              <AuditField label="Error type" value={editingRule.error_type} />
+              <AuditField label="System" value={editingRule.system} />
+              <AuditField label="Active" value={editingRule.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this rule was created and last changed.">
+              <AuditTimestampPair dateLabel="Created at" value={editingRule.created_at} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingRule.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {ruleTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2">
           <AdminField label="Rule Name" required>
             <input value={form.rule_name} onChange={(e) => setForm((prev) => ({ ...prev, rule_name: e.target.value }))} className={inputClass} />
@@ -300,6 +323,7 @@ export default function ErrorAlertRulesPage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {confirmModal}

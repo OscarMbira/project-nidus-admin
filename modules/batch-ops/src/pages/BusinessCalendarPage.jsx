@@ -13,6 +13,11 @@ import {
   inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const DAY_TYPE_STYLES = {
@@ -49,6 +54,8 @@ export default function BusinessCalendarPage() {
   const [selectedDate, setSelectedDate] = useState(null)
   const [form, setForm] = useState({ day_type: 'holiday', holiday_name: '', country_code: 'ZA' })
   const [saving, setSaving] = useState(false)
+  const [selectedEntry, setSelectedEntry] = useState(null)
+  const [entryTab, setEntryTab] = useState('details')
 
   const monthRange = useMemo(() => {
     const start = padDate(viewYear, viewMonth, 1)
@@ -91,6 +98,8 @@ export default function BusinessCalendarPage() {
 
   const openDate = (cell) => {
     setSelectedDate(cell.dateStr)
+    setSelectedEntry(cell.entry || null)
+    setEntryTab('details')
     setForm({
       day_type: cell.entry?.day_type || cell.dayType,
       holiday_name: cell.entry?.holiday_name || '',
@@ -202,6 +211,32 @@ export default function BusinessCalendarPage() {
         title={`Calendar Entry — ${selectedDate || ''}`}
         onClose={() => setSelectedDate(null)}
       >
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={entryTab} onChange={setEntryTab} />
+        </div>
+
+        {entryTab === 'audit' && !selectedEntry && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this entry is saved.</p>
+        )}
+
+        {entryTab === 'audit' && selectedEntry && (
+          <AuditDetailsPanel description="Who created this calendar override, and how it is classified.">
+            <AuditCard title="Identity" description="How this entry is labelled.">
+              <AuditField label="Date" value={selectedEntry.calendar_date} />
+              <AuditField label="Holiday name" value={selectedEntry.holiday_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this entry sits.">
+              <AuditField label="Day type" value={selectedEntry.day_type} />
+              <AuditField label="Country code" value={selectedEntry.country_code} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this entry was created.">
+              <AuditField label="Created by" value={selectedEntry.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={selectedEntry.created_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {entryTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2 space-y-3">
           <AdminField label="Day Type" required>
             <select
@@ -248,6 +283,7 @@ export default function BusinessCalendarPage() {
             </div>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

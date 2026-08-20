@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import {
   getDocumentationCategories,
   getDocumentationGuideById,
@@ -7,10 +7,14 @@ import {
   loadDocumentationFile,
   PermissionGate,
 } from '@nidus-admin/shared'
-import { LoadingState } from '@nidus-admin/ui'
-import MarkdownView from '../components/MarkdownView.jsx'
+import {
+  AdminIconActionButton,
+  DocumentationContentView,
+  LoadingState,
+} from '@nidus-admin/ui'
 
 export default function ModuleDocsPage() {
+  const navigate = useNavigate()
   const { module } = useParams()
   const [params] = useSearchParams()
   const [loading, setLoading] = useState(true)
@@ -83,11 +87,11 @@ export default function ModuleDocsPage() {
                 <button type="button" className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300" onClick={() => navigator.clipboard.writeText(window.location.href)}>Copy link</button>
                 <button type="button" className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300" onClick={() => window.print()}>Print</button>
                 <PermissionGate permission="docs.manage">
-                  <Link to={`/docs-centre/editor?guide=${active.guide_id}`} className="rounded bg-blue-600 px-2 py-1 text-xs text-white">Edit</Link>
+                  <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/docs-centre/editor?guide=${active.guide_id}`)} />
                 </PermissionGate>
               </div>
             </div>
-            <MarkdownView content={content} />
+            <DocumentationContentView content={content} fileName={active.file_name} />
           </>
         ) : (
           <p className="text-gray-500">Select a guide from the sidebar.</p>

@@ -1,0 +1,5392 @@
+{
+  "F001": {
+    "title": "Project Charter",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "purpose",
+            "label": "Purpose & Justification",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "objectives",
+            "label": "Objectives",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "success_criteria",
+            "label": "Success Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "sponsor",
+            "label": "Sponsor",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "high_level_requirements",
+            "label": "High-Level Requirements",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "high_level_risks",
+            "label": "High-Level Risks",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "summary_budget",
+            "label": "Summary Budget",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "milestone_schedule",
+            "label": "Milestone Schedule",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "pm_authority_level",
+            "label": "Project Manager Authority Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "assumptions",
+            "label": "Assumptions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "constraints",
+            "label": "Constraints",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "business_case_summary",
+            "label": "Business Case Summary",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "key_stakeholders",
+            "label": "Key Stakeholder List",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "approval_signatures",
+            "label": "Approval Signatures",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "project_summary",
+            "label": "Project Summary",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "assigned_pm",
+            "label": "Assigned Project Manager",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "charter_date",
+            "label": "Charter Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F002": {
+    "title": "Assumption Log",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "assumption",
+            "label": "Assumption",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "constraint",
+            "label": "Constraint",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "scope",
+                "label": "Scope"
+              },
+              {
+                "value": "schedule",
+                "label": "Schedule"
+              },
+              {
+                "value": "cost",
+                "label": "Cost"
+              },
+              {
+                "value": "quality",
+                "label": "Quality"
+              },
+              {
+                "value": "resource",
+                "label": "Resource"
+              },
+              {
+                "value": "other",
+                "label": "Other"
+              }
+            ]
+          },
+          {
+            "key": "impact_if_invalid",
+            "label": "Impact if Invalid",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "date_identified",
+            "label": "Date Identified",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "open",
+                "label": "Open"
+              },
+              {
+                "value": "validated",
+                "label": "Validated"
+              },
+              {
+                "value": "invalid",
+                "label": "Invalid"
+              }
+            ]
+          },
+          {
+            "key": "review_date",
+            "label": "Review Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "mitigation",
+            "label": "Mitigation / Response",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "linked_risk_id",
+            "label": "Linked Risk ID",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F003": {
+    "title": "Stakeholder Register",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "stakeholder_name",
+            "label": "Stakeholder Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "role",
+            "label": "Role",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "organisation",
+            "label": "Organisation",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "contact_info",
+            "label": "Contact Information",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "influence_level",
+            "label": "Influence Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "interest_level",
+            "label": "Interest Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "classification",
+            "label": "Classification",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "internal",
+                "label": "Internal"
+              },
+              {
+                "value": "external",
+                "label": "External"
+              }
+            ]
+          },
+          {
+            "key": "communication_preferences",
+            "label": "Communication Preferences",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "engagement_level",
+            "label": "Current Engagement Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "unaware",
+                "label": "Unaware"
+              },
+              {
+                "value": "neutral",
+                "label": "Neutral"
+              },
+              {
+                "value": "supportive",
+                "label": "Supportive"
+              },
+              {
+                "value": "leading",
+                "label": "Leading"
+              }
+            ]
+          },
+          {
+            "key": "requirements_expectations",
+            "label": "Requirements / Expectations",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F004": {
+    "title": "Stakeholder Analysis",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "stakeholder_name",
+            "label": "Stakeholder Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "current_engagement",
+            "label": "Current Engagement Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "unaware",
+                "label": "Unaware"
+              },
+              {
+                "value": "resistant",
+                "label": "Resistant"
+              },
+              {
+                "value": "neutral",
+                "label": "Neutral"
+              },
+              {
+                "value": "supportive",
+                "label": "Supportive"
+              },
+              {
+                "value": "leading",
+                "label": "Leading"
+              }
+            ]
+          },
+          {
+            "key": "desired_engagement",
+            "label": "Desired Engagement Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "unaware",
+                "label": "Unaware"
+              },
+              {
+                "value": "resistant",
+                "label": "Resistant"
+              },
+              {
+                "value": "neutral",
+                "label": "Neutral"
+              },
+              {
+                "value": "supportive",
+                "label": "Supportive"
+              },
+              {
+                "value": "leading",
+                "label": "Leading"
+              }
+            ]
+          },
+          {
+            "key": "key_requirements",
+            "label": "Key Requirements/Expectations",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "engagement_strategy",
+            "label": "Engagement Strategy",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "communication_approach",
+            "label": "Communication Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "engagement_actions",
+            "label": "Engagement Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "responsible_person",
+            "label": "Responsible Person",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "review_date",
+            "label": "Review Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F005": {
+    "title": "Project Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "plan_overview",
+            "label": "Plan Overview",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "scope_summary",
+            "label": "Scope Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "schedule_summary",
+            "label": "Schedule Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "cost_summary",
+            "label": "Cost Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "quality_summary",
+            "label": "Quality Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "baseline_date",
+            "label": "Baseline Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "resource_summary",
+            "label": "Resource Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "communication_summary",
+            "label": "Communications Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risk_summary",
+            "label": "Risk Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "procurement_summary",
+            "label": "Procurement Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "stakeholder_summary",
+            "label": "Stakeholder Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "change_summary",
+            "label": "Change Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F006": {
+    "title": "Change Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "change_process",
+            "label": "Change Control Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "approval_authority",
+            "label": "Change Approval Authority",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "cc_board_members",
+            "label": "Change Control Board Members",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "escalation_process",
+            "label": "Escalation Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "change_log_reference",
+            "label": "Change Log Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "impact_assessment_process",
+            "label": "Impact Assessment Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "communication_plan",
+            "label": "Change Communication Plan",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "tools_systems",
+            "label": "Tools / Systems",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F007": {
+    "title": "Project Roadmap",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "phase",
+            "label": "Phase/Milestone",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "start_date",
+            "label": "Start Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "end_date",
+            "label": "End Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "key_deliverables",
+            "label": "Key Deliverables",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "dependencies",
+            "label": "Dependencies",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "phase_owner",
+            "label": "Phase Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "planned",
+                "label": "Planned"
+              },
+              {
+                "value": "in_progress",
+                "label": "In Progress"
+              },
+              {
+                "value": "complete",
+                "label": "Complete"
+              }
+            ]
+          },
+          {
+            "key": "success_criteria",
+            "label": "Success Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risks",
+            "label": "Key Risks",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F008": {
+    "title": "Scope Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "scope_definition_process",
+            "label": "How Scope Will Be Defined",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "wbs_process",
+            "label": "How the WBS Will Be Created",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "scope_validation_process",
+            "label": "Scope Validation Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "scope_control_process",
+            "label": "Scope Control Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "scope_change_process",
+            "label": "Scope Change Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "acceptance_process",
+            "label": "Acceptance Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "roles_responsibilities",
+            "label": "Roles & Responsibilities",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F009": {
+    "title": "Requirements Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "requirements_process",
+            "label": "Requirements Collection Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "prioritisation_approach",
+            "label": "Prioritisation Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "traceability_approach",
+            "label": "Traceability Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "config_management",
+            "label": "Configuration Management Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "requirements_approval_process",
+            "label": "Requirements Approval Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "baseline_process",
+            "label": "Requirements Baseline Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "metrics",
+            "label": "Requirements Metrics",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F010": {
+    "title": "Requirements Documentation",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "requirement_id",
+            "label": "Requirement ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "functional",
+                "label": "Functional"
+              },
+              {
+                "value": "non_functional",
+                "label": "Non-Functional"
+              },
+              {
+                "value": "business",
+                "label": "Business"
+              },
+              {
+                "value": "stakeholder",
+                "label": "Stakeholder"
+              },
+              {
+                "value": "quality",
+                "label": "Quality"
+              },
+              {
+                "value": "transition",
+                "label": "Transition"
+              }
+            ]
+          },
+          {
+            "key": "priority",
+            "label": "Priority",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "critical",
+                "label": "Critical"
+              }
+            ]
+          },
+          {
+            "key": "acceptance_criteria",
+            "label": "Acceptance Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "source",
+            "label": "Source",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "proposed",
+                "label": "Proposed"
+              },
+              {
+                "value": "approved",
+                "label": "Approved"
+              },
+              {
+                "value": "implemented",
+                "label": "Implemented"
+              },
+              {
+                "value": "verified",
+                "label": "Verified"
+              }
+            ]
+          },
+          {
+            "key": "verification_method",
+            "label": "Verification Method",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F011": {
+    "title": "Requirements Traceability Matrix",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "requirement_id",
+            "label": "Requirement ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "source",
+            "label": "Source",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "linked_objective",
+            "label": "Linked Business Objective",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "linked_deliverable",
+            "label": "Linked Deliverable/WBS Item",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "test_case",
+            "label": "Test/Verification Method",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "not_started",
+                "label": "Not Started"
+              },
+              {
+                "value": "in_progress",
+                "label": "In Progress"
+              },
+              {
+                "value": "verified",
+                "label": "Verified"
+              }
+            ]
+          },
+          {
+            "key": "design_element",
+            "label": "Linked Design Element",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "test_status",
+            "label": "Test Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "not_started",
+                "label": "Not Started"
+              },
+              {
+                "value": "passed",
+                "label": "Passed"
+              },
+              {
+                "value": "failed",
+                "label": "Failed"
+              }
+            ]
+          },
+          {
+            "key": "comments",
+            "label": "Comments",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F012": {
+    "title": "Inter-Requirements Traceability Matrix",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "requirement_id",
+            "label": "Requirement ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "related_requirement_id",
+            "label": "Related Requirement ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "relationship_type",
+            "label": "Relationship Type",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "depends_on",
+                "label": "Depends On"
+              },
+              {
+                "value": "conflicts_with",
+                "label": "Conflicts With"
+              },
+              {
+                "value": "duplicates",
+                "label": "Duplicates"
+              },
+              {
+                "value": "refines",
+                "label": "Refines"
+              }
+            ]
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "impact_notes",
+            "label": "Impact Notes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "open",
+                "label": "Open"
+              },
+              {
+                "value": "resolved",
+                "label": "Resolved"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F013": {
+    "title": "Project Scope Statement",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "product_scope_description",
+            "label": "Product Scope Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "deliverables",
+            "label": "Deliverables",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "acceptance_criteria",
+            "label": "Acceptance Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "exclusions",
+            "label": "Exclusions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "constraints",
+            "label": "Constraints",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "assumptions",
+            "label": "Assumptions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "project_boundaries",
+            "label": "Project Boundaries",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "scope_verification",
+            "label": "Scope Verification Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "change_control",
+            "label": "Scope Change Control",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F014": {
+    "title": "Work Breakdown Structure",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "wbs_code",
+            "label": "WBS Code",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "element_name",
+            "label": "Element Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "parent_element",
+            "label": "Parent Element",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "level",
+            "label": "Level",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "deliverable",
+            "label": "Deliverable",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "responsible_party",
+            "label": "Responsible Party",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "estimated_cost",
+            "label": "Estimated Cost",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F015": {
+    "title": "WBS Dictionary",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "wbs_code",
+            "label": "WBS Code",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "element_name",
+            "label": "Element Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "description",
+            "label": "Description of Work",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "responsible_party",
+            "label": "Responsible Party",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "acceptance_criteria",
+            "label": "Acceptance Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "cost_estimate",
+            "label": "Cost Estimate",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "milestones",
+            "label": "Milestones",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "dependencies",
+            "label": "Dependencies",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "resources_required",
+            "label": "Resources Required",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "schedule_dates",
+            "label": "Schedule Dates",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F016": {
+    "title": "Schedule Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "scheduling_methodology",
+            "label": "Scheduling Methodology",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "scheduling_tool",
+            "label": "Scheduling Tool",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "update_frequency",
+            "label": "Update Frequency",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "weekly",
+                "label": "Weekly"
+              },
+              {
+                "value": "biweekly",
+                "label": "Biweekly"
+              },
+              {
+                "value": "monthly",
+                "label": "Monthly"
+              }
+            ]
+          },
+          {
+            "key": "control_thresholds",
+            "label": "Control Thresholds",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "level_of_detail",
+            "label": "Level of Detail",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "units_of_measure",
+            "label": "Units of Measure",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "reporting_requirements",
+            "label": "Reporting Requirements",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F017": {
+    "title": "Activity List",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_id",
+            "label": "Activity ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "activity_name",
+            "label": "Activity Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "wbs_reference",
+            "label": "WBS Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "duration_estimate",
+            "label": "Duration Estimate (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "resource_assigned",
+            "label": "Assigned Resource(s)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "required_skills",
+            "label": "Required Skill(s) (one per line)",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "minimum_proficiency",
+            "label": "Minimum Proficiency",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "basic",
+                "label": "Basic"
+              },
+              {
+                "value": "intermediate",
+                "label": "Intermediate"
+              },
+              {
+                "value": "advanced",
+                "label": "Advanced"
+              },
+              {
+                "value": "expert",
+                "label": "Expert"
+              }
+            ]
+          },
+          {
+            "key": "activity_type",
+            "label": "Activity Type",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "task",
+                "label": "Task"
+              },
+              {
+                "value": "milestone",
+                "label": "Milestone"
+              },
+              {
+                "value": "summary",
+                "label": "Summary"
+              }
+            ]
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "not_started",
+                "label": "Not Started"
+              },
+              {
+                "value": "in_progress",
+                "label": "In Progress"
+              },
+              {
+                "value": "complete",
+                "label": "Complete"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F018": {
+    "title": "Activity Attributes",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_id",
+            "label": "Activity ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "predecessor",
+            "label": "Predecessor Activities",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "successor",
+            "label": "Successor Activities",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "resource_requirements",
+            "label": "Resource Requirements",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "constraints",
+            "label": "Constraints",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "activity_type",
+            "label": "Activity Type",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "duration",
+            "label": "Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "location",
+            "label": "Location",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "assumptions",
+            "label": "Assumptions",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F019": {
+    "title": "Milestone List",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "milestone_name",
+            "label": "Milestone Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "target_date",
+            "label": "Target Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "milestone_type",
+            "label": "Type",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "mandatory",
+                "label": "Mandatory"
+              },
+              {
+                "value": "optional",
+                "label": "Optional"
+              }
+            ]
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "acceptance_criteria",
+            "label": "Acceptance Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "planned",
+                "label": "Planned"
+              },
+              {
+                "value": "achieved",
+                "label": "Achieved"
+              },
+              {
+                "value": "missed",
+                "label": "Missed"
+              }
+            ]
+          },
+          {
+            "key": "linked_deliverables",
+            "label": "Linked Deliverables",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F020": {
+    "title": "Network Diagram",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_id",
+            "label": "Activity ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "predecessor",
+            "label": "Predecessor(s)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "dependency_type",
+            "label": "Dependency Type",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "fs",
+                "label": "Finish-to-Start"
+              },
+              {
+                "value": "ss",
+                "label": "Start-to-Start"
+              },
+              {
+                "value": "ff",
+                "label": "Finish-to-Finish"
+              },
+              {
+                "value": "sf",
+                "label": "Start-to-Finish"
+              }
+            ]
+          },
+          {
+            "key": "lag_lead",
+            "label": "Lag/Lead",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "successor",
+            "label": "Successor(s)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "critical_path",
+            "label": "On Critical Path",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F021": {
+    "title": "Duration Estimates",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_id",
+            "label": "Activity ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "optimistic",
+            "label": "Optimistic Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "most_likely",
+            "label": "Most Likely Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "pessimistic",
+            "label": "Pessimistic Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "estimation_basis",
+            "label": "Basis of Estimate",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "expected_duration",
+            "label": "Expected Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "confidence_level",
+            "label": "Confidence Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "estimator",
+            "label": "Estimator",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F022": {
+    "title": "Duration Estimating Worksheet",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_id",
+            "label": "Activity ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "estimation_technique",
+            "label": "Estimation Technique",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "analogous",
+                "label": "Analogous"
+              },
+              {
+                "value": "parametric",
+                "label": "Parametric"
+              },
+              {
+                "value": "three_point",
+                "label": "Three-Point"
+              },
+              {
+                "value": "expert_judgement",
+                "label": "Expert Judgement"
+              }
+            ]
+          },
+          {
+            "key": "assumptions",
+            "label": "Assumptions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "estimated_duration",
+            "label": "Estimated Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "constraints",
+            "label": "Constraints",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "reviewer",
+            "label": "Reviewer",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "estimate_date",
+            "label": "Estimate Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F023": {
+    "title": "Project Schedule",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_id",
+            "label": "Activity ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "start_date",
+            "label": "Start Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "end_date",
+            "label": "End Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "duration",
+            "label": "Duration (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "not_started",
+                "label": "Not Started"
+              },
+              {
+                "value": "in_progress",
+                "label": "In Progress"
+              },
+              {
+                "value": "complete",
+                "label": "Complete"
+              },
+              {
+                "value": "delayed",
+                "label": "Delayed"
+              }
+            ]
+          },
+          {
+            "key": "percent_complete",
+            "label": "Percent Complete",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "assigned_resources",
+            "label": "Assigned Resources",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "baseline_start",
+            "label": "Baseline Start",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "baseline_finish",
+            "label": "Baseline Finish",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F024": {
+    "title": "Cost Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "estimating_approach",
+            "label": "Cost Estimating Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "budget_approach",
+            "label": "Budgeting Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "control_thresholds",
+            "label": "Cost Control Thresholds",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "reporting_format",
+            "label": "Cost Reporting Format",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "funding_sources",
+            "label": "Funding Sources",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "variance_thresholds",
+            "label": "Variance Thresholds",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "review_cycle",
+            "label": "Review Cycle",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F025": {
+    "title": "Cost Estimates",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "wbs_reference",
+            "label": "WBS Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "cost_category",
+            "label": "Cost Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "labour",
+                "label": "Labour"
+              },
+              {
+                "value": "materials",
+                "label": "Materials"
+              },
+              {
+                "value": "equipment",
+                "label": "Equipment"
+              },
+              {
+                "value": "contingency",
+                "label": "Contingency"
+              },
+              {
+                "value": "other",
+                "label": "Other"
+              }
+            ]
+          },
+          {
+            "key": "estimated_cost",
+            "label": "Estimated Cost",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "basis_of_estimate",
+            "label": "Basis of Estimate",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "currency",
+            "label": "Currency",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "confidence",
+            "label": "Estimate Confidence",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "rough",
+                "label": "Rough Order of Magnitude"
+              },
+              {
+                "value": "budgetary",
+                "label": "Budgetary"
+              },
+              {
+                "value": "definitive",
+                "label": "Definitive"
+              }
+            ]
+          },
+          {
+            "key": "estimate_date",
+            "label": "Estimate Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "estimator",
+            "label": "Estimator",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F026": {
+    "title": "Cost Estimating Worksheet",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "wbs_reference",
+            "label": "WBS Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "estimation_technique",
+            "label": "Estimation Technique",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "analogous",
+                "label": "Analogous"
+              },
+              {
+                "value": "parametric",
+                "label": "Parametric"
+              },
+              {
+                "value": "bottom_up",
+                "label": "Bottom-Up"
+              },
+              {
+                "value": "expert_judgement",
+                "label": "Expert Judgement"
+              }
+            ]
+          },
+          {
+            "key": "unit_cost",
+            "label": "Unit Cost",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "quantity",
+            "label": "Quantity",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "total_cost",
+            "label": "Total Cost",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "review_date",
+            "label": "Review Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "approved_by",
+            "label": "Approved By",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F027": {
+    "title": "Bottom-Up Cost Estimating Worksheet",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "work_package",
+            "label": "Work Package",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "resource_type",
+            "label": "Resource Type",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "unit_rate",
+            "label": "Unit Rate",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "quantity",
+            "label": "Quantity",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "subtotal",
+            "label": "Subtotal",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contingency",
+            "label": "Contingency",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "estimate_date",
+            "label": "Estimate Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F028": {
+    "title": "Cost Baseline",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "wbs_reference",
+            "label": "WBS Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "baseline_amount",
+            "label": "Baseline Amount",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "baseline_date",
+            "label": "Baseline Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "reserve_amount",
+            "label": "Contingency Reserve",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "funding_limit",
+            "label": "Funding Limit",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "management_reserve",
+            "label": "Management Reserve",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "approved_by",
+            "label": "Approved By",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F029": {
+    "title": "Quality Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "quality_standards",
+            "label": "Quality Standards",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "quality_objectives",
+            "label": "Quality Objectives",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "qa_approach",
+            "label": "Quality Assurance Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "qc_approach",
+            "label": "Quality Control Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "quality_roles",
+            "label": "Quality Roles & Responsibilities",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "improvement_plan",
+            "label": "Continuous Improvement Plan",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "review_date",
+            "label": "Review Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F030": {
+    "title": "Quality Metrics",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "metric_name",
+            "label": "Metric Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "target_value",
+            "label": "Target Value",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "measurement_method",
+            "label": "Measurement Method",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "frequency",
+            "label": "Measurement Frequency",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "daily",
+                "label": "Daily"
+              },
+              {
+                "value": "weekly",
+                "label": "Weekly"
+              },
+              {
+                "value": "monthly",
+                "label": "Monthly"
+              },
+              {
+                "value": "per_milestone",
+                "label": "Per Milestone"
+              }
+            ]
+          },
+          {
+            "key": "actual_value",
+            "label": "Actual Value",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "threshold",
+            "label": "Control Threshold",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "green",
+                "label": "Green"
+              },
+              {
+                "value": "amber",
+                "label": "Amber"
+              },
+              {
+                "value": "red",
+                "label": "Red"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F031": {
+    "title": "Responsibility Assignment Matrix",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "activity_deliverable",
+            "label": "Activity/Deliverable",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "responsible",
+            "label": "Responsible (R)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "accountable",
+            "label": "Accountable (A)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "consulted",
+            "label": "Consulted (C)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "informed",
+            "label": "Informed (I)",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "notes",
+            "label": "Notes",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F032": {
+    "title": "Resource Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "resource_identification_approach",
+            "label": "Resource Identification Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "acquisition_approach",
+            "label": "Resource Acquisition Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "team_development_approach",
+            "label": "Team Development Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "release_criteria",
+            "label": "Resource Release Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "skills_required",
+            "label": "Skills Required",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "availability",
+            "label": "Availability",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "cost_rate",
+            "label": "Cost Rate",
+            "type": "money",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F033": {
+    "title": "Team Charter",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "team_values",
+            "label": "Team Values",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "communication_guidelines",
+            "label": "Communication Guidelines",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "decision_making_process",
+            "label": "Decision-Making Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "conflict_resolution",
+            "label": "Conflict Resolution Process",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "meeting_norms",
+            "label": "Meeting Norms",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "acquisition_approach",
+            "label": "Acquisition Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contract_types",
+            "label": "Contract Types",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F034": {
+    "title": "Resource Requirements",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "resource_type",
+            "label": "Resource Type",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "human",
+                "label": "Human"
+              },
+              {
+                "value": "equipment",
+                "label": "Equipment"
+              },
+              {
+                "value": "material",
+                "label": "Material"
+              },
+              {
+                "value": "facility",
+                "label": "Facility"
+              }
+            ]
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "quantity",
+            "label": "Quantity Required",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "required_by_date",
+            "label": "Required By Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "risk_id",
+            "label": "Risk ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "risk_owner",
+            "label": "Risk Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "response_strategy",
+            "label": "Response Strategy",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "residual_risk",
+            "label": "Residual Risk",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F035": {
+    "title": "Resource Breakdown Structure",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "rbs_code",
+            "label": "RBS Code",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "resource_name",
+            "label": "Resource Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "parent_category",
+            "label": "Parent Category",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "probability",
+            "label": "Probability",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "impact",
+            "label": "Impact",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "risk_score",
+            "label": "Risk Score",
+            "type": "number",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F036": {
+    "title": "Communications Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "stakeholder_group",
+            "label": "Stakeholder Group",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "information_needs",
+            "label": "Information Needs",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "communication_method",
+            "label": "Communication Method",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "email",
+                "label": "Email"
+              },
+              {
+                "value": "meeting",
+                "label": "Meeting"
+              },
+              {
+                "value": "report",
+                "label": "Report"
+              },
+              {
+                "value": "dashboard",
+                "label": "Dashboard"
+              },
+              {
+                "value": "newsletter",
+                "label": "Newsletter"
+              }
+            ]
+          },
+          {
+            "key": "frequency",
+            "label": "Frequency",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "daily",
+                "label": "Daily"
+              },
+              {
+                "value": "weekly",
+                "label": "Weekly"
+              },
+              {
+                "value": "biweekly",
+                "label": "Biweekly"
+              },
+              {
+                "value": "monthly",
+                "label": "Monthly"
+              },
+              {
+                "value": "ad_hoc",
+                "label": "Ad-hoc"
+              }
+            ]
+          },
+          {
+            "key": "responsible_party",
+            "label": "Responsible Party",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "trigger_conditions",
+            "label": "Trigger Conditions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contingency_plan",
+            "label": "Contingency Plan",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "fallback_plan",
+            "label": "Fallback Plan",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F037": {
+    "title": "Risk Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "risk_methodology",
+            "label": "Risk Management Methodology",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "roles_responsibilities",
+            "label": "Roles & Responsibilities",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risk_categories",
+            "label": "Risk Categories",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risk_appetite",
+            "label": "Risk Appetite",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "averse",
+                "label": "Averse"
+              },
+              {
+                "value": "minimal",
+                "label": "Minimal"
+              },
+              {
+                "value": "cautious",
+                "label": "Cautious"
+              },
+              {
+                "value": "open",
+                "label": "Open"
+              },
+              {
+                "value": "hungry",
+                "label": "Hungry"
+              }
+            ]
+          },
+          {
+            "key": "stakeholder_groups",
+            "label": "Stakeholder Groups",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "information_needs",
+            "label": "Information Needs",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F038": {
+    "title": "Risk Register",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "risk_description",
+            "label": "Risk Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "technical",
+                "label": "Technical"
+              },
+              {
+                "value": "external",
+                "label": "External"
+              },
+              {
+                "value": "organisational",
+                "label": "Organisational"
+              },
+              {
+                "value": "project_management",
+                "label": "Project Management"
+              }
+            ]
+          },
+          {
+            "key": "probability",
+            "label": "Probability",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "impact",
+            "label": "Impact",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "risk_owner",
+            "label": "Risk Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "response_strategy",
+            "label": "Response Strategy",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "avoid",
+                "label": "Avoid"
+              },
+              {
+                "value": "transfer",
+                "label": "Transfer"
+              },
+              {
+                "value": "mitigate",
+                "label": "Mitigate"
+              },
+              {
+                "value": "accept",
+                "label": "Accept"
+              },
+              {
+                "value": "exploit",
+                "label": "Exploit"
+              },
+              {
+                "value": "share",
+                "label": "Share"
+              },
+              {
+                "value": "enhance",
+                "label": "Enhance"
+              }
+            ]
+          },
+          {
+            "key": "target_date",
+            "label": "Target Resolution Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "message_purpose",
+            "label": "Message Purpose",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "audience",
+            "label": "Audience",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "delivery_method",
+            "label": "Delivery Method",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "frequency",
+            "label": "Frequency",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F039": {
+    "title": "Risk Report",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "reporting_period",
+            "label": "Reporting Period",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "overall_risk_exposure",
+            "label": "Overall Risk Exposure",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "top_risks",
+            "label": "Top Risks Summary",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risk_trend",
+            "label": "Risk Trend",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "increasing",
+                "label": "Increasing"
+              },
+              {
+                "value": "stable",
+                "label": "Stable"
+              },
+              {
+                "value": "decreasing",
+                "label": "Decreasing"
+              }
+            ]
+          },
+          {
+            "key": "sender",
+            "label": "Sender",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "approval_required",
+            "label": "Approval Required",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              }
+            ]
+          },
+          {
+            "key": "distribution_list",
+            "label": "Distribution List",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F040": {
+    "title": "Probability and Impact Assessment",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "risk_description",
+            "label": "Risk Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "probability_score",
+            "label": "Probability Score (1-5)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "impact_score",
+            "label": "Impact Score (1-5)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "overall_rating",
+            "label": "Overall Rating",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              }
+            ]
+          },
+          {
+            "key": "procurement_strategy",
+            "label": "Procurement Strategy",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "make_or_buy",
+            "label": "Make or Buy Decision",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "document_owner",
+            "label": "Document Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F041": {
+    "title": "Probability and Impact Matrix",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "probability_level",
+            "label": "Probability Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "very_low",
+                "label": "Very Low"
+              },
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "very_high",
+                "label": "Very High"
+              }
+            ]
+          },
+          {
+            "key": "impact_level",
+            "label": "Impact Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "very_low",
+                "label": "Very Low"
+              },
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "very_high",
+                "label": "Very High"
+              }
+            ]
+          },
+          {
+            "key": "resulting_priority",
+            "label": "Resulting Priority",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "critical",
+                "label": "Critical"
+              }
+            ]
+          },
+          {
+            "key": "evaluation_criteria",
+            "label": "Evaluation Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "weighting",
+            "label": "Weighting",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "selection_method",
+            "label": "Selection Method",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F042": {
+    "title": "Risk Data Sheet",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "risk_id",
+            "label": "Risk ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "risk_description",
+            "label": "Risk Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "root_cause",
+            "label": "Root Cause",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "triggers",
+            "label": "Triggers",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "response_plan",
+            "label": "Response Plan",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contingency_plan",
+            "label": "Contingency Plan",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "vendor_name",
+            "label": "Vendor Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "contact_person",
+            "label": "Contact Person",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "qualification_status",
+            "label": "Qualification Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "qualified",
+                "label": "Qualified"
+              },
+              {
+                "value": "not_qualified",
+                "label": "Not Qualified"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F043": {
+    "title": "Procurement Management Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "procurement_approach",
+            "label": "Procurement Approach",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contract_types",
+            "label": "Contract Types to be Used",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "procurement_documents",
+            "label": "Procurement Documents",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risk_management_approach",
+            "label": "Procurement Risk Management",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "bid_amount",
+            "label": "Bid Amount",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "compliance_notes",
+            "label": "Compliance Notes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "evaluation_score",
+            "label": "Evaluation Score",
+            "type": "number",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F044": {
+    "title": "Procurement Strategy",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "delivery_method",
+            "label": "Delivery Method",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "turnkey",
+                "label": "Turnkey"
+              },
+              {
+                "value": "design_build",
+                "label": "Design-Build"
+              },
+              {
+                "value": "design_bid_build",
+                "label": "Design-Bid-Build"
+              }
+            ]
+          },
+          {
+            "key": "contract_payment_type",
+            "label": "Contract Payment Type",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "fixed_price",
+                "label": "Fixed Price"
+              },
+              {
+                "value": "cost_reimbursable",
+                "label": "Cost Reimbursable"
+              },
+              {
+                "value": "time_and_materials",
+                "label": "Time & Materials"
+              }
+            ]
+          },
+          {
+            "key": "market_conditions",
+            "label": "Market Conditions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contract_value",
+            "label": "Contract Value",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "start_date",
+            "label": "Start Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "end_date",
+            "label": "End Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "terms_summary",
+            "label": "Terms Summary",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F045": {
+    "title": "Source Selection Criteria",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "criterion",
+            "label": "Criterion",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "weighting",
+            "label": "Weighting (%)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "performance_kpis",
+            "label": "Performance KPIs",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "review_period",
+            "label": "Review Period",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "action_required",
+            "label": "Action Required",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F046": {
+    "title": "Stakeholder Engagement Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "stakeholder_group",
+            "label": "Stakeholder Group",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "current_engagement",
+            "label": "Current Engagement Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "unaware",
+                "label": "Unaware"
+              },
+              {
+                "value": "resistant",
+                "label": "Resistant"
+              },
+              {
+                "value": "neutral",
+                "label": "Neutral"
+              },
+              {
+                "value": "supportive",
+                "label": "Supportive"
+              },
+              {
+                "value": "leading",
+                "label": "Leading"
+              }
+            ]
+          },
+          {
+            "key": "desired_engagement",
+            "label": "Desired Engagement Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "unaware",
+                "label": "Unaware"
+              },
+              {
+                "value": "resistant",
+                "label": "Resistant"
+              },
+              {
+                "value": "neutral",
+                "label": "Neutral"
+              },
+              {
+                "value": "supportive",
+                "label": "Supportive"
+              },
+              {
+                "value": "leading",
+                "label": "Leading"
+              }
+            ]
+          },
+          {
+            "key": "engagement_actions",
+            "label": "Engagement Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "variance_explanation",
+            "label": "Variance Explanation",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "forecast_completion",
+            "label": "Forecast at Completion",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "reporting_period_end",
+            "label": "Reporting Period End",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F047": {
+    "title": "Issue Log",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "issue_description",
+            "label": "Issue Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "technical",
+                "label": "Technical"
+              },
+              {
+                "value": "resource",
+                "label": "Resource"
+              },
+              {
+                "value": "schedule",
+                "label": "Schedule"
+              },
+              {
+                "value": "scope",
+                "label": "Scope"
+              },
+              {
+                "value": "stakeholder",
+                "label": "Stakeholder"
+              },
+              {
+                "value": "other",
+                "label": "Other"
+              }
+            ]
+          },
+          {
+            "key": "priority",
+            "label": "Priority",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "critical",
+                "label": "Critical"
+              }
+            ]
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "open",
+                "label": "Open"
+              },
+              {
+                "value": "in_progress",
+                "label": "In Progress"
+              },
+              {
+                "value": "resolved",
+                "label": "Resolved"
+              },
+              {
+                "value": "closed",
+                "label": "Closed"
+              }
+            ]
+          },
+          {
+            "key": "raised_date",
+            "label": "Date Raised",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "target_resolution_date",
+            "label": "Target Resolution Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "issue_owner",
+            "label": "Issue Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "resolution_target_date",
+            "label": "Resolution Target Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "escalation_level",
+            "label": "Escalation Level",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "project",
+                "label": "Project"
+              },
+              {
+                "value": "programme",
+                "label": "Programme"
+              },
+              {
+                "value": "portfolio",
+                "label": "Portfolio"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F048": {
+    "title": "Decision Log",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "decision_description",
+            "label": "Decision Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "decision_date",
+            "label": "Decision Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "decision_maker",
+            "label": "Decision Maker",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "rationale",
+            "label": "Rationale",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "impact",
+            "label": "Impact",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F049": {
+    "title": "Change Request",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "change_description",
+            "label": "Change Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "reason_for_change",
+            "label": "Reason for Change",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "impact_assessment",
+            "label": "Impact Assessment (Scope/Schedule/Cost)",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "priority",
+            "label": "Priority",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "critical",
+                "label": "Critical"
+              }
+            ]
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "submitted",
+                "label": "Submitted"
+              },
+              {
+                "value": "under_review",
+                "label": "Under Review"
+              },
+              {
+                "value": "approved",
+                "label": "Approved"
+              },
+              {
+                "value": "rejected",
+                "label": "Rejected"
+              },
+              {
+                "value": "deferred",
+                "label": "Deferred"
+              }
+            ]
+          },
+          {
+            "key": "change_requestor",
+            "label": "Change Requestor",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "ccb_decision",
+            "label": "CCB Decision",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "approved",
+                "label": "Approved"
+              },
+              {
+                "value": "rejected",
+                "label": "Rejected"
+              },
+              {
+                "value": "deferred",
+                "label": "Deferred"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F050": {
+    "title": "Change Log",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "change_id",
+            "label": "Change ID",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "change_summary",
+            "label": "Change Summary",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "submitted",
+                "label": "Submitted"
+              },
+              {
+                "value": "approved",
+                "label": "Approved"
+              },
+              {
+                "value": "rejected",
+                "label": "Rejected"
+              },
+              {
+                "value": "deferred",
+                "label": "Deferred"
+              }
+            ]
+          },
+          {
+            "key": "decision_date",
+            "label": "Decision Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "corrective_actions",
+            "label": "Corrective Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "preventive_actions",
+            "label": "Preventive Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "verification_date",
+            "label": "Verification Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F051": {
+    "title": "Lessons Learned Register",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "lesson_description",
+            "label": "Lesson Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "went_well",
+                "label": "What Went Well"
+              },
+              {
+                "value": "could_improve",
+                "label": "What Could Improve"
+              },
+              {
+                "value": "recommendation",
+                "label": "Recommendation"
+              }
+            ]
+          },
+          {
+            "key": "phase",
+            "label": "Project Phase",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "initiating",
+                "label": "Initiating"
+              },
+              {
+                "value": "planning",
+                "label": "Planning"
+              },
+              {
+                "value": "executing",
+                "label": "Executing"
+              },
+              {
+                "value": "monitoring_controlling",
+                "label": "Monitoring & Controlling"
+              },
+              {
+                "value": "closing",
+                "label": "Closing"
+              }
+            ]
+          },
+          {
+            "key": "recommendation",
+            "label": "Recommendation for Future Projects",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "inspection_date",
+            "label": "Inspection Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "inspector",
+            "label": "Inspector",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "nonconformance_details",
+            "label": "Non-Conformance Details",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F052": {
+    "title": "Quality Audit",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "audit_date",
+            "label": "Audit Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "auditor",
+            "label": "Auditor",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "scope_of_audit",
+            "label": "Scope of Audit",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "findings",
+            "label": "Findings",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "corrective_actions",
+            "label": "Corrective Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "audit_scope",
+            "label": "Audit Scope",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "audit_criteria",
+            "label": "Audit Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "follow_up_date",
+            "label": "Follow-Up Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F053": {
+    "title": "Team Performance Assessment",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "team_member",
+            "label": "Team Member",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "assessment_period",
+            "label": "Assessment Period",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "performance_rating",
+            "label": "Performance Rating",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "below",
+                "label": "Below Expectations"
+              },
+              {
+                "value": "meets",
+                "label": "Meets Expectations"
+              },
+              {
+                "value": "exceeds",
+                "label": "Exceeds Expectations"
+              }
+            ]
+          },
+          {
+            "key": "strengths",
+            "label": "Strengths",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "development_areas",
+            "label": "Development Areas",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "hours_logged",
+            "label": "Hours Logged",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "work_description",
+            "label": "Work Description",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F054": {
+    "title": "Team Member Status Report",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "team_member",
+            "label": "Team Member",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "reporting_period",
+            "label": "Reporting Period",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "tasks_completed",
+            "label": "Tasks Completed",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "tasks_planned",
+            "label": "Tasks Planned Next Period",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "blockers",
+            "label": "Blockers/Issues",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "overall_rag",
+            "label": "Overall RAG",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "green",
+                "label": "Green"
+              },
+              {
+                "value": "amber",
+                "label": "Amber"
+              },
+              {
+                "value": "red",
+                "label": "Red"
+              }
+            ]
+          },
+          {
+            "key": "next_period_focus",
+            "label": "Next Period Focus",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F055": {
+    "title": "Project Status Report",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "reporting_period",
+            "label": "Reporting Period",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "overall_rag",
+            "label": "Overall RAG Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "green",
+                "label": "Green"
+              },
+              {
+                "value": "amber",
+                "label": "Amber"
+              },
+              {
+                "value": "red",
+                "label": "Red"
+              }
+            ]
+          },
+          {
+            "key": "schedule_rag",
+            "label": "Schedule RAG",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "green",
+                "label": "Green"
+              },
+              {
+                "value": "amber",
+                "label": "Amber"
+              },
+              {
+                "value": "red",
+                "label": "Red"
+              }
+            ]
+          },
+          {
+            "key": "budget_rag",
+            "label": "Budget RAG",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "green",
+                "label": "Green"
+              },
+              {
+                "value": "amber",
+                "label": "Amber"
+              },
+              {
+                "value": "red",
+                "label": "Red"
+              }
+            ]
+          },
+          {
+            "key": "key_accomplishments",
+            "label": "Key Accomplishments",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "issues_risks",
+            "label": "Issues & Risks",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "next_period_plan",
+            "label": "Next Period Plan",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "forecast_completion_cost",
+            "label": "Forecast at Completion",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "variance_at_completion",
+            "label": "Variance at Completion",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "analysis_notes",
+            "label": "Analysis Notes",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F056": {
+    "title": "Variance Analysis",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "reporting_period",
+            "label": "Reporting Period",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "planned_value",
+            "label": "Planned Value",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "actual_cost",
+            "label": "Actual Cost",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "earned_value",
+            "label": "Earned Value",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "variance_explanation",
+            "label": "Variance Explanation",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "schedule_variance",
+            "label": "Schedule Variance (days)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "critical_path_status",
+            "label": "Critical Path Status",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "recovery_plan",
+            "label": "Recovery Plan",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F057": {
+    "title": "Earned Value Analysis",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "reporting_period",
+            "label": "Reporting Period",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "planned_value",
+            "label": "Planned Value (PV)",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "earned_value",
+            "label": "Earned Value (EV)",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "actual_cost",
+            "label": "Actual Cost (AC)",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "budget_at_completion",
+            "label": "Budget at Completion (BAC)",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "cpi",
+            "label": "Cost Performance Index (CPI)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "spi",
+            "label": "Schedule Performance Index (SPI)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "eac",
+            "label": "Estimate at Completion (EAC)",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "etc",
+            "label": "Estimate to Complete (ETC)",
+            "type": "money",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F058": {
+    "title": "Risk Audit",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "audit_date",
+            "label": "Audit Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "auditor",
+            "label": "Auditor",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "risk_process_effectiveness",
+            "label": "Risk Process Effectiveness",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "effective",
+                "label": "Effective"
+              },
+              {
+                "value": "partially_effective",
+                "label": "Partially Effective"
+              },
+              {
+                "value": "ineffective",
+                "label": "Ineffective"
+              }
+            ]
+          },
+          {
+            "key": "findings",
+            "label": "Findings",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "recommendations",
+            "label": "Recommendations",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "risk_register_reference",
+            "label": "Risk Register Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "corrective_actions",
+            "label": "Corrective Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "follow_up_date",
+            "label": "Follow-Up Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F059": {
+    "title": "Contractor Status Report",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "contractor_name",
+            "label": "Contractor Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "reporting_period",
+            "label": "Reporting Period",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "progress_summary",
+            "label": "Progress Summary",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "performance_rag",
+            "label": "Performance RAG",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "green",
+                "label": "Green"
+              },
+              {
+                "value": "amber",
+                "label": "Amber"
+              },
+              {
+                "value": "red",
+                "label": "Red"
+              }
+            ]
+          },
+          {
+            "key": "issues",
+            "label": "Issues",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "contract_reference",
+            "label": "Contract Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "deliverables_status",
+            "label": "Deliverables Status",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "payment_status",
+            "label": "Payment Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "current",
+                "label": "Current"
+              },
+              {
+                "value": "overdue",
+                "label": "Overdue"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "F060": {
+    "title": "Procurement Audit",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "audit_date",
+            "label": "Audit Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "contract_reference",
+            "label": "Contract Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "compliance_status",
+            "label": "Compliance Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "compliant",
+                "label": "Compliant"
+              },
+              {
+                "value": "non_compliant",
+                "label": "Non-Compliant"
+              },
+              {
+                "value": "partially_compliant",
+                "label": "Partially Compliant"
+              }
+            ]
+          },
+          {
+            "key": "findings",
+            "label": "Findings",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "auditor",
+            "label": "Auditor",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "corrective_actions",
+            "label": "Corrective Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "follow_up_date",
+            "label": "Follow-Up Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F061": {
+    "title": "Contract Closeout Report",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "contract_reference",
+            "label": "Contract Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "closeout_date",
+            "label": "Closeout Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "deliverables_accepted",
+            "label": "Deliverables Accepted",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              },
+              {
+                "value": "partial",
+                "label": "Partial"
+              }
+            ]
+          },
+          {
+            "key": "outstanding_items",
+            "label": "Outstanding Items",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "final_payment_amount",
+            "label": "Final Payment Amount",
+            "type": "money",
+            "required": false
+          },
+          {
+            "key": "lessons_learned",
+            "label": "Lessons Learned",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "final_acceptance_by",
+            "label": "Final Acceptance By",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "warranty_notes",
+            "label": "Warranty Notes",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F062": {
+    "title": "Product Acceptance Form",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "deliverable_name",
+            "label": "Deliverable Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "acceptance_criteria_met",
+            "label": "Acceptance Criteria Met",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              },
+              {
+                "value": "partial",
+                "label": "Partial"
+              }
+            ]
+          },
+          {
+            "key": "accepted_by",
+            "label": "Accepted By",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "acceptance_date",
+            "label": "Acceptance Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "comments",
+            "label": "Comments",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "waiver_details",
+            "label": "Waiver Details",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "rejection_reason",
+            "label": "Rejection Reason",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "follow_up_actions",
+            "label": "Follow-Up Actions",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F063": {
+    "title": "Lessons Learned Summary",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "summary",
+            "label": "Overall Lessons Learned Summary",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "key_successes",
+            "label": "Key Successes",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "key_challenges",
+            "label": "Key Challenges",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "recommendations",
+            "label": "Recommendations for Future Projects",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "category",
+            "label": "Category",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "technical",
+                "label": "Technical"
+              },
+              {
+                "value": "process",
+                "label": "Process"
+              },
+              {
+                "value": "people",
+                "label": "People"
+              },
+              {
+                "value": "other",
+                "label": "Other"
+              }
+            ]
+          },
+          {
+            "key": "applicability",
+            "label": "Applicability to Future Projects",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F064": {
+    "title": "Project or Phase Closeout",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "closeout_date",
+            "label": "Closeout Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "final_deliverables",
+            "label": "Final Deliverables",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "outstanding_actions",
+            "label": "Outstanding Actions",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "resource_release_confirmation",
+            "label": "Resources Released",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "yes",
+                "label": "Yes"
+              },
+              {
+                "value": "no",
+                "label": "No"
+              }
+            ]
+          },
+          {
+            "key": "sign_off_by",
+            "label": "Sign-Off By",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "archive_location",
+            "label": "Archive Location",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "final_report_reference",
+            "label": "Final Report Reference",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "stakeholder_notification",
+            "label": "Stakeholder Notification",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F065": {
+    "title": "Product Vision",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "vision_statement",
+            "label": "Vision Statement",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "target_customers",
+            "label": "Target Customers",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "key_benefits",
+            "label": "Key Benefits",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "success_metrics",
+            "label": "Success Metrics",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "product_goals",
+            "label": "Product Goals",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "constraints",
+            "label": "Constraints",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "roadmap_link",
+            "label": "Roadmap Link",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F066": {
+    "title": "Product Backlog",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "item_title",
+            "label": "Backlog Item Title",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "priority",
+            "label": "Priority",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "low",
+                "label": "Low"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "high",
+                "label": "High"
+              },
+              {
+                "value": "critical",
+                "label": "Critical"
+              }
+            ]
+          },
+          {
+            "key": "estimate",
+            "label": "Estimate (Story Points)",
+            "type": "number",
+            "required": false
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "type": "select",
+            "required": false,
+            "options": [
+              {
+                "value": "not_started",
+                "label": "Not Started"
+              },
+              {
+                "value": "in_progress",
+                "label": "In Progress"
+              },
+              {
+                "value": "done",
+                "label": "Done"
+              }
+            ]
+          },
+          {
+            "key": "acceptance_criteria",
+            "label": "Acceptance Criteria",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "sprint_target",
+            "label": "Sprint Target",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "dependencies",
+            "label": "Dependencies",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F067": {
+    "title": "Release Plan",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "release_name",
+            "label": "Release Name",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "release_date",
+            "label": "Target Release Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "included_features",
+            "label": "Included Features",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "release_goals",
+            "label": "Release Goals",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "release_owner",
+            "label": "Release Owner",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "risks",
+            "label": "Release Risks",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "readiness_criteria",
+            "label": "Readiness Criteria",
+            "type": "textarea",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+  "F068": {
+    "title": "Retrospective",
+    "sections": [
+      {
+        "key": "general",
+        "title": "General",
+        "fields": [
+          {
+            "key": "sprint_iteration",
+            "label": "Sprint/Iteration",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "what_went_well",
+            "label": "What Went Well",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "what_could_improve",
+            "label": "What Could Improve",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "action_items",
+            "label": "Action Items",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "facilitator",
+            "label": "Facilitator",
+            "type": "text",
+            "required": false
+          },
+          {
+            "key": "participants",
+            "label": "Participants",
+            "type": "textarea",
+            "required": false
+          },
+          {
+            "key": "retrospective_date",
+            "label": "Retrospective Date",
+            "type": "date",
+            "required": false
+          },
+          {
+            "key": "follow_up_owner",
+            "label": "Follow-Up Owner",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ]
+  }
+}

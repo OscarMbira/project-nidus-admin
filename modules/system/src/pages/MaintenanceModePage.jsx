@@ -18,6 +18,7 @@ import {
   SearchBar,
   useConfirmAction,
   useToast,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const TARGET_OPTIONS = ['platform', 'simulator', 'both']
@@ -42,6 +43,7 @@ export default function MaintenanceModePage() {
   const [busy, setBusy] = useState('')
   const [quickMessage, setQuickMessage] = useState('')
   const [windowForm, setWindowForm] = useState(EMPTY_WINDOW_FORM)
+  const [scheduleTab, setScheduleTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -206,6 +208,16 @@ export default function MaintenanceModePage() {
 
       <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Schedule Window</h2>
+
+        <div className="mt-3">
+          <DetailAuditTabList activeTab={scheduleTab} onChange={setScheduleTab} />
+        </div>
+
+        {scheduleTab === 'audit' && (
+          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">Audit details appear after this window is scheduled.</p>
+        )}
+
+        {scheduleTab === 'details' && (
         <AdminForm onSubmit={handleSchedule} className="mt-3 grid gap-3 lg:grid-cols-4">
           <AdminField label="Target">
             <select
@@ -252,6 +264,7 @@ export default function MaintenanceModePage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </div>
 
       <div className="space-y-3">

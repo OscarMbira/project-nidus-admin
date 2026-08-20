@@ -234,6 +234,167 @@ export const DEFAULT_NAV_SECTIONS = [
     ],
   },
   {
+    id: 'global-templates',
+    label: 'Global Templates',
+    roles: ['super_admin', 'system_admin', 'content_admin'],
+    groups: [
+      {
+        label: 'Library',
+        items: [
+          {
+            label: 'Global Template Library',
+            path: '/content/global-template-library',
+            roles: ['super_admin', 'system_admin', 'content_admin'],
+            activePaths: ['/content/global-template-form', '/content/global-template-detail', '/content/legacy-template-upload'],
+          },
+        ],
+      },
+    ],
+    subsections: [
+      {
+        label: 'Templates',
+        groups: [
+          {
+            label: 'Portfolio',
+            items: [
+              { label: 'Standards-Based', path: '/content/global-template-library?domain=portfolio_template&methodology=standards_based', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Structured', path: '/content/global-template-library?domain=portfolio_template&methodology=structured', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Agile', path: '/content/global-template-library?domain=portfolio_template&methodology=agile', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+          {
+            label: 'Programme',
+            items: [
+              { label: 'Standards-Based', path: '/content/global-template-library?domain=programme_template&methodology=standards_based', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Structured', path: '/content/global-template-library?domain=programme_template&methodology=structured', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Agile', path: '/content/global-template-library?domain=programme_template&methodology=agile', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+          {
+            label: 'Project',
+            items: [
+              { label: 'Standards-Based', path: '/content/global-template-library?domain=project_template&methodology=standards_based', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Structured', path: '/content/global-template-library?domain=project_template&methodology=structured', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Agile', path: '/content/global-template-library?domain=project_template&methodology=agile', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'Forms',
+        groups: [
+          {
+            label: 'Standards-Based',
+            items: [
+              { label: 'Initiating', path: '/content/global-template-library?domain=form_template&methodology=standards_based&category=Initiating', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Planning', path: '/content/global-template-library?domain=form_template&methodology=standards_based&category=Planning', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Executing', path: '/content/global-template-library?domain=form_template&methodology=standards_based&category=Executing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Monitoring & Controlling', path: '/content/global-template-library?domain=form_template&methodology=standards_based&category=Monitoring+%26+Controlling', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Closing', path: '/content/global-template-library?domain=form_template&methodology=standards_based&category=Closing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+          {
+            label: 'Structured',
+            items: [
+              { label: 'Starting Up', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Starting+Up', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Directing', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Directing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Initiating', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Initiating', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Controlling a Stage', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Controlling+a+Stage', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Managing Product Delivery', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Managing+Product+Delivery', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Managing a Stage Boundary', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Managing+a+Stage+Boundary', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Closing', path: '/content/global-template-library?domain=form_template&methodology=structured&category=Closing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+          {
+            label: 'Agile',
+            items: [
+              { label: 'Backlog', path: '/content/global-template-library?domain=form_template&methodology=agile&category=Backlog', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Sprint Planning', path: '/content/global-template-library?domain=form_template&methodology=agile&category=Sprint+Planning', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Sprint Execution', path: '/content/global-template-library?domain=form_template&methodology=agile&category=Sprint+Execution', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Review & Retrospective', path: '/content/global-template-library?domain=form_template&methodology=agile&category=Review+%26+Retrospective', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Release', path: '/content/global-template-library?domain=form_template&methodology=agile&category=Release', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'Content Coverage',
+        groups: [
+          {
+            label: 'Standards-Based',
+            items: [
+              { label: 'Initiating', path: '/content/default-content-library?methodology=standards_based&category=Initiating', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Planning', path: '/content/default-content-library?methodology=standards_based&category=Planning', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Executing', path: '/content/default-content-library?methodology=standards_based&category=Executing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Monitoring & Controlling', path: '/content/default-content-library?methodology=standards_based&category=Monitoring+%26+Controlling', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Closing', path: '/content/default-content-library?methodology=standards_based&category=Closing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'All coverage', path: '/content/default-content-library?methodology=standards_based', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+            ],
+          },
+          {
+            label: 'Structured',
+            items: [
+              { label: 'Starting Up', path: '/content/default-content-library?methodology=structured&category=Starting+Up', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Directing', path: '/content/default-content-library?methodology=structured&category=Directing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Initiating', path: '/content/default-content-library?methodology=structured&category=Initiating', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Controlling a Stage', path: '/content/default-content-library?methodology=structured&category=Controlling+a+Stage', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Managing Product Delivery', path: '/content/default-content-library?methodology=structured&category=Managing+Product+Delivery', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Managing a Stage Boundary', path: '/content/default-content-library?methodology=structured&category=Managing+a+Stage+Boundary', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Closing', path: '/content/default-content-library?methodology=structured&category=Closing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+            ],
+          },
+          {
+            label: 'Agile',
+            items: [
+              { label: 'Backlog', path: '/content/default-content-library?methodology=agile&category=Backlog', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Sprint Planning', path: '/content/default-content-library?methodology=agile&category=Sprint+Planning', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Sprint Execution', path: '/content/default-content-library?methodology=agile&category=Sprint+Execution', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Review & Retrospective', path: '/content/default-content-library?methodology=agile&category=Review+%26+Retrospective', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+              { label: 'Release', path: '/content/default-content-library?methodology=agile&category=Release', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/default-content-library'] },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'Process Docs',
+        groups: [
+          {
+            label: 'Standards-Based',
+            items: [
+              { label: 'Initiating', path: '/content/global-template-library?domain=process_template&methodology=standards_based&category=Initiating', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Planning', path: '/content/global-template-library?domain=process_template&methodology=standards_based&category=Planning', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Executing', path: '/content/global-template-library?domain=process_template&methodology=standards_based&category=Executing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Monitoring & Controlling', path: '/content/global-template-library?domain=process_template&methodology=standards_based&category=Monitoring+%26+Controlling', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Closing', path: '/content/global-template-library?domain=process_template&methodology=standards_based&category=Closing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+          {
+            label: 'Structured',
+            items: [
+              { label: 'Starting Up', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Starting+Up', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Directing', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Directing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Initiating', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Initiating', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Controlling a Stage', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Controlling+a+Stage', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Managing Product Delivery', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Managing+Product+Delivery', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Managing a Stage Boundary', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Managing+a+Stage+Boundary', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Closing', path: '/content/global-template-library?domain=process_template&methodology=structured&category=Closing', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+          {
+            label: 'Agile',
+            items: [
+              { label: 'Backlog', path: '/content/global-template-library?domain=process_template&methodology=agile&category=Backlog', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Sprint Planning', path: '/content/global-template-library?domain=process_template&methodology=agile&category=Sprint+Planning', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Sprint Execution', path: '/content/global-template-library?domain=process_template&methodology=agile&category=Sprint+Execution', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Review & Retrospective', path: '/content/global-template-library?domain=process_template&methodology=agile&category=Review+%26+Retrospective', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+              { label: 'Release', path: '/content/global-template-library?domain=process_template&methodology=agile&category=Release', roles: ['super_admin', 'system_admin', 'content_admin'], activePaths: ['/content/global-template-library'] },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: 'content-localization',
     label: 'Content & Localization',
     roles: ['super_admin', 'system_admin', 'content_admin'],
@@ -299,13 +460,14 @@ export const DEFAULT_NAV_SECTIONS = [
         items: [
           { label: 'ID Rules', path: '/system/id-generation-rules', roles: ['super_admin', 'system_admin'], activePaths: ['/system/id-generation-rule-form'] },
           { label: 'Generated IDs', path: '/system/id-generated-list', roles: ['super_admin', 'system_admin'] },
+          { label: 'ID to Application Report', path: '/system/id-to-application-report', roles: ['super_admin', 'system_admin'] },
         ],
       },
       {
         label: 'Notifications',
         items: [
-          { label: 'Notification Templates', path: '/system/notification-templates', roles: ['super_admin', 'system_admin'] },
-          { label: 'Alert Rules', path: '/system/alert-rules', roles: ['super_admin', 'system_admin'] },
+          { label: 'Notification Templates', path: '/system/notification-templates', roles: ['super_admin', 'system_admin'], activePaths: ['/system/notification-template-form'] },
+          { label: 'Alert Rules', path: '/system/alert-rules', roles: ['super_admin', 'system_admin'], activePaths: ['/system/alert-rule-form'] },
         ],
       },
       {

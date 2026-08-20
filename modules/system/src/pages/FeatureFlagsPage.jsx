@@ -3,12 +3,18 @@ import { createFeatureFlag, deleteFeatureFlag, fetchFeatureFlags, formatDate, ge
 import {
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
   LoadingState,
   SearchBar,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const APPLIES_TO_OPTIONS = ['all', 'platform', 'simulator', 'both', 'admin']
@@ -33,6 +39,7 @@ export default function FeatureFlagsPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -100,6 +107,7 @@ export default function FeatureFlagsPage() {
 
   const openEditModal = (flag) => {
     setEditingFlag(flag)
+    setEditTab('details')
     setEditForm({
       flag_key: flag.flag_key || '',
       flag_name: flag.flag_name || '',
@@ -229,20 +237,8 @@ export default function FeatureFlagsPage() {
                         >
                           {isBusy ? 'Working...' : 'Toggle'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(flag)}
-                          className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(flag)}
-                          className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50"
-                        >
-                          Delete
-                        </button>
+                        <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEditModal(flag)} />
+                        <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(flag)} />
                       </div>
                     </td>
                   </tr>
@@ -302,6 +298,28 @@ export default function FeatureFlagsPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingFlag)} title="Edit Feature Flag" onClose={() => setEditingFlag(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingFlag && (
+          <AuditDetailsPanel description="How this flag is classified and when it last changed.">
+            <AuditCard title="Identity" description="How this flag is labelled.">
+              <AuditField label="Flag key" value={editingFlag.flag_key} />
+              <AuditField label="Flag name" value={editingFlag.flag_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this flag applies.">
+              <AuditField label="Applies to" value={editingFlag.applies_to} />
+              <AuditField label="Enabled" value={editingFlag.is_enabled ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this flag was created and last changed.">
+              <AuditTimestampPair dateLabel="Created at" value={editingFlag.created_at} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingFlag.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2">
           <AdminField label="Flag Key" required>
             <input
@@ -345,6 +363,7 @@ export default function FeatureFlagsPage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {confirmModal}

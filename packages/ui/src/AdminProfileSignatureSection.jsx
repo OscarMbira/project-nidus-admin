@@ -5,6 +5,7 @@ import {
   saveAdminSignatureImage,
   deleteAdminSavedSignature,
   getAdminSignatureSignedUrl,
+  peekAdminSignatureDisplayUrl,
   validateAdminSignatureFile,
   normalizeImageFile,
   fileFromClipboardData,
@@ -21,7 +22,6 @@ import { ZoomableImage } from './ZoomableImage.jsx'
 export function AdminProfileSignatureSection() {
   const [saved, setSaved] = useState(null)
   const [signedUrl, setSignedUrl] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [showPasteHint, setShowPasteHint] = useState(false)
   const [busy, setBusy] = useState(false)
   const pasteBoxRef = useRef(null)
@@ -32,15 +32,18 @@ export function AdminProfileSignatureSection() {
     getAdminSavedSignature().then((result) => {
       if (cancelled) return
       if (result.success) setSaved(result.data)
-      setLoading(false)
     })
     return () => { cancelled = true }
   }, [])
 
   useEffect(() => {
     let cancelled = false
-    setSignedUrl(null)
-    if (!saved?.storage_path) return undefined
+    if (!saved?.storage_path) {
+      setSignedUrl(null)
+      return undefined
+    }
+    const cached = peekAdminSignatureDisplayUrl(saved.storage_path)
+    if (cached) setSignedUrl(cached)
     getAdminSignatureSignedUrl(saved.storage_path).then((result) => {
       if (!cancelled && result.success) setSignedUrl(result.data)
     })
@@ -106,10 +109,6 @@ export function AdminProfileSignatureSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPasteHint])
 
-  if (loading) {
-    return <p className="text-xs text-gray-400">Loading signature…</p>
-  }
-
   return (
     <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
       <h3 className="mb-1 text-sm font-semibold text-gray-100">Signature</h3>
@@ -123,6 +122,7 @@ export function AdminProfileSignatureSection() {
             alt="Your saved signature"
             imgClassName="max-h-24 max-w-full object-contain"
             hoverPreviewClassName="max-h-64 max-w-md object-contain"
+            priority
           />
         </div>
       ) : (

@@ -18,7 +18,7 @@ import { AdminAvatarBadge } from './AdminAvatarBadge.jsx'
  */
 export function AdminProfilePictureSection({ initials }) {
   const [avatarPath, setAvatarPath] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [refreshNonce, setRefreshNonce] = useState(0)
   const [showPasteHint, setShowPasteHint] = useState(false)
   const [busy, setBusy] = useState(false)
   const pasteBoxRef = useRef(null)
@@ -29,7 +29,6 @@ export function AdminProfilePictureSection({ initials }) {
     getAdminAvatar().then((result) => {
       if (cancelled) return
       if (result.success) setAvatarPath(result.data)
-      setLoading(false)
     })
     return () => { cancelled = true }
   }, [])
@@ -49,6 +48,7 @@ export function AdminProfilePictureSection({ initials }) {
         return
       }
       setAvatarPath(result.data)
+      setRefreshNonce((n) => n + 1)
       setShowPasteHint(false)
       showSuccess('Profile picture updated')
     } finally {
@@ -92,15 +92,11 @@ export function AdminProfilePictureSection({ initials }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPasteHint])
 
-  if (loading) {
-    return <p className="text-xs text-gray-400">Loading profile picture…</p>
-  }
-
   return (
     <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
       <h3 className="mb-3 text-sm font-semibold text-gray-100">Profile Picture</h3>
       <div className="flex flex-wrap items-center gap-4">
-        <AdminAvatarBadge avatarPath={avatarPath} initials={initials} sizeClassName="h-20 w-20" zoomable />
+        <AdminAvatarBadge avatarPath={avatarPath} initials={initials} sizeClassName="h-20 w-20" zoomable refreshNonce={refreshNonce} />
         <div className="flex flex-1 flex-wrap items-center gap-2">
           <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-gray-800/60 px-3 py-1.5 text-xs font-medium text-gray-200 hover:bg-gray-800 ${busy ? 'pointer-events-none opacity-50' : ''}`}>
             <Upload className="h-3.5 w-3.5" />

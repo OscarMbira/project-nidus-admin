@@ -13,6 +13,11 @@ import {
   LoadingState,
   inputClass,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const CATEGORIES = ['auth', 'billing', 'support', 'system']
@@ -76,6 +81,7 @@ export default function EmailTemplateEditorPage() {
   const [template, setTemplate] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [testRecipient, setTestRecipient] = useState('')
+  const [detailTab, setDetailTab] = useState('details')
 
   useEffect(() => {
     if (!isEdit) return undefined
@@ -227,6 +233,33 @@ export default function EmailTemplateEditorPage() {
         </button>
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && !isEdit && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this template is saved.</p>
+      )}
+
+      {detailTab === 'audit' && isEdit && (
+        <AuditDetailsPanel description="Who created or changed this email template, and how it is classified.">
+          <AuditCard title="Identity" description="How this template is labelled.">
+            <AuditField label="Template key" value={template?.template_key} />
+            <AuditField label="Template name" value={template?.template_name} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this template sits.">
+            <AuditField label="Category" value={template?.category} />
+            <AuditField label="Target system" value={template?.target_system} />
+            <AuditField label="Active" value={template?.is_active ? 'Yes' : 'No'} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this template was created and last changed.">
+            <AuditField label="Created by" value={template?.created_by || null} />
+            <AuditTimestampPair dateLabel="Created at" value={template?.created_at} />
+            <AuditField label="Updated by" value={template?.updated_by || null} />
+            <AuditTimestampPair dateLabel="Last updated" value={template?.updated_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
       <div className="grid gap-6 xl:grid-cols-2">
         <div className="rounded-lg border border-gray-700 bg-gray-900 p-5 md:p-6">
           <AdminForm onSubmit={handleSubmit} className="space-y-4">
@@ -380,6 +413,7 @@ export default function EmailTemplateEditorPage() {
           )}
         </div>
       </div>
+      )}
     </div>
   )
 }

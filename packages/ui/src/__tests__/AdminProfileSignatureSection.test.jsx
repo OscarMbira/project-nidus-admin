@@ -14,6 +14,7 @@ vi.mock('@nidus-admin/shared', () => ({
   saveAdminSignatureImage: (...args) => saveAdminSignatureImage(...args),
   deleteAdminSavedSignature: (...args) => deleteAdminSavedSignature(...args),
   getAdminSignatureSignedUrl: (...args) => getAdminSignatureSignedUrl(...args),
+  peekAdminSignatureDisplayUrl: () => null,
   validateAdminSignatureFile: (file) => {
     if (!file) return 'No file selected.'
     if (file.size > 2 * 1024 * 1024) return 'File is too large'

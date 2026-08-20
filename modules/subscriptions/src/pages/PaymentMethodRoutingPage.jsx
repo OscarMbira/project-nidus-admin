@@ -17,12 +17,18 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
@@ -64,6 +70,8 @@ export default function PaymentMethodRoutingPage() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editingRow, setEditingRow] = useState(null)
+  const [modalTab, setModalTab] = useState('details')
 
   const countryMap = useMemo(() => {
     const map = new Map()
@@ -121,10 +129,14 @@ export default function PaymentMethodRoutingPage() {
       ...EMPTY_FORM,
       display_order: rules.length,
     })
+    setEditingRow(null)
+    setModalTab('details')
     setModalOpen(true)
   }
 
   const openEdit = (row) => {
+    setEditingRow(row)
+    setModalTab('details')
     setForm({
       id: row.id,
       display_label: row.display_label || '',
@@ -287,13 +299,7 @@ export default function PaymentMethodRoutingPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex justify-end flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={() => openEdit(row)}
-                            className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                          >
-                            Edit
-                          </button>
+                          <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(row)} />
                           {canEdit && (
                             <>
                               <button
@@ -320,14 +326,7 @@ export default function PaymentMethodRoutingPage() {
                               >
                                 {row.is_enabled ? 'Disable' : 'Enable'}
                               </button>
-                              <button
-                                type="button"
-                                disabled={busyId === row.id}
-                                onClick={() => handleDelete(row)}
-                                className="rounded border border-red-700 px-2 py-1 text-xs text-red-200 hover:bg-red-900/40 disabled:opacity-50"
-                              >
-                                Delete
-                              </button>
+                              <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(row)} disabled={busyId === row.id} />
                             </>
                           )}
                         </div>
@@ -390,6 +389,34 @@ export default function PaymentMethodRoutingPage() {
         size="xl"
         hideFooter
       >
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={modalTab} onChange={setModalTab} />
+        </div>
+
+        {modalTab === 'audit' && !editingRow && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this route is saved.</p>
+        )}
+
+        {modalTab === 'audit' && editingRow && (
+          <AuditDetailsPanel description="Who created or changed this routing rule, and how it is classified.">
+            <AuditCard title="Identity" description="How this route is labelled.">
+              <AuditField label="Display label" value={editingRow.display_label} />
+              <AuditField label="Method type" value={editingRow.method_type} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this route sits.">
+              <AuditField label="Region scope" value={editingRow.region_scope} />
+              <AuditField label="Enabled" value={editingRow.is_enabled ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this route was created and last changed.">
+              <AuditField label="Created by" value={editingRow.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingRow.created_at} />
+              <AuditField label="Updated by" value={editingRow.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingRow.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {modalTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2 space-y-3">
           <AdminField label="Display Label" required>
             <input
@@ -500,6 +527,7 @@ export default function PaymentMethodRoutingPage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

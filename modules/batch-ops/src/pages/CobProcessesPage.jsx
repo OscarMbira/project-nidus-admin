@@ -4,12 +4,18 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   AdminTable,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const toErrorMessage = (error, fallback) => {
@@ -26,6 +32,7 @@ export default function CobProcessesPage() {
   const [editing, setEditing] = useState(null)
   const [editForm, setEditForm] = useState({ process_name: '', description: '', parametersJson: '{}' })
   const [saving, setSaving] = useState(false)
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -74,6 +81,7 @@ export default function CobProcessesPage() {
 
   const openEdit = (process) => {
     setEditing(process)
+    setEditTab('details')
     setEditForm({
       process_name: process.process_name || '',
       description: process.description || '',
@@ -168,13 +176,7 @@ export default function CobProcessesPage() {
           >
             {row.is_active ? 'Deactivate' : 'Activate'}
           </button>
-          <button
-            type="button"
-            onClick={() => openEdit(row)}
-            className="rounded border border-blue-700 bg-blue-900/30 px-2.5 py-1 text-xs text-blue-200 hover:bg-blue-900/50"
-          >
-            Edit
-          </button>
+          <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(row)} />
         </div>
       ),
     },
@@ -200,6 +202,28 @@ export default function CobProcessesPage() {
         title={`Edit ${editing?.process_name || 'Process'}`}
         onClose={() => setEditing(null)}
       >
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editing && (
+          <AuditDetailsPanel description="Who created this process, and how it is classified.">
+            <AuditCard title="Identity" description="How this process is labelled.">
+              <AuditField label="Process name" value={editing.process_name} />
+              <AuditField label="Process key" value={editing.process_key} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this process sits.">
+              <AuditField label="Target system" value={editing.target_system} />
+              <AuditField label="Active" value={editing.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this process was created.">
+              <AuditField label="Created by" value={editing.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editing.created_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2 space-y-3">
           <AdminField label="Process Name" required>
             <input
@@ -229,6 +253,7 @@ export default function CobProcessesPage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
     </div>
   )

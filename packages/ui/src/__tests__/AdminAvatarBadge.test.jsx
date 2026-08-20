@@ -6,6 +6,7 @@ const getAdminAvatarSignedUrl = vi.fn()
 
 vi.mock('@nidus-admin/shared', () => ({
   getAdminAvatarSignedUrl: (...args) => getAdminAvatarSignedUrl(...args),
+  peekAdminAvatarDisplayUrl: () => null,
 }))
 
 describe('AdminAvatarBadge', () => {

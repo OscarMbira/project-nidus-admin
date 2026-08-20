@@ -8,10 +8,12 @@ import {
   fetchBatchJobDetail,
   formatDate,
   getAdminDb,
+  getDisplayIdForRecord,
   getPublicDb,
   getSimDb,
   inviteAdminUser,
   updateBatchJobItem,
+  useDisplayId,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
@@ -99,7 +101,8 @@ async function retryImportItem(row, schema, jobId, itemId) {
 export default function BatchJobDetailPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const jobId = searchParams.get('id')
+  const idParam = searchParams.get('id')
+  const { uuid: jobId, loading: resolving } = useDisplayId('admin.batch_jobs', idParam)
   const { showSuccess, showError } = useToast()
   const { confirm, modal } = useConfirmAction()
   const [loading, setLoading] = useState(true)
@@ -238,14 +241,15 @@ export default function BatchJobDetailPage() {
         await completeBatchJob(newJobId)
         setRetrying(false)
         showSuccess('Retry job completed.')
-        navigate(`/batch-ops/batch-job-detail?id=${encodeURIComponent(newJobId)}`)
+        const newDisplayId = await getDisplayIdForRecord('admin.batch_jobs', newJobId).catch(() => null)
+        navigate(`/batch-ops/batch-job-detail?id=${encodeURIComponent(newDisplayId || newJobId)}`)
       },
     })
   }
 
-  if (loading) return <LoadingState message="Loading batch job..." />
+  if (loading || resolving) return <LoadingState message="Loading batch job..." />
 
-  if (!jobId) {
+  if (!idParam) {
     return (
       <div className="p-4 md:p-6">
         <EmptyState title="No job selected" description="Open a batch job from the list to view details." />

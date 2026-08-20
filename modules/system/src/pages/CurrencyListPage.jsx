@@ -9,13 +9,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const EMPTY_FORM = {
@@ -41,6 +47,7 @@ export default function CurrencyListPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -65,6 +72,7 @@ export default function CurrencyListPage() {
 
   const openEdit = (currency) => {
     setEditingCurrency(currency)
+    setEditTab('details')
     setEditForm({
       currency_code: currency.currency_code || '',
       currency_name: currency.currency_name || '',
@@ -262,11 +270,11 @@ export default function CurrencyListPage() {
                   <td className="px-4 py-3">{currency.is_base ? '★ Base' : '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <button type="button" onClick={() => openEdit(currency)} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(currency)} />
                       {!currency.is_base && (
                         <button type="button" disabled={busyId === currency.id} onClick={() => handleSetBase(currency)} className="rounded border border-violet-700 bg-violet-900/30 px-2.5 py-1 text-xs text-violet-200 hover:bg-violet-900/50 disabled:opacity-60">Set Base</button>
                       )}
-                      <button type="button" disabled={busyId === currency.id || currency.is_base} onClick={() => handleDelete(currency)} className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60">Delete</button>
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(currency)} disabled={busyId === currency.id || currency.is_base} />
                     </div>
                   </td>
                 </tr>
@@ -287,6 +295,30 @@ export default function CurrencyListPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingCurrency)} title={`Edit ${editingCurrency?.currency_code || 'Currency'}`} onClose={() => setEditingCurrency(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingCurrency && (
+          <AuditDetailsPanel description="Who created or changed this currency, and how it is classified.">
+            <AuditCard title="Identity" description="How this currency is labelled.">
+              <AuditField label="Currency code" value={editingCurrency.currency_code} />
+              <AuditField label="Currency name" value={editingCurrency.currency_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this currency sits.">
+              <AuditField label="Base currency" value={editingCurrency.is_base ? 'Yes' : 'No'} />
+              <AuditField label="Active" value={editingCurrency.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this currency was created and last changed.">
+              <AuditField label="Created by" value={editingCurrency.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingCurrency.created_at} />
+              <AuditField label="Updated by" value={editingCurrency.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingCurrency.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           {renderFormFields(editForm, setEditForm, true)}
           <div className="flex justify-end gap-2">
@@ -294,6 +326,7 @@ export default function CurrencyListPage() {
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

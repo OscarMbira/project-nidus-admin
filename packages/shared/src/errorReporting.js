@@ -2,6 +2,23 @@ import { getAdminDb } from './supabase.js'
 
 const SESSION_KEY = 'nidus-admin-error-session'
 
+async function computeErrorHash(errorType, errorMessage, pageRoute) {
+  const normalized = `${errorType || ''}|${String(errorMessage || '').slice(0, 500)}|${pageRoute || ''}`
+  if (globalThis.crypto?.subtle) {
+    const data = new TextEncoder().encode(normalized)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    return Array.from(new Uint8Array(hashBuffer))
+      .map((byte) => byte.toString(16).padStart(2, '0'))
+      .join('')
+  }
+  let hash = 0
+  for (let i = 0; i < normalized.length; i += 1) {
+    hash = ((hash << 5) - hash) + normalized.charCodeAt(i)
+    hash |= 0
+  }
+  return `fallback-${Math.abs(hash).toString(16)}`
+}
+
 function getSessionId() {
   try {
     let id = sessionStorage.getItem(SESSION_KEY)
@@ -71,6 +88,8 @@ export async function reportClientError({
 
   const { browser, os, device_type } = parseClientEnvironment()
   const pageRoute = `${window.location.pathname}${window.location.search || ''}`.slice(0, 500)
+  const errorMessage = (error?.message || String(error) || 'Unknown error').slice(0, 10000)
+  const error_hash = await computeErrorHash(errorType, errorMessage, pageRoute)
 
   let user_id = null
   let user_email = null
@@ -94,7 +113,8 @@ export async function reportClientError({
 
   const payload = {
     error_type: errorType,
-    error_message: (error?.message || String(error) || 'Unknown error').slice(0, 10000),
+    error_message: errorMessage,
+    error_hash,
     stack_trace: buildStackTrace(error, info),
     system,
     page_route: pageRoute,
@@ -110,8 +130,14 @@ export async function reportClientError({
   }
 
   const result = await db.from('system_error_log').insert(payload)
-  if (result.error?.code === '23514' && payload.system === 'admin') {
-    return db.from('system_error_log').insert({ ...payload, system: 'platform' })
+  if (result.error && payload.system === 'admin') {
+    const code = result.error.code
+    const message = String(result.error.message || result.error.details || '')
+    const shouldRetryAsPlatform = code === '23514'
+      || /system_error_log_system_check/i.test(message)
+    if (shouldRetryAsPlatform) {
+      return db.from('system_error_log').insert({ ...payload, system: 'platform' })
+    }
   }
   if (result.error) {
     console.error('[errorReporting] Failed to persist error log', result.error, payload)

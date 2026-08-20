@@ -5,8 +5,10 @@ import {
   fetchAffiliateById,
   fetchLifecycleLogs,
   generateAffiliateCodeFromName,
+  getDisplayIdForRecord,
   PermissionGate,
   updateAffiliate,
+  useDisplayId,
 } from '@nidus-admin/shared'
 import {
   AdminField,
@@ -16,6 +18,12 @@ import {
   RecordVersionHistory,
   inputClass,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+  humanizeAuditToken,
 } from '@nidus-admin/ui'
 import { toError } from '../utils/affiliateUi.js'
 
@@ -34,14 +42,17 @@ const EMPTY = {
 export default function AffiliateFormPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const editId = searchParams.get('id')
-  const isEdit = Boolean(editId)
+  const idParam = searchParams.get('id')
+  const isEdit = Boolean(idParam)
+  const { uuid: editId, loading: resolving } = useDisplayId('admin.affiliates', idParam)
   const { showSuccess, showError } = useToast()
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(EMPTY)
   const [lifecycleMeta, setLifecycleMeta] = useState(null)
   const [lifecycleLogs, setLifecycleLogs] = useState([])
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   useEffect(() => {
     if (!editId) return
@@ -53,6 +64,7 @@ export default function AffiliateFormPage() {
         setLoading(false)
         return
       }
+      setRecord(data)
       setForm({
         name: data.name || '',
         email: data.email || '',
@@ -111,10 +123,12 @@ export default function AffiliateFormPage() {
       return
     }
     showSuccess(isEdit ? 'Affiliate updated.' : 'Affiliate created.')
-    navigate(isEdit ? `/affiliates/affiliate-detail?id=${editId}` : `/affiliates/affiliate-detail?id=${data}`)
+    const targetId = isEdit ? editId : data
+    const displayId = await getDisplayIdForRecord('admin.affiliates', targetId).catch(() => null)
+    navigate(`/affiliates/affiliate-detail?id=${displayId || targetId}`)
   }
 
-  if (loading) return <LoadingState message="Loading affiliate form..." />
+  if (loading || resolving) return <LoadingState message="Loading affiliate form..." />
 
   const isPendingApproval = isEdit && lifecycleMeta?.record_status === 'unauthorised'
 
@@ -132,6 +146,35 @@ export default function AffiliateFormPage() {
           </div>
         )}
 
+        <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+        {detailTab === 'audit' && !isEdit && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this affiliate is saved.</p>
+        )}
+
+        {detailTab === 'audit' && isEdit && (
+          <AuditDetailsPanel description="Who created or changed this affiliate, and how it is classified.">
+            <AuditCard title="Identity" description="How this affiliate is labelled.">
+              <AuditField label="Name" value={record?.name} />
+              <AuditField label="Code" value={record?.code} />
+              <AuditField label="Email" value={record?.email} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this affiliate sits.">
+              <AuditField label="Status" value={humanizeAuditToken(record?.status)} />
+              <AuditField label="Target system" value={humanizeAuditToken(record?.target_system)} />
+              <AuditField label="Payout method" value={humanizeAuditToken(record?.payout_method)} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this affiliate was created and last changed.">
+              <AuditField label="Created by" value={record?.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={record?.created_at} />
+              <AuditField label="Updated by" value={record?.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={record?.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {detailTab === 'details' && (
+        <>
         {isEdit && lifecycleMeta && (
           <div className="grid gap-4 lg:grid-cols-2">
             <RecordLifecyclePanel
@@ -142,6 +185,7 @@ export default function AffiliateFormPage() {
               onChanged={() => {
                 fetchAffiliateById(editId).then(({ data }) => {
                   if (!data) return
+                  setRecord(data)
                   const rootId = data.root_record_id || editId
                   setLifecycleMeta({
                     record_status: data.record_status || 'live',
@@ -196,6 +240,8 @@ export default function AffiliateFormPage() {
           </div>
           </fieldset>
         </AdminForm>
+        </>
+        )}
       </div>
     </PermissionGate>
   )

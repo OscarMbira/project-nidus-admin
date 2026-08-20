@@ -60,9 +60,10 @@ export function buildRulesByTargetTable(rules) {
   return map
 }
 
-export function idGenerationRuleFormPath({ rule, targetTable } = {}) {
+export function idGenerationRuleFormPath({ rule, targetTable, view = false } = {}) {
   if (rule?.id) {
-    return `/system/id-generation-rule-form?id=${encodeURIComponent(rule.id)}`
+    const base = `/system/id-generation-rule-form?id=${encodeURIComponent(rule.id)}`
+    return view ? `${base}&view=1` : base
   }
   const table = normalizeTargetTable(targetTable)
   if (table) {

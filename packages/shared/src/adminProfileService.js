@@ -8,6 +8,7 @@
  */
 
 import { getAdminDb } from './supabase.js'
+import { peekSignedImage, resolveSignedImage, invalidateSignedImage } from './signedImageCache.js'
 
 export const ADMIN_USER_AVATARS_BUCKET = 'admin-user-avatars'
 export const ADMIN_USER_SIGNATURES_BUCKET = 'admin-user-signatures'
@@ -53,6 +54,10 @@ function fileExt(file) {
 }
 
 async function currentAuthUserId(db) {
+  if (db.auth.getSession) {
+    const { data: sessionData } = await db.auth.getSession()
+    if (sessionData?.session?.user?.id) return sessionData.session.user.id
+  }
   const { data, error } = await db.auth.getUser()
   if (error || !data?.user?.id) throw new Error('Not signed in.')
   return data.user.id
@@ -91,6 +96,7 @@ export async function saveAdminAvatar(file) {
       .from(ADMIN_USER_AVATARS_BUCKET)
       .upload(storagePath, file, { cacheControl: '3600', upsert: true, contentType: file.type })
     if (uploadError) throw uploadError
+    invalidateSignedImage(ADMIN_USER_AVATARS_BUCKET, storagePath)
 
     const { data, error } = await db.rpc('update_own_avatar', { p_avatar_path: storagePath })
     if (error) throw error
@@ -108,6 +114,7 @@ export async function removeAdminAvatar() {
     if (!current.success) throw new Error(current.message)
 
     if (current.data) {
+      invalidateSignedImage(ADMIN_USER_AVATARS_BUCKET, current.data)
       const { error: removeError } = await db.storage.from(ADMIN_USER_AVATARS_BUCKET).remove([current.data])
       if (removeError) throw removeError
     }
@@ -120,16 +127,29 @@ export async function removeAdminAvatar() {
   }
 }
 
-/** Signed URL for display — the bucket is private. */
+/** Instant display URL if this avatar was already resolved this session. */
+export function peekAdminAvatarDisplayUrl(storagePath) {
+  return peekSignedImage(ADMIN_USER_AVATARS_BUCKET, storagePath)
+}
+
+/** Signed URL for display — the bucket is private. Reuses a cached token for the session. */
 export async function getAdminAvatarSignedUrl(storagePath, expiresInSeconds = 86400) {
   try {
     const db = getAdminDb()
     if (!storagePath) throw new Error('Storage path is required')
-    const { data, error } = await db.storage
-      .from(ADMIN_USER_AVATARS_BUCKET)
-      .createSignedUrl(storagePath, expiresInSeconds)
-    if (error) throw error
-    return ok(data.signedUrl)
+    const signedUrl = await resolveSignedImage({
+      bucket: ADMIN_USER_AVATARS_BUCKET,
+      path: storagePath,
+      expiresInSeconds,
+      createSignedUrl: async () => {
+        const { data, error } = await db.storage
+          .from(ADMIN_USER_AVATARS_BUCKET)
+          .createSignedUrl(storagePath, expiresInSeconds)
+        if (error) throw error
+        return data.signedUrl
+      },
+    })
+    return ok(signedUrl)
   } catch (error) {
     return fail(error)
   }
@@ -168,6 +188,7 @@ export async function saveAdminSignatureImage(file) {
       .from(ADMIN_USER_SIGNATURES_BUCKET)
       .upload(storagePath, file, { cacheControl: '3600', upsert: true, contentType: file.type })
     if (uploadError) throw uploadError
+    invalidateSignedImage(ADMIN_USER_SIGNATURES_BUCKET, storagePath)
 
     const { data, error } = await db.rpc('save_own_signature', {
       p_storage_path: storagePath,
@@ -190,6 +211,7 @@ export async function deleteAdminSavedSignature() {
     if (!existing.success) throw new Error(existing.message)
     if (!existing.data) return ok(null)
 
+    invalidateSignedImage(existing.data.storage_bucket || ADMIN_USER_SIGNATURES_BUCKET, existing.data.storage_path)
     const { error: removeError } = await db.storage
       .from(existing.data.storage_bucket || ADMIN_USER_SIGNATURES_BUCKET)
       .remove([existing.data.storage_path])
@@ -203,16 +225,28 @@ export async function deleteAdminSavedSignature() {
   }
 }
 
-/** Signed URL for the saved signature — the bucket is private. */
+export function peekAdminSignatureDisplayUrl(storagePath, bucket = ADMIN_USER_SIGNATURES_BUCKET) {
+  return peekSignedImage(bucket, storagePath)
+}
+
+/** Signed URL for the saved signature — the bucket is private. Reuses a cached token for the session. */
 export async function getAdminSignatureSignedUrl(storagePath, expiresInSeconds = 86400) {
   try {
     const db = getAdminDb()
     if (!storagePath) throw new Error('Storage path is required')
-    const { data, error } = await db.storage
-      .from(ADMIN_USER_SIGNATURES_BUCKET)
-      .createSignedUrl(storagePath, expiresInSeconds)
-    if (error) throw error
-    return ok(data.signedUrl)
+    const signedUrl = await resolveSignedImage({
+      bucket: ADMIN_USER_SIGNATURES_BUCKET,
+      path: storagePath,
+      expiresInSeconds,
+      createSignedUrl: async () => {
+        const { data, error } = await db.storage
+          .from(ADMIN_USER_SIGNATURES_BUCKET)
+          .createSignedUrl(storagePath, expiresInSeconds)
+        if (error) throw error
+        return data.signedUrl
+      },
+    })
+    return ok(signedUrl)
   } catch (error) {
     return fail(error)
   }

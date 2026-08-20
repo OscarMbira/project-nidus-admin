@@ -19,6 +19,12 @@ import {
   RecordVersionHistory,
   inputClass,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+  humanizeAuditToken,
 } from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
@@ -63,6 +69,8 @@ export default function PaymentGatewayFormPage() {
   const [saving, setSaving] = useState(false)
   const [lifecycleMeta, setLifecycleMeta] = useState(null)
   const [lifecycleLogs, setLifecycleLogs] = useState([])
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   const providerMeta = useMemo(
     () => PAYMENT_PROVIDERS.find((p) => p.key === form.provider_key) || PAYMENT_PROVIDERS[0],
@@ -74,6 +82,7 @@ export default function PaymentGatewayFormPage() {
       setForm(EMPTY)
       setLifecycleMeta(null)
       setLifecycleLogs([])
+      setRecord(null)
       setLoading(false)
       return undefined
     }
@@ -91,6 +100,7 @@ export default function PaymentGatewayFormPage() {
         const { lifecycleMeta: nextLifecycleMeta, ...nextForm } = applyGatewayToForm(data, gatewayId)
         setForm(nextForm)
         setLifecycleMeta(nextLifecycleMeta)
+        setRecord(data)
         fetchLifecycleLogs('payment_gateways', nextLifecycleMeta.root_record_id).then(({ data: logs, error: logsError }) => {
           if (cancelled) return
           if (logsError) return
@@ -154,6 +164,39 @@ export default function PaymentGatewayFormPage() {
           </div>
         )}
 
+        <div className="mx-auto max-w-3xl">
+          <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+        </div>
+
+        {detailTab === 'audit' && !gatewayId && (
+          <p className="mx-auto max-w-3xl text-sm text-gray-500 dark:text-gray-400">Audit details appear after this gateway is saved.</p>
+        )}
+
+        {detailTab === 'audit' && gatewayId && (
+          <div className="mx-auto max-w-3xl">
+            <AuditDetailsPanel description="Who created or changed this payment gateway, and how it is classified.">
+              <AuditCard title="Identity" description="How this gateway is labelled.">
+                <AuditField label="Name" value={record?.name} />
+                <AuditField label="Display name" value={record?.display_name} />
+                <AuditField label="Provider" value={record?.provider_key ? providerLabel(record.provider_key) : null} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this gateway sits.">
+                <AuditField label="Environment" value={humanizeAuditToken(record?.environment)} />
+                <AuditField label="Active" value={record?.is_active ? 'Yes' : 'No'} />
+                <AuditField label="Default gateway" value={record?.is_default ? 'Yes' : 'No'} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this gateway was created and last changed.">
+                <AuditField label="Created by" value={record?.created_by || null} />
+                <AuditTimestampPair dateLabel="Created at" value={record?.created_at} />
+                <AuditField label="Updated by" value={record?.updated_by || null} />
+                <AuditTimestampPair dateLabel="Last updated" value={record?.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+          </div>
+        )}
+
+        {detailTab === 'details' && (
+        <>
         {gatewayId && lifecycleMeta && (
           <div className="mx-auto grid max-w-3xl gap-4 lg:grid-cols-2">
             <RecordLifecyclePanel
@@ -166,6 +209,7 @@ export default function PaymentGatewayFormPage() {
                   if (!data) return
                   const { lifecycleMeta: nextLifecycleMeta } = applyGatewayToForm(data, gatewayId)
                   setLifecycleMeta(nextLifecycleMeta)
+                  setRecord(data)
                   fetchLifecycleLogs('payment_gateways', nextLifecycleMeta.root_record_id).then(({ data: logs }) => {
                     setLifecycleLogs(logs || [])
                   })
@@ -246,6 +290,8 @@ export default function PaymentGatewayFormPage() {
           </div>
           </fieldset>
         </AdminForm>
+        </>
+        )}
       </div>
     </PermissionGate>
   )

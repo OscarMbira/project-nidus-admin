@@ -25,13 +25,20 @@ import {
   AdminCard,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
+  inputClass,
   LoadingState,
   RecordLifecyclePanel,
   RecordStatusBadge,
   RecordVersionHistory,
   SubscriptionFeaturesEditor,
-  inputClass,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+  humanizeAuditToken,
 } from '@nidus-admin/ui'
 
 const CATALOG_SCOPES = [
@@ -118,6 +125,7 @@ export default function PlanCatalogFormPage() {
   const [searchParams] = useSearchParams()
   const planId = searchParams.get('id')
   const isEdit = Boolean(planId)
+  const isViewOnly = searchParams.get('view') === '1' && Boolean(planId)
   const navigate = useNavigate()
   const { showSuccess, showError } = useToast()
   const [form, setForm] = useState(() => emptyForm())
@@ -130,8 +138,11 @@ export default function PlanCatalogFormPage() {
   const [lifecycleMeta, setLifecycleMeta] = useState(null)
   const [lifecycleLogs, setLifecycleLogs] = useState([])
   const [adminUsers, setAdminUsers] = useState([])
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   const isPendingApproval = isEdit && lifecycleMeta?.record_status === 'unauthorised'
+  const isReadOnly = isPendingApproval || isViewOnly
 
   const adminNameMap = useMemo(
     () => Object.fromEntries(adminUsers.map((user) => [user.id, user.full_name || user.email || user.id])),
@@ -243,6 +254,7 @@ export default function PlanCatalogFormPage() {
         setLoading(false)
         return
       }
+      setRecord(plan)
       setForm(planToForm(plan))
       setLifecycleMeta({
         record_status: plan.record_status || 'live',
@@ -360,19 +372,54 @@ export default function PlanCatalogFormPage() {
               ← Back to subscription catalog
             </button>
             <h1 className="text-xl font-semibold text-gray-100">
-              {isEdit ? 'Edit Plan' : 'Create Plan'}
+              {isViewOnly ? 'View Plan' : isEdit ? 'Edit Plan' : 'Create Plan'}
             </h1>
-            {isEdit && (
+            {isEdit && !isViewOnly && (
               <p className="text-xs text-gray-500">
                 Plan type, billing cycle, and system are locked after creation.
               </p>
             )}
           </div>
-          {isEdit && lifecycleMeta && (
-            <RecordStatusBadge status={lifecycleMeta.record_status} />
-          )}
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            {isViewOnly && (
+              <PermissionGate permission="pricing.edit">
+                <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/subscriptions/plan-catalog-form?id=${planId}`)} />
+              </PermissionGate>
+            )}
+            {isEdit && lifecycleMeta && (
+              <RecordStatusBadge status={lifecycleMeta.record_status} />
+            )}
+          </div>
         </div>
 
+        <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+        {detailTab === 'audit' && !isEdit && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this plan is saved.</p>
+        )}
+
+        {detailTab === 'audit' && isEdit && (
+          <AuditDetailsPanel description="Who created or changed this subscription plan, and how it is classified.">
+            <AuditCard title="Identity" description="How this plan is labelled.">
+              <AuditField label="Plan name" value={record?.plan_name} />
+              <AuditField label="Plan type" value={humanizeAuditToken(record?.plan_type)} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this plan sits.">
+              <AuditField label="Billing cycle" value={humanizeAuditToken(record?.billing_cycle)} />
+              <AuditField label="System" value={humanizeAuditToken(record?.catalog_scope)} />
+              <AuditField label="Active" value={record?.is_active !== false ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this plan was created and last changed.">
+              <AuditField label="Created by" value={record?.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={record?.created_at} />
+              <AuditField label="Updated by" value={record?.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={record?.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {detailTab === 'details' && (
+        <>
         {isEdit && lifecycleMeta && lifecycleMeta.record_status === 'unauthorised' && (
           <div className="shrink-0 rounded-lg border border-amber-700 bg-amber-900/20 px-3 py-2 text-sm text-amber-200">
             This plan has a pending edit awaiting approval. The public pricing page continues to show the
@@ -399,6 +446,7 @@ export default function PlanCatalogFormPage() {
                   fetchAllSubscriptionPlans().then(({ data }) => {
                     const plan = (data || []).find((row) => row.id === planId)
                     if (plan) {
+                      setRecord(plan)
                       setForm(planToForm(plan))
                       setLifecycleMeta({
                         record_status: plan.record_status || 'live',
@@ -428,15 +476,20 @@ export default function PlanCatalogFormPage() {
           </details>
         )}
 
-        <PermissionGate permission={isPendingApproval ? 'pricing.view' : 'pricing.edit'}>
-          <AdminForm onSubmit={isPendingApproval ? (event) => event.preventDefault() : handleSubmit} className="flex flex-col gap-3 space-y-0">
+        <PermissionGate permission={isReadOnly ? 'pricing.view' : 'pricing.edit'}>
+          <AdminForm onSubmit={isReadOnly ? (event) => event.preventDefault() : handleSubmit} className="flex flex-col gap-3 space-y-0">
             {isPendingApproval && (
               <div className="shrink-0 rounded-lg border border-gray-600 bg-gray-800/80 px-3 py-2 text-sm text-gray-300">
                 Plan details are read-only while this edit awaits authorisation. Approve or reject using the
                 governance panel above.
               </div>
             )}
-            <fieldset disabled={isPendingApproval} className="flex flex-col gap-3 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
+            {isViewOnly && !isPendingApproval && (
+              <div className="shrink-0 rounded-lg border border-gray-600 bg-gray-800/80 px-3 py-2 text-sm text-gray-300">
+                Viewing plan details in read-only mode. Use Edit to make changes.
+              </div>
+            )}
+            <fieldset disabled={isReadOnly} className="flex flex-col gap-3 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
             <div className="grid shrink-0 gap-3 lg:grid-cols-2">
               <AdminCard title="Plan Identity" className="!p-3">
                   <div className="mt-2 grid gap-3 sm:grid-cols-2">
@@ -571,7 +624,7 @@ export default function PlanCatalogFormPage() {
                 onChange={(features) => setForm((p) => ({ ...p, features }))}
                 options={featureOptions}
                 loading={featureOptionsLoading}
-                disabled={isPendingApproval}
+                disabled={isReadOnly}
                 hint={
                   featureOptionsLoading
                     ? 'Loading catalog features...'
@@ -581,7 +634,7 @@ export default function PlanCatalogFormPage() {
             </AdminCard>
             </fieldset>
 
-            {!isPendingApproval && (
+            {!isReadOnly && (
             <div className="shrink-0 rounded-lg border border-gray-700 bg-gray-900 p-3">
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-200">
                 <label className="flex items-center gap-2">
@@ -649,6 +702,8 @@ export default function PlanCatalogFormPage() {
             )}
           </AdminForm>
         </PermissionGate>
+        </>
+        )}
       </div>
     </PermissionGate>
   )

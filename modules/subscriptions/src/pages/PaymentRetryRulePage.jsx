@@ -12,13 +12,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const MAX_SCHEDULE_ROWS = 6
@@ -65,6 +71,7 @@ export default function PaymentRetryRulePage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -89,6 +96,7 @@ export default function PaymentRetryRulePage() {
 
   const openEdit = (rule) => {
     setEditingRule(rule)
+    setEditTab('details')
     setEditForm({
       rule_name: rule.rule_name || '',
       gateway_id: rule.gateway_id || '',
@@ -369,13 +377,7 @@ export default function PaymentRetryRulePage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(rule)}
-                        className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                      >
-                        Edit
-                      </button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(rule)} />
                       <PermissionGate permission="billing.payment_config.edit">
                         <button
                           type="button"
@@ -385,14 +387,7 @@ export default function PaymentRetryRulePage() {
                         >
                           {rule.is_active ? 'Deactivate' : 'Activate'}
                         </button>
-                        <button
-                          type="button"
-                          disabled={busyId === rule.id}
-                          onClick={() => handleDelete(rule)}
-                          className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60"
-                        >
-                          Delete
-                        </button>
+                        <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(rule)} disabled={busyId === rule.id} />
                       </PermissionGate>
                     </div>
                   </td>
@@ -418,6 +413,30 @@ export default function PaymentRetryRulePage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingRule)} title={`Edit ${editingRule?.rule_name || 'Retry Rule'}`} onClose={() => setEditingRule(null)} size="xl" hideFooter>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingRule && (
+          <AuditDetailsPanel description="Who created or changed this retry rule, and how it is classified.">
+            <AuditCard title="Identity" description="How this rule is labelled.">
+              <AuditField label="Rule name" value={editingRule.rule_name} />
+              <AuditField label="Gateway" value={editingRule.gateway_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this rule sits.">
+              <AuditField label="Failure code" value={editingRule.failure_code} />
+              <AuditField label="Active" value={editingRule.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this rule was created and last changed.">
+              <AuditField label="Created by" value={editingRule.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingRule.created_at} />
+              <AuditField label="Updated by" value={editingRule.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingRule.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           {renderFormFields(editForm, setEditForm)}
           <div className="flex justify-end gap-2">
@@ -429,6 +448,7 @@ export default function PaymentRetryRulePage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

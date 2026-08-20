@@ -8,22 +8,30 @@ import {
   fetchRefunds,
   formatCurrency,
   formatDate,
+  navId,
   PermissionGate,
   processRefund,
   rejectRefund,
   updateRefund,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import {
   daysRemainingForRefund,
@@ -92,12 +100,16 @@ export default function RefundListPage() {
   const [viewingRefund, setViewingRefund] = useState(null)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [viewTab, setViewTab] = useState('details')
 
   const invoiceMap = useMemo(() => {
     const map = new Map()
     invoices.forEach((invoice) => map.set(invoice.id, invoice))
     return map
   }, [invoices])
+
+  const refundIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
+  const { displayIdMap } = useDisplayIdMap('admin.refunds', refundIds)
 
   const refundableInvoices = useMemo(
     () => invoices.filter(isRefundableInvoice),
@@ -241,16 +253,10 @@ export default function RefundListPage() {
 
   const renderRefundActions = (refund, invoice) => (
     <div className="flex flex-wrap justify-end gap-2">
+      <AdminIconActionButton variant="view" label="View" onClick={() => { setViewingRefund(refund); setViewTab('details') }} />
       <button
         type="button"
-        onClick={() => setViewingRefund(refund)}
-        className={actionClass.neutral}
-      >
-        View
-      </button>
-      <button
-        type="button"
-        onClick={() => navigate(`/subscriptions/refund-detail?id=${refund.id}`)}
+        onClick={() => navigate(`/subscriptions/refund-detail?id=${navId(displayIdMap, refund.id)}`)}
         className={actionClass.neutral}
       >
         Details
@@ -258,14 +264,7 @@ export default function RefundListPage() {
       {refund.status === 'pending' && (
         <>
           <PermissionGate permission="refund:update">
-            <button
-              type="button"
-              disabled={busyId === refund.id}
-              onClick={() => openEdit(refund)}
-              className={actionClass.edit}
-            >
-              Edit
-            </button>
+            <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(refund)} disabled={busyId === refund.id} />
           </PermissionGate>
           <PermissionGate permission="refund:cancel">
             <button
@@ -434,6 +433,30 @@ export default function RefundListPage() {
               <AdminBadge label={viewingRefund.status} variant={statusVariant(viewingRefund.status)} />
               <span className="font-medium">{formatCurrency(viewingRefund.amount, viewingRefund.currency)}</span>
             </div>
+
+            <DetailAuditTabList activeTab={viewTab} onChange={setViewTab} />
+
+            {viewTab === 'audit' && (
+              <AuditDetailsPanel description="Who created or changed this refund, and how it is classified.">
+                <AuditCard title="Identity" description="How this refund is identified.">
+                  <AuditField label="Refund ID" value={viewingRefund.id} />
+                  <AuditField label="Payment transaction" value={viewingRefund.payment_transaction_id} />
+                </AuditCard>
+                <AuditCard title="Classification" description="Where this refund sits.">
+                  <AuditField label="Status" value={viewingRefund.status} />
+                  <AuditField label="Amount" value={formatCurrency(viewingRefund.amount, viewingRefund.currency)} />
+                </AuditCard>
+                <AuditCard title="Record history" description="When this refund was created and last changed.">
+                  <AuditField label="Created by" value={viewingRefund.created_by || null} />
+                  <AuditTimestampPair dateLabel="Created at" value={viewingRefund.created_at} />
+                  <AuditField label="Updated by" value={viewingRefund.updated_by || null} />
+                  <AuditTimestampPair dateLabel="Last updated" value={viewingRefund.updated_at} />
+                </AuditCard>
+              </AuditDetailsPanel>
+            )}
+
+            {viewTab === 'details' && (
+            <>
             <dl className="grid gap-3 sm:grid-cols-2">
               <div>
                 <dt className="text-xs uppercase text-gray-500">Refund ID</dt>
@@ -500,13 +523,15 @@ export default function RefundListPage() {
                 type="button"
                 onClick={() => {
                   setViewingRefund(null)
-                  navigate(`/subscriptions/refund-detail?id=${viewingRefund.id}`)
+                  navigate(`/subscriptions/refund-detail?id=${navId(displayIdMap, viewingRefund.id)}`)
                 }}
                 className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
               >
                 Open Full Detail
               </button>
             </div>
+            </>
+            )}
           </div>
         )}
       </AdminModal>

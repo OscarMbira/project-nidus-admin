@@ -5,6 +5,14 @@ export const DEFAULT_NUM_DIGITS = 4
 
 const DISAMBIGUATION_LETTERS = ['X', 'Y', 'Z', 'W', 'V']
 
+/** Preferred abbreviations for known tables (seed / form defaults). */
+const PREFERRED_ABBREVIATIONS = {
+  'admin.global_template_library': 'GTL',
+  'admin.global_template_versions': 'GTV',
+  global_template_library: 'GTL',
+  global_template_versions: 'GTV',
+}
+
 /** account_billing_delegates → Account Billing Delegates */
 export function tableNameToDescription(targetTable) {
   const name = getTableName(targetTable)
@@ -38,9 +46,12 @@ function normalizeAbbrev(value) {
 
 /** Build abbreviation candidates including schema-aware variants (sim.activity_attributes → SAA). */
 export function buildAbbreviationCandidates(targetTable) {
+  const preferred = PREFERRED_ABBREVIATIONS[String(targetTable || '').toLowerCase()]
   const base = tableNameToAbbreviation(targetTable)
   const schema = getTableSchema(targetTable)
-  const candidates = [base]
+  const candidates = []
+  if (preferred) candidates.push(preferred)
+  candidates.push(base)
 
   if (schema && schema !== 'public') {
     candidates.push(normalizeAbbrev(`${schema.charAt(0)}${base}`))
@@ -78,24 +89,45 @@ export function ensureUniqueAbbreviation(targetTable, rules = [], excludeRuleId 
   return tableNameToAbbreviation(targetTable)
 }
 
+/** Numeric IDs (Random or Sequential) don't need a letter prefix — abbreviation is optional in that case. */
+export function isAbbreviationOptional(form) {
+  const sequential = (form.generation_mode || 'random') === 'sequential'
+  const segmentType = sequential ? 'numeric' : (form.segment_type || 'alphanumeric')
+  return segmentType === 'numeric'
+}
+
+/** Random-mode Numeric has no prefix use-case, so the field auto-disables. Sequential stays editable — users can still opt into a prefix like RCC-2026-001. */
+export function isAbbreviationDisabled(form) {
+  const sequential = (form.generation_mode || 'random') === 'sequential'
+  const segmentType = form.segment_type || 'alphanumeric'
+  return !sequential && segmentType === 'numeric'
+}
+
 export function applyTableDefaults(form, targetTable, rules = [], excludeRuleId = null) {
   if (!targetTable) return form
 
-  const segmentType = form.segment_type || 'alphanumeric'
+  const sequential = (form.generation_mode || 'random') === 'sequential'
+  const segmentType = sequential ? 'numeric' : (form.segment_type || 'alphanumeric')
+  const abbreviationDisabled = !sequential && segmentType === 'numeric'
 
   return {
     ...form,
     target_table: targetTable,
-    table_abbreviation: ensureUniqueAbbreviation(targetTable, rules, excludeRuleId),
+    table_abbreviation: abbreviationDisabled ? '' : ensureUniqueAbbreviation(targetTable, rules, excludeRuleId),
     table_description: tableNameToDescription(targetTable),
-    num_letters: segmentType === 'numeric' ? 0 : DEFAULT_NUM_LETTERS,
-    num_digits: segmentType === 'alpha' ? 0 : (form.num_digits || DEFAULT_NUM_DIGITS),
+    segment_type: segmentType,
+    num_letters: sequential || segmentType === 'numeric' ? 0 : DEFAULT_NUM_LETTERS,
+    num_digits: sequential
+      ? (form.num_digits || 3)
+      : segmentType === 'alpha'
+        ? 0
+        : (form.num_digits || DEFAULT_NUM_DIGITS),
   }
 }
 
-export function getAbbreviationValidationError(abbrev, rules, excludeRuleId = null) {
+export function getAbbreviationValidationError(abbrev, rules, excludeRuleId = null, optional = false) {
   const normalized = normalizeAbbrev(abbrev)
-  if (!normalized) return 'Abbreviation is required.'
+  if (!normalized) return optional ? null : 'Abbreviation is required.'
   if (!/^[A-Z]{1,4}$/.test(normalized)) return 'Abbreviation must be 1–4 uppercase letters.'
 
   const conflict = findAbbreviationConflict(normalized, rules, excludeRuleId)

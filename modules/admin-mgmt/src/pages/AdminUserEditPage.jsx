@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   PermissionGate,
   ADMIN_ROLES,
@@ -16,17 +16,26 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AuditTrailWidget,
   EmptyState,
   inputClass,
   LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+  humanizeAuditToken,
 } from '@nidus-admin/ui'
 
 export default function AdminUserEditPage() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const idParam = searchParams.get('id')
+  const isViewOnly = searchParams.get('view') === '1' && Boolean(idParam)
   const { uuid: userId, loading: resolving, error: resolveError } = useDisplayId('admin.admin_users', idParam)
 
   const { confirm, modal } = useConfirmAction()
@@ -38,6 +47,7 @@ export default function AdminUserEditPage() {
   const [error, setError] = useState(null)
   const [adminUser, setAdminUser] = useState(null)
   const [auditEntries, setAuditEntries] = useState([])
+  const [detailTab, setDetailTab] = useState('details')
   const [formValues, setFormValues] = useState({
     full_name: '',
     role: 'system_admin',
@@ -96,13 +106,13 @@ export default function AdminUserEditPage() {
   }, [userId, resolving, resolveError])
 
   const hasChanges = useMemo(() => {
-    if (!adminUser) return false
+    if (!adminUser || isViewOnly) return false
     return (
       formValues.full_name !== (adminUser.full_name || '') ||
       formValues.role !== adminUser.role ||
       formValues.requires_2fa !== Boolean(adminUser.requires_2fa)
     )
-  }, [adminUser, formValues])
+  }, [adminUser, formValues, isViewOnly])
 
   const { requestNavigation } = useUnsavedChangesGuard(
     hasChanges,
@@ -170,6 +180,12 @@ export default function AdminUserEditPage() {
     })
   }
 
+  const goBack = () => requestNavigation('../admin-user-list', { relative: 'path' })
+
+  const openEditMode = () => {
+    navigate(`../admin-user-edit?id=${idParam}`, { relative: 'path' })
+  }
+
   if (resolving || loading) return <LoadingState message="Loading admin user..." />
   if (error) return <div className="p-6 text-red-400">{error}</div>
   if (!adminUser) return <EmptyState title="No user found" description="Select a valid admin user to edit." />
@@ -178,21 +194,70 @@ export default function AdminUserEditPage() {
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-100">Edit Admin User</h1>
-          <p className="text-sm text-gray-500">Update profile and access controls for this admin account.</p>
+          <h1 className="text-2xl font-semibold text-gray-100">
+            {isViewOnly ? 'View Admin User' : 'Edit Admin User'}
+          </h1>
+          <p className="text-sm text-gray-500">
+            {isViewOnly
+              ? 'Review profile and access details for this admin account.'
+              : 'Update profile and access controls for this admin account.'}
+          </p>
         </div>
-        <button
-          type="button"
-          className="rounded border border-gray-700 px-3 py-2 text-sm text-gray-300 hover:bg-gray-800"
-          onClick={() => requestNavigation('../admin-user-list', { relative: 'path' })}
-        >
-          Back to Admin Users
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {isViewOnly ? (
+            <PermissionGate permission="admins.edit">
+              <AdminIconActionButton variant="edit" label="Edit" onClick={openEditMode} />
+            </PermissionGate>
+          ) : null}
+          <button
+            type="button"
+            className="rounded border border-gray-700 px-3 py-2 text-sm text-gray-300 hover:bg-gray-800"
+            onClick={goBack}
+          >
+            Back to Admin Users
+          </button>
+        </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      {isViewOnly && (
+        <div className="rounded-lg border border-gray-600 bg-gray-800/80 px-3 py-2 text-sm text-gray-300">
+          Viewing admin user in read-only mode. Use Edit to make changes.
+        </div>
+      )}
+
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <div className="space-y-4">
+          <AuditDetailsPanel description="Who created or changed this admin user, and how it is classified.">
+            <AuditCard title="Identity" description="How this admin user is labelled.">
+              <AuditField label="Full name" value={adminUser.full_name} />
+              <AuditField label="Email" value={adminUser.email} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Access level and status.">
+              <AuditField label="Role" value={ROLE_LABELS[adminUser.role] || adminUser.role} />
+              <AuditField label="Status" value={humanizeAuditToken(adminUser.activation_status)} />
+              <AuditField label="Requires 2FA" value={adminUser.requires_2fa ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this admin user was created and last changed.">
+              <AuditField label="Created by" value={adminUser.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={adminUser.created_at} />
+              <AuditField label="Updated by" value={adminUser.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={adminUser.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-5">
+            <h2 className="mb-3 text-lg font-semibold text-gray-100">Audit Trail</h2>
+            <AuditTrailWidget entries={auditEntries} />
+          </div>
+        </div>
+      )}
+
+      {detailTab === 'details' && (
+      <div className="grid gap-6">
         <div className="space-y-5 rounded-lg border border-gray-700 bg-gray-900 p-5">
-          <AdminForm onSubmit={handleSave} className="space-y-4">
+          <AdminForm onSubmit={isViewOnly ? (event) => event.preventDefault() : handleSave} className="space-y-4">
+            <fieldset disabled={isViewOnly} className="space-y-4 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
             <AdminField label="Full Name">
               <input
                 className={inputClass}
@@ -245,20 +310,24 @@ export default function AdminUserEditPage() {
                 <p className="mt-1 text-sm text-gray-200">{formatDate(adminUser.created_at)}</p>
               </div>
             </div>
+            </fieldset>
 
-            <div className="flex flex-wrap gap-2 pt-2">
-              <PermissionGate permission="admins.edit">
-                <button
-                  type="submit"
-                  disabled={saving || !hasChanges}
-                  className="rounded border border-blue-700 bg-blue-900/40 px-4 py-2 text-sm text-blue-200 hover:bg-blue-900/70 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </PermissionGate>
-            </div>
+            {!isViewOnly && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                <PermissionGate permission="admins.edit">
+                  <button
+                    type="submit"
+                    disabled={saving || !hasChanges}
+                    className="rounded border border-blue-700 bg-blue-900/40 px-4 py-2 text-sm text-blue-200 hover:bg-blue-900/70 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </PermissionGate>
+              </div>
+            )}
           </AdminForm>
 
+          {!isViewOnly && (
           <div className="space-y-2 border-t border-gray-800 pt-4">
             <p className="text-sm font-medium text-gray-200">Security Actions</p>
             <div className="flex flex-wrap gap-2">
@@ -284,13 +353,10 @@ export default function AdminUserEditPage() {
               </PermissionGate>
             </div>
           </div>
-        </div>
-
-        <div className="rounded-lg border border-gray-700 bg-gray-900 p-5">
-          <h2 className="mb-3 text-lg font-semibold text-gray-100">Audit Trail</h2>
-          <AuditTrailWidget entries={auditEntries} />
+          )}
         </div>
       </div>
+      )}
 
       {modal}
     </div>

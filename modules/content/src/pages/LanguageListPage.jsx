@@ -9,13 +9,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const TARGET_SYSTEMS = ['all', 'platform', 'simulator']
@@ -58,6 +64,7 @@ export default function LanguageListPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -83,6 +90,7 @@ export default function LanguageListPage() {
   const openEdit = (language) => {
     setEditingLanguage(language)
     setEditForm(languageToForm(language))
+    setEditTab('details')
   }
 
   const renderFormFields = (form, setForm, isEdit = false) => (
@@ -278,21 +286,8 @@ export default function LanguageListPage() {
                   <td className="px-4 py-3">{language.is_default ? '★ Default' : '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(language)}
-                        className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        disabled={busyId === language.id || language.is_default}
-                        onClick={() => handleDelete(language)}
-                        className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60"
-                      >
-                        Delete
-                      </button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(language)} />
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(language)} disabled={busyId === language.id || language.is_default} />
                     </div>
                   </td>
                 </tr>
@@ -315,6 +310,32 @@ export default function LanguageListPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingLanguage)} title={`Edit ${editingLanguage?.language_name || 'Language'}`} onClose={() => setEditingLanguage(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingLanguage && (
+          <AuditDetailsPanel description="Who created or changed this language, and how it is classified.">
+            <AuditCard title="Identity" description="How this language is labelled.">
+              <AuditField label="Language code" value={editingLanguage.language_code} />
+              <AuditField label="Language name" value={editingLanguage.language_name} />
+              <AuditField label="Native name" value={editingLanguage.native_name} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this language sits.">
+              <AuditField label="Target system" value={editingLanguage.target_system} />
+              <AuditField label="Active" value={editingLanguage.is_active ? 'Yes' : 'No'} />
+              <AuditField label="Default" value={editingLanguage.is_default ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this language was created and last changed.">
+              <AuditField label="Created by" value={editingLanguage.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingLanguage.created_at} />
+              <AuditField label="Updated by" value={editingLanguage.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingLanguage.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           {renderFormFields(editForm, setEditForm, true)}
           {editingLanguage && (
@@ -329,6 +350,7 @@ export default function LanguageListPage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

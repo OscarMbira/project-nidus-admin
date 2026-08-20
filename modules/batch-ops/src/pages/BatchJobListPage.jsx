@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { cancelBatchJob, fetchBatchJobs, formatDate } from '@nidus-admin/shared'
+import { cancelBatchJob, fetchBatchJobs, formatDate, navId, useDisplayIdMap } from '@nidus-admin/shared'
 import {
   AdminBadge,
+  AdminIconActionButton,
   AdminTable,
   EmptyState,
   LoadingState,
@@ -62,6 +63,9 @@ export default function BatchJobListPage() {
 
   useEffect(() => { loadData() }, [statusFilter])
 
+  const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
+  const { displayIdMap } = useDisplayIdMap('admin.batch_jobs', rowIds)
+
   const handleCancel = useCallback((job) => {
     confirm({
       title: 'Cancel batch job?',
@@ -89,7 +93,7 @@ export default function BatchJobListPage() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => navigate(`/batch-ops/batch-job-detail?id=${encodeURIComponent(row.id)}`)}
+          onClick={() => navigate(`/batch-ops/batch-job-detail?id=${navId(displayIdMap, row.id)}`)}
           className="font-medium text-blue-300 hover:text-blue-200"
         >
           {row.job_type?.replace(/_/g, ' ') || '—'}
@@ -142,13 +146,7 @@ export default function BatchJobListPage() {
       sortable: false,
       render: (row) => (
         <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => navigate(`/batch-ops/batch-job-detail?id=${encodeURIComponent(row.id)}`)}
-            className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-          >
-            View
-          </button>
+          <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/batch-ops/batch-job-detail?id=${navId(displayIdMap, row.id)}`)} />
           {(row.status === 'running' || row.status === 'queued') && (
             <button
               type="button"
@@ -162,7 +160,7 @@ export default function BatchJobListPage() {
         </div>
       ),
     },
-  ], [busyId, navigate, handleCancel])
+  ], [busyId, navigate, handleCancel, displayIdMap])
 
   if (loading) return <LoadingState message="Loading batch jobs..." />
 

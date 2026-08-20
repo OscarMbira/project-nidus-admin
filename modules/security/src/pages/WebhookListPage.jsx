@@ -12,13 +12,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const COMMON_EVENTS = [
@@ -77,6 +83,7 @@ export default function WebhookListPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -111,6 +118,7 @@ export default function WebhookListPage() {
   const openEdit = (webhook) => {
     const eventFields = eventsToForm(webhook.events || [])
     setEditingWebhook(webhook)
+    setEditTab('details')
     setEditForm({
       webhook_name: webhook.webhook_name || '',
       endpoint_url: webhook.endpoint_url || '',
@@ -331,12 +339,12 @@ export default function WebhookListPage() {
                   <td className="px-4 py-3 text-gray-400">{formatDate(webhook.last_triggered_at)}</td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap justify-end gap-2">
-                      <button type="button" onClick={() => openEdit(webhook)} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(webhook)} />
                       <button type="button" disabled={busyId === webhook.id} onClick={() => handleToggle(webhook)} className="rounded border border-violet-700 bg-violet-900/30 px-2.5 py-1 text-xs text-violet-200 hover:bg-violet-900/50 disabled:opacity-60">
                         {webhook.is_active ? 'Disable' : 'Enable'}
                       </button>
                       <button type="button" disabled={busyId === webhook.id || !webhook.is_active} onClick={() => handleTest(webhook)} className="rounded border border-blue-700 bg-blue-900/30 px-2.5 py-1 text-xs text-blue-200 hover:bg-blue-900/50 disabled:opacity-60">Test</button>
-                      <button type="button" disabled={busyId === webhook.id} onClick={() => handleDelete(webhook)} className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60">Delete</button>
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(webhook)} disabled={busyId === webhook.id} />
                     </div>
                   </td>
                 </tr>
@@ -357,6 +365,28 @@ export default function WebhookListPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingWebhook)} title={`Edit ${editingWebhook?.webhook_name || 'Webhook'}`} onClose={() => setEditingWebhook(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingWebhook && (
+          <AuditDetailsPanel description="Who created this webhook, and how it is classified.">
+            <AuditCard title="Identity" description="How this webhook is labelled.">
+              <AuditField label="Webhook name" value={editingWebhook.webhook_name} />
+              <AuditField label="Endpoint URL" value={editingWebhook.endpoint_url} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this webhook sits.">
+              <AuditField label="Target system" value={editingWebhook.target_system} />
+              <AuditField label="Active" value={editingWebhook.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this webhook was created.">
+              <AuditField label="Created by" value={editingWebhook.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingWebhook.created_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           {renderFormFields(editForm, setEditForm)}
           <div className="flex justify-end gap-2">
@@ -364,6 +394,7 @@ export default function WebhookListPage() {
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

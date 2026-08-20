@@ -11,13 +11,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const SCHEDULE_TYPES = ['daily', 'weekly', 'monthly']
@@ -59,6 +65,7 @@ export default function ScheduledReportsPage() {
   const [editForm, setEditForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const reportMap = useMemo(() => {
     const map = new Map()
@@ -101,6 +108,7 @@ export default function ScheduledReportsPage() {
 
   const openEdit = (schedule) => {
     setEditingSchedule(schedule)
+    setEditTab('details')
     setEditForm({
       report_id: schedule.report_id || '',
       schedule_type: schedule.schedule_type || 'weekly',
@@ -295,8 +303,8 @@ export default function ScheduledReportsPage() {
                     <td className="px-4 py-3 text-xs text-gray-400">{formatDate(schedule.last_run_at)}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
-                        <button type="button" onClick={() => openEdit(schedule)} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</button>
-                        <button type="button" disabled={busyId === schedule.id} onClick={() => handleDelete(schedule)} className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60">Delete</button>
+                        <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(schedule)} />
+                        <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(schedule)} disabled={busyId === schedule.id} />
                       </div>
                     </td>
                   </tr>
@@ -318,6 +326,30 @@ export default function ScheduledReportsPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingSchedule)} title="Edit Scheduled Report" onClose={() => setEditingSchedule(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingSchedule && (
+          <AuditDetailsPanel description="Who created or changed this schedule, and how it is classified.">
+            <AuditCard title="Identity" description="How this schedule is labelled.">
+              <AuditField label="Report" value={reportMap.get(editingSchedule.report_id)?.report_name || editingSchedule.report_id} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this schedule sits.">
+              <AuditField label="Schedule type" value={editingSchedule.schedule_type} />
+              <AuditField label="Format" value={editingSchedule.format} />
+              <AuditField label="Active" value={editingSchedule.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this schedule was created and last changed.">
+              <AuditField label="Created by" value={editingSchedule.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingSchedule.created_at} />
+              <AuditField label="Updated by" value={editingSchedule.updated_by || null} />
+              <AuditTimestampPair dateLabel="Last updated" value={editingSchedule.updated_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           {renderFormFields(editForm, setEditForm, true)}
           <div className="flex justify-end gap-2">
@@ -325,6 +357,7 @@ export default function ScheduledReportsPage() {
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       {modal}

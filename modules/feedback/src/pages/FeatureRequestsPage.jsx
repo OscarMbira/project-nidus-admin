@@ -5,16 +5,21 @@ import {
   fetchAdminUsers,
   fetchFeatureRequests,
   formatDate,
+  formatDateShort,
   PermissionGate,
   setFeatureRequestStatus,
   updateFeatureRequest,
   useBulkSelection,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
   AdminField,
+  AdminIconActionButton,
   AdminModal,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -54,6 +59,7 @@ export default function FeatureRequestsPage() {
   const [priorityFilter, setPriorityFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [detailRow, setDetailRow] = useState(null)
+  const [manageRow, setManageRow] = useState(null)
   const [assignTarget, setAssignTarget] = useState(null)
   const [assigneeId, setAssigneeId] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -186,79 +192,79 @@ export default function FeatureRequestsPage() {
     await loadData()
   }
 
+  const openAssignFromManage = (row) => {
+    setManageRow(null)
+    setAssignTarget(row)
+    setAssigneeId('')
+  }
+
+  const buildFeatureManageActions = (row) => {
+    if (!row || TERMINAL_STATUSES.includes(row.status)) return []
+    const actions = [
+      {
+        key: 'assign',
+        label: 'Assign',
+        variant: 'cyan',
+        onClick: () => openAssignFromManage(row),
+      },
+    ]
+    if (row.status === 'under_review') {
+      actions.push({
+        key: 'approve',
+        label: 'Approve',
+        variant: 'success',
+        onClick: () => handleStatusAction(row, 'approved', {
+          title: `Approve "${row.title}"?`,
+          confirmLabel: 'Approve',
+        }),
+      })
+    }
+    if (['under_review', 'approved'].includes(row.status)) {
+      actions.push({
+        key: 'start',
+        label: 'Start implementation',
+        variant: 'cyan',
+        onClick: () => handleStatusAction(row, 'in_progress', {
+          title: `Start implementation for "${row.title}"?`,
+          confirmLabel: 'Start',
+        }),
+      })
+    }
+    if (row.status === 'in_progress') {
+      actions.push({
+        key: 'complete',
+        label: 'Mark complete',
+        variant: 'success',
+        onClick: () => handleComplete(row),
+      })
+    }
+    actions.push({
+      key: 'decline',
+      label: 'Decline',
+      variant: 'danger',
+      onClick: () => handleStatusAction(row, 'declined', {
+        title: `Decline "${row.title}"?`,
+        message: 'Provide a reason this request will not be implemented.',
+        confirmLabel: 'Decline',
+        danger: true,
+        requireReason: true,
+      }),
+    })
+    return actions
+  }
+
   const renderActions = (row) => {
     const terminal = TERMINAL_STATUSES.includes(row.status)
     return (
       <PermissionGate permission="feedback.requests.manage">
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setDetailRow(row)}
-            className="rounded border border-gray-600 bg-gray-800/60 px-2 py-1 text-xs text-gray-200 hover:bg-gray-800"
-          >
-            View
-          </button>
+        <AdminRowActions>
+          <AdminIconActionButton variant="view" label="View" onClick={() => setDetailRow(row)} />
           {!terminal && (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setAssignTarget(row)
-                  setAssigneeId('')
-                }}
-                className="rounded border border-blue-700 bg-blue-900/30 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/60"
-              >
-                Assign
-              </button>
-              {row.status === 'under_review' && (
-                <button
-                  type="button"
-                  onClick={() => handleStatusAction(row, 'approved', {
-                    title: `Approve "${row.title}"?`,
-                    confirmLabel: 'Approve',
-                  })}
-                  className="rounded border border-emerald-700 bg-emerald-900/30 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/60"
-                >
-                  Approve
-                </button>
-              )}
-              {['under_review', 'approved'].includes(row.status) && (
-                <button
-                  type="button"
-                  onClick={() => handleStatusAction(row, 'in_progress', {
-                    title: `Start implementation for "${row.title}"?`,
-                    confirmLabel: 'Start',
-                  })}
-                  className="rounded border border-cyan-700 bg-cyan-900/30 px-2 py-1 text-xs text-cyan-200 hover:bg-cyan-900/60"
-                >
-                  Start
-                </button>
-              )}
-              {row.status === 'in_progress' && (
-                <button
-                  type="button"
-                  onClick={() => handleComplete(row)}
-                  className="rounded border border-emerald-700 bg-emerald-900/30 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/60"
-                >
-                  Complete
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => handleStatusAction(row, 'declined', {
-                  title: `Decline "${row.title}"?`,
-                  message: 'Provide a reason this request will not be implemented.',
-                  confirmLabel: 'Decline',
-                  danger: true,
-                  requireReason: true,
-                })}
-                className="rounded border border-red-700 bg-red-900/30 px-2 py-1 text-xs text-red-200 hover:bg-red-900/60"
-              >
-                Decline
-              </button>
-            </>
+            <AdminActionButton variant="primary" onClick={() => setManageRow(row)}>
+              Manage
+            </AdminActionButton>
           )}
-        </div>
+        </AdminRowActions>
       </PermissionGate>
     )
   }
@@ -314,7 +320,20 @@ export default function FeatureRequestsPage() {
             selectedIds={bulk.selectedIds}
             onSelectionChange={bulk.setSelectedIds}
             columns={[
-              { key: 'title', label: 'Title', render: (r) => r.title || '—' },
+              {
+                key: 'title',
+                label: 'Title',
+                render: (r) => (
+                  <button
+                    type="button"
+                    className="max-w-xs truncate text-left text-blue-300 hover:underline"
+                    onClick={() => setDetailRow(r)}
+                    title={r.title || '—'}
+                  >
+                    {r.title || '—'}
+                  </button>
+                ),
+              },
               {
                 key: 'status',
                 label: 'Status',
@@ -323,7 +342,13 @@ export default function FeatureRequestsPage() {
               { key: 'votes', label: 'Votes', render: (r) => r.votes ?? 0 },
               { key: 'priority', label: 'Priority', render: (r) => r.priority || '—' },
               { key: 'category', label: 'Category', render: (r) => r.category || '—' },
-              { key: 'created_at', label: 'Created', render: (r) => formatDate(r.created_at) },
+              {
+                key: 'created_at',
+                label: 'Created',
+                render: (r) => (
+                  <span title={formatDate(r.created_at)}>{formatDateShort(r.created_at)}</span>
+                ),
+              },
               { key: 'actions', label: 'Actions', sortable: false, render: (r) => renderActions(r) },
             ]}
           />
@@ -426,6 +451,14 @@ export default function FeatureRequestsPage() {
           </div>
         </form>
       </AdminModal>
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage feature request"
+        subtitle={manageRow?.title}
+        onClose={() => setManageRow(null)}
+        actions={buildFeatureManageActions(manageRow)}
+      />
 
       {modal}
     </div>

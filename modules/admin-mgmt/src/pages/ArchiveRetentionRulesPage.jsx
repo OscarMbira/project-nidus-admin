@@ -5,7 +5,20 @@ import {
   fetchArchiveConfigs,
   upsertArchiveConfig,
 } from '@nidus-admin/shared'
-import { AdminField, AdminForm, AdminTable, EmptyState, LoadingState, inputClass, useToast } from '@nidus-admin/ui'
+import {
+  AdminField,
+  AdminForm,
+  AdminTable,
+  EmptyState,
+  LoadingState,
+  inputClass,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const EMPTY = {
   table_name: 'subscription_plans',
@@ -25,6 +38,8 @@ export default function ArchiveRetentionRulesPage() {
   const [rows, setRows] = useState([])
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [editingRow, setEditingRow] = useState(null)
+  const [ruleTab, setRuleTab] = useState('details')
 
   const load = async () => {
     setLoading(true)
@@ -48,6 +63,8 @@ export default function ArchiveRetentionRulesPage() {
       effective_until: row.effective_until || '',
       is_active: row.is_active,
     })
+    setEditingRow(row)
+    setRuleTab('details')
   }
 
   const save = async (event) => {
@@ -71,6 +88,7 @@ export default function ArchiveRetentionRulesPage() {
     }
     showSuccess('Archive retention rule saved')
     setForm(EMPTY)
+    setEditingRow(null)
     load()
   }
 
@@ -86,6 +104,34 @@ export default function ArchiveRetentionRulesPage() {
 
         <section className="rounded-lg border border-gray-700 bg-gray-900 p-5">
           <h2 className="mb-4 text-sm font-semibold text-gray-200">Rule editor</h2>
+
+          <div className="mb-4">
+            <DetailAuditTabList activeTab={ruleTab} onChange={setRuleTab} />
+          </div>
+
+          {ruleTab === 'audit' && !editingRow && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this rule is saved.</p>
+          )}
+
+          {ruleTab === 'audit' && editingRow && (
+            <AuditDetailsPanel description="Who configured this retention rule, and how it is classified.">
+              <AuditCard title="Identity" description="How this rule is labelled.">
+                <AuditField label="Table" value={editingRow.table_name} />
+                <AuditField label="Override reason" value={editingRow.override_reason} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this rule sits.">
+                <AuditField label="Auto-archive" value={editingRow.auto_archive_enabled ? 'Yes' : 'No'} />
+                <AuditField label="Active" value={editingRow.is_active ? 'Yes' : 'No'} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this rule was configured and last changed.">
+                <AuditField label="Configured by" value={editingRow.configured_by || null} />
+                <AuditTimestampPair dateLabel="Created at" value={editingRow.created_at} />
+                <AuditTimestampPair dateLabel="Last updated" value={editingRow.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+          )}
+
+          {ruleTab === 'details' && (
           <AdminForm onSubmit={save}>
             <div className="grid gap-4 md:grid-cols-2">
               <AdminField label="Table">
@@ -115,6 +161,7 @@ export default function ArchiveRetentionRulesPage() {
               {saving ? 'Saving…' : 'Save rule'}
             </button>
           </AdminForm>
+          )}
         </section>
 
         {rows.length === 0 ? (

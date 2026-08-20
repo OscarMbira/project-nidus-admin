@@ -12,17 +12,24 @@ import {
   processRefund,
   rejectRefund,
   updateRefund,
+  useDisplayId,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
-  LoadingState,
   inputClass,
+  LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 import {
   daysRemainingForRefund,
@@ -100,7 +107,8 @@ function RefundTimeline({ refund }) {
 export default function RefundDetailPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const refundId = searchParams.get('id')
+  const idParam = searchParams.get('id')
+  const { uuid: refundId, loading: resolving } = useDisplayId('admin.refunds', idParam)
   const { showSuccess, showError } = useToast()
   const { confirm, modal } = useConfirmAction()
 
@@ -111,13 +119,15 @@ export default function RefundDetailPage() {
   const [busy, setBusy] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [editForm, setEditForm] = useState({ amount: '', reason: '' })
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadDetail = async () => {
-    if (!refundId) {
+    if (!idParam) {
       setError('Refund ID is required.')
       setLoading(false)
       return
     }
+    if (!refundId) return // still resolving idParam -> uuid
     setLoading(true)
     setError(null)
     const [refundRes, invoicesRes] = await Promise.all([
@@ -203,7 +213,7 @@ export default function RefundDetailPage() {
   const daysLeft = invoice?.paid_at ? daysRemainingForRefund(invoice.paid_at) : null
   const daysSince = invoice?.paid_at ? daysSincePaid(invoice.paid_at) : null
 
-  if (loading) return <LoadingState message="Loading refund detail..." />
+  if (loading || resolving) return <LoadingState message="Loading refund detail..." />
 
   if (error || !refund) {
     return (
@@ -235,9 +245,7 @@ export default function RefundDetailPage() {
           {refund.status === 'pending' && (
             <>
               <PermissionGate permission="refund:update">
-                <button type="button" disabled={busy} onClick={openEdit} className="rounded border border-gray-600 px-3 py-1.5 text-sm text-gray-200 hover:bg-gray-800 disabled:opacity-60">
-                  Edit
-                </button>
+                <AdminIconActionButton variant="edit" label="Edit" onClick={openEdit} disabled={busy} />
               </PermissionGate>
               <PermissionGate permission="refund:cancel">
                 <button
@@ -318,6 +326,30 @@ export default function RefundDetailPage() {
         </div>
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <AuditDetailsPanel description="Who created or changed this refund, and how it is classified.">
+          <AuditCard title="Identity" description="How this refund is identified.">
+            <AuditField label="Refund ID" value={refund.id} />
+            <AuditField label="Payment transaction" value={refund.payment_transaction_id} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this refund sits.">
+            <AuditField label="Status" value={refund.status} />
+            <AuditField label="Amount" value={formatCurrency(refund.amount, refund.currency)} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this refund was created and last changed.">
+            <AuditField label="Created by" value={refund.created_by || null} />
+            <AuditTimestampPair dateLabel="Created at" value={refund.created_at} />
+            <AuditField label="Updated by" value={refund.updated_by || null} />
+            <AuditTimestampPair dateLabel="Last updated" value={refund.updated_at} />
+            <AuditField label="Approved by" value={refund.approved_by || null} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <>
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-lg border border-gray-700 bg-gray-900 p-5">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Invoice</h2>
@@ -388,6 +420,8 @@ export default function RefundDetailPage() {
           <RefundTimeline refund={refund} />
         </div>
       </section>
+      </>
+      )}
 
       <AdminModal open={showEdit} title="Edit Refund" onClose={() => setShowEdit(false)}>
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">

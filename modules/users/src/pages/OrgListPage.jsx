@@ -1,20 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  PermissionGate,
   exportToFile,
   fetchAccounts,
   formatDate,
+  formatDateShort,
   generateExportFilename,
   navId,
   suspendOrganisation,
   useBulkSelection,
+  useCurrentAdmin,
   useDisplayIdMap,
   verifyOrganisation,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -36,8 +41,10 @@ export default function OrgListPage() {
   const navigate = useNavigate()
   const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
+  const { hasPermission } = useCurrentAdmin()
   const [rows, setRows] = useState([])
   const [bulkModal, setBulkModal] = useState({ open: false, action: null, reason: '' })
+  const [manageRow, setManageRow] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [actionError, setActionError] = useState(null)
@@ -119,6 +126,32 @@ export default function OrgListPage() {
       reportBulk(outcome, 'organisation(s) suspended')
     }
     await loadAccounts()
+  }
+
+  const viewOrgDetail = (row) => {
+    navigate(`/users/org-detail?id=${navId(displayIdMap, row.id)}`)
+  }
+
+  const buildOrgManageActions = (row) => {
+    if (!row) return []
+    const actions = []
+    if (hasPermission('orgs.verify') && !row.is_verified) {
+      actions.push({
+        key: 'verify',
+        label: 'Verify',
+        variant: 'success',
+        onClick: () => handleVerify(row),
+      })
+    }
+    if (hasPermission('orgs.suspend')) {
+      actions.push({
+        key: 'suspend',
+        label: 'Suspend',
+        variant: 'danger',
+        onClick: () => handleSuspend(row),
+      })
+    }
+    return actions
   }
 
   const handleVerify = (row) => {
@@ -215,7 +248,15 @@ export default function OrgListPage() {
           onSelectionChange={bulk.setSelectedIds}
           columns={[
             { key: 'display_id', label: 'Display ID', sortable: false, render: (r) => displayIdMap[r.id] || '—' },
-            { key: 'account_name', label: 'Account Name', render: (r) => r.account_name || '—' },
+            { key: 'account_name', label: 'Account Name', render: (r) => (
+              <button
+                type="button"
+                className="text-left text-blue-300 hover:underline"
+                onClick={() => viewOrgDetail(r)}
+              >
+                {r.account_name || '—'}
+              </button>
+            ) },
             {
               key: 'verification',
               label: 'Verification',
@@ -232,40 +273,22 @@ export default function OrgListPage() {
                 <AdminBadge label={r.is_suspended ? 'Suspended' : 'Active'} variant={r.is_suspended ? 'suspended' : 'active'} />
               ),
             },
-            { key: 'created_at', label: 'Created', render: (r) => formatDate(r.created_at) },
+            { key: 'created_at', label: 'Created', render: (r) => (
+              <span title={formatDate(r.created_at)}>{formatDateShort(r.created_at)}</span>
+            ) },
             {
               key: 'actions',
               label: 'Actions',
               sortable: false,
               render: (r) => (
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    className="rounded border border-blue-700 bg-blue-900/40 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/70"
-                    onClick={() => navigate(`/users/org-detail?id=${navId(displayIdMap, r.id)}`)}
-                  >
-                    View Detail
-                  </button>
-                  <PermissionGate permission="orgs.verify">
-                    <button
-                      type="button"
-                      className="rounded border border-emerald-700 bg-emerald-900/40 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/70 disabled:opacity-50"
-                      onClick={() => handleVerify(r)}
-                      disabled={r.is_verified}
-                    >
-                      Verify
-                    </button>
-                  </PermissionGate>
-                  <PermissionGate permission="orgs.suspend">
-                    <button
-                      type="button"
-                      className="rounded border border-red-700 bg-red-900/40 px-2 py-1 text-xs text-red-200 hover:bg-red-900/70"
-                      onClick={() => handleSuspend(r)}
-                    >
-                      Suspend
-                    </button>
-                  </PermissionGate>
-                </div>
+                <AdminRowActions>
+                  <AdminIconActionButton variant="view" label="View" onClick={() => viewOrgDetail(r)} />
+                  {buildOrgManageActions(r).length > 0 && (
+                    <AdminActionButton variant="default" onClick={() => setManageRow(r)}>
+                      Manage
+                    </AdminActionButton>
+                  )}
+                </AdminRowActions>
               ),
             },
           ]}
@@ -298,6 +321,14 @@ export default function OrgListPage() {
         onConfirm={confirmBulkAction}
         onClose={() => setBulkModal({ open: false, action: null, reason: '' })}
         processing={bulk.processing}
+      />
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage organisation"
+        subtitle={manageRow?.account_name}
+        onClose={() => setManageRow(null)}
+        actions={buildOrgManageActions(manageRow)}
       />
 
       {modal}

@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { fetchSimScenarios, formatDate, exportToFile, generateExportFilename, navId, updateSimScenario, useBulkSelection, useDisplayIdMap } from '@nidus-admin/shared'
+import { fetchSimScenarios, formatDate, formatDateShort, exportToFile, generateExportFilename, navId, updateSimScenario, useBulkSelection, useDisplayIdMap } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -30,6 +34,7 @@ export default function SimScenarioAdminPage() {
   })
   const [difficultyFilter, setDifficultyFilter] = useState('all')
   const [bulkModal, setBulkModal] = useState({ open: false, action: null })
+  const [manageRow, setManageRow] = useState(null)
 
   const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
   const { displayIdMap } = useDisplayIdMap('sim.scenarios', rowIds)
@@ -138,6 +143,35 @@ export default function SimScenarioAdminPage() {
     })
   }
 
+  const viewScenario = (row) => {
+    navigate(`../sim-scenario-detail?id=${navId(displayIdMap, row.id)}`, { relative: 'path' })
+  }
+
+  const editScenario = (row) => {
+    navigate(`../sim-scenario-detail?id=${navId(displayIdMap, row.id)}&edit=1`, { relative: 'path' })
+  }
+
+  const buildScenarioManageActions = (row) => {
+    if (!row) return []
+    const actions = [
+      {
+        key: 'edit',
+        label: 'Edit scenario',
+        variant: 'primary',
+        onClick: () => editScenario(row),
+      },
+    ]
+    if (row.is_active) {
+      actions.push({
+        key: 'archive',
+        label: 'Archive',
+        variant: 'danger',
+        onClick: () => handleArchive(row),
+      })
+    }
+    return actions
+  }
+
   const activeCount = rows.filter((row) => row.is_active).length
 
   if (loading) return <LoadingState message="Loading simulation scenarios..." />
@@ -217,11 +251,21 @@ export default function SimScenarioAdminPage() {
           onSelectionChange={bulk.setSelectedIds}
           columns={[
             { key: 'display_id', label: 'Display ID', sortable: false, render: (r) => displayIdMap[r.id] || '—' },
-            { key: 'name', label: 'Scenario', render: (r) => r.name || '—' },
+            { key: 'name', label: 'Scenario', render: (r) => (
+              <button
+                type="button"
+                className="text-left text-blue-300 hover:underline"
+                onClick={() => viewScenario(r)}
+              >
+                {r.name || '—'}
+              </button>
+            ) },
             { key: 'difficulty_level', label: 'Difficulty', render: (r) => r.difficulty_level || '—' },
             { key: 'completions_count', label: 'Completions', render: (r) => r.completions_count ?? 0 },
             { key: 'average_score', label: 'Avg Score', render: (r) => r.average_score ?? '—' },
-            { key: 'created_at', label: 'Created', render: (r) => formatDate(r.created_at) },
+            { key: 'created_at', label: 'Created', render: (r) => (
+              <span title={formatDate(r.created_at)}>{formatDateShort(r.created_at)}</span>
+            ) },
             {
               key: 'is_active',
               label: 'Status',
@@ -232,31 +276,12 @@ export default function SimScenarioAdminPage() {
               label: 'Actions',
               sortable: false,
               render: (r) => (
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => navigate(`../sim-scenario-detail?id=${navId(displayIdMap, r.id)}`, { relative: 'path' })}
-                    className="rounded border border-gray-600 bg-gray-800 px-2 py-1 text-xs text-gray-200 hover:bg-gray-700"
-                  >
-                    View Detail
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate(`../sim-scenario-detail?id=${navId(displayIdMap, r.id)}&edit=1`, { relative: 'path' })}
-                    className="rounded border border-blue-700 bg-blue-900/40 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/70"
-                  >
-                    Edit
-                  </button>
-                  {r.is_active && (
-                    <button
-                      type="button"
-                      onClick={() => handleArchive(r)}
-                      className="rounded border border-red-700 bg-red-900/40 px-2 py-1 text-xs text-red-200 hover:bg-red-900/70"
-                    >
-                      Archive
-                    </button>
-                  )}
-                </div>
+                <AdminRowActions>
+                  <AdminIconActionButton variant="view" label="View" onClick={() => viewScenario(r)} />
+                  <AdminActionButton variant="default" onClick={() => setManageRow(r)}>
+                    Manage
+                  </AdminActionButton>
+                </AdminRowActions>
               ),
             },
           ]}
@@ -286,6 +311,14 @@ export default function SimScenarioAdminPage() {
         onConfirm={confirmBulkAction}
         onClose={() => setBulkModal({ open: false, action: null })}
         processing={bulk.processing}
+      />
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage scenario"
+        subtitle={manageRow?.name}
+        onClose={() => setManageRow(null)}
+        actions={buildScenarioManageActions(manageRow)}
       />
 
       {modal}

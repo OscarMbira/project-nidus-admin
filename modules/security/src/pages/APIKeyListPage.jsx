@@ -10,13 +10,19 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const EMPTY_CREATE_FORM = {
@@ -62,6 +68,7 @@ export default function APIKeyListPage() {
   const [createdKey, setCreatedKey] = useState(null)
   const [saving, setSaving] = useState(false)
   const [busyId, setBusyId] = useState('')
+  const [editTab, setEditTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
@@ -86,6 +93,7 @@ export default function APIKeyListPage() {
 
   const openEdit = (apiKey) => {
     setEditingKey(apiKey)
+    setEditTab('details')
     setEditForm({
       key_name: apiKey.key_name || '',
       permissions: (apiKey.permissions || []).join(', '),
@@ -221,7 +229,7 @@ export default function APIKeyListPage() {
                   <td className="px-4 py-3 text-gray-400">{apiKey.expires_at ? formatDate(apiKey.expires_at) : 'Never'}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <button type="button" disabled={!apiKey.is_active} onClick={() => openEdit(apiKey)} className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-40">Edit</button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => openEdit(apiKey)} disabled={!apiKey.is_active} />
                       <button type="button" disabled={!apiKey.is_active || busyId === apiKey.id} onClick={() => handleRevoke(apiKey)} className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-40">Revoke</button>
                     </div>
                   </td>
@@ -265,6 +273,28 @@ export default function APIKeyListPage() {
       </AdminModal>
 
       <AdminModal open={Boolean(editingKey)} title={`Edit ${editingKey?.key_name || 'API Key'}`} onClose={() => setEditingKey(null)}>
+        <div className="mb-3">
+          <DetailAuditTabList activeTab={editTab} onChange={setEditTab} />
+        </div>
+
+        {editTab === 'audit' && editingKey && (
+          <AuditDetailsPanel description="Who created this API key, and how it is classified.">
+            <AuditCard title="Identity" description="How this key is labelled.">
+              <AuditField label="Key name" value={editingKey.key_name} />
+              <AuditField label="Key prefix" value={editingKey.key_prefix} />
+            </AuditCard>
+            <AuditCard title="Classification" description="Where this key sits.">
+              <AuditField label="Target system" value={editingKey.target_system} />
+              <AuditField label="Active" value={editingKey.is_active ? 'Yes' : 'No'} />
+            </AuditCard>
+            <AuditCard title="Record history" description="When this key was created.">
+              <AuditField label="Created by" value={editingKey.created_by || null} />
+              <AuditTimestampPair dateLabel="Created at" value={editingKey.created_at} />
+            </AuditCard>
+          </AuditDetailsPanel>
+        )}
+
+        {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           <AdminField label="Key Name" required>
             <input className={inputClass} value={editForm.key_name} onChange={(e) => setEditForm((prev) => ({ ...prev, key_name: e.target.value }))} />
@@ -287,6 +317,7 @@ export default function APIKeyListPage() {
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>
           </div>
         </AdminForm>
+        )}
       </AdminModal>
 
       <AdminModal open={Boolean(createdKey)} title="API Key Created" onClose={() => setCreatedKey(null)}>

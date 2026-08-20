@@ -4,6 +4,7 @@ import {
   fetchAdminUsers,
   fetchBugReports,
   formatDate,
+  formatDateShort,
   PermissionGate,
   rejectBugReport,
   setBugReportStatus,
@@ -11,10 +12,14 @@ import {
   useBulkSelection,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
   AdminField,
+  AdminIconActionButton,
   AdminModal,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -54,6 +59,7 @@ export default function BugTrackingPage() {
   const [priorityFilter, setPriorityFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [detailRow, setDetailRow] = useState(null)
+  const [manageRow, setManageRow] = useState(null)
   const [assignTarget, setAssignTarget] = useState(null)
   const [assigneeId, setAssigneeId] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -184,88 +190,87 @@ export default function BugTrackingPage() {
     await loadData()
   }
 
+  const openAssignFromManage = (row) => {
+    setManageRow(null)
+    setAssignTarget(row)
+    setAssigneeId('')
+  }
+
+  const buildBugManageActions = (row) => {
+    if (!row || TERMINAL_STATUSES.includes(row.status)) return []
+    const actions = [
+      {
+        key: 'assign',
+        label: 'Assign',
+        variant: 'cyan',
+        onClick: () => openAssignFromManage(row),
+      },
+    ]
+    if (['new', 'assigned'].includes(row.status)) {
+      actions.push({
+        key: 'start',
+        label: 'Start work',
+        variant: 'cyan',
+        onClick: () => handleStatusAction(row, 'in_progress', {
+          title: `Start work on "${row.title}"?`,
+          confirmLabel: 'Start',
+        }),
+      })
+    }
+    if (row.status === 'in_progress') {
+      actions.push({
+        key: 'fix',
+        label: 'Mark fixed',
+        variant: 'success',
+        onClick: () => handleResolve(row, 'fixed'),
+      })
+    }
+    if (row.status === 'fixed') {
+      actions.push({
+        key: 'verify',
+        label: 'Verify fix',
+        variant: 'success',
+        onClick: () => handleStatusAction(row, 'verified', {
+          title: `Verify fix for "${row.title}"?`,
+          confirmLabel: 'Verify',
+        }),
+      })
+    }
+    if (row.status === 'verified') {
+      actions.push({
+        key: 'close',
+        label: 'Close',
+        variant: 'default',
+        onClick: () => handleResolve(row, 'closed'),
+      })
+    }
+    actions.push({
+      key: 'reject',
+      label: 'Reject',
+      variant: 'danger',
+      onClick: () => handleStatusAction(row, 'rejected', {
+        title: `Reject "${row.title}"?`,
+        message: 'Provide a reason this report is invalid or duplicate.',
+        confirmLabel: 'Reject',
+        danger: true,
+        requireReason: true,
+      }),
+    })
+    return actions
+  }
+
   const renderActions = (row) => {
     const terminal = TERMINAL_STATUSES.includes(row.status)
     return (
       <PermissionGate permission="feedback.bugs.manage">
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setDetailRow(row)}
-            className="rounded border border-gray-600 bg-gray-800/60 px-2 py-1 text-xs text-gray-200 hover:bg-gray-800"
-          >
-            View
-          </button>
+        <AdminRowActions>
+          <AdminIconActionButton variant="view" label="View" onClick={() => setDetailRow(row)} />
           {!terminal && (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setAssignTarget(row)
-                  setAssigneeId('')
-                }}
-                className="rounded border border-blue-700 bg-blue-900/30 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/60"
-              >
-                Assign
-              </button>
-              {['new', 'assigned'].includes(row.status) && (
-                <button
-                  type="button"
-                  onClick={() => handleStatusAction(row, 'in_progress', {
-                    title: `Start work on "${row.title}"?`,
-                    confirmLabel: 'Start',
-                  })}
-                  className="rounded border border-cyan-700 bg-cyan-900/30 px-2 py-1 text-xs text-cyan-200 hover:bg-cyan-900/60"
-                >
-                  Start
-                </button>
-              )}
-              {row.status === 'in_progress' && (
-                <button
-                  type="button"
-                  onClick={() => handleResolve(row, 'fixed')}
-                  className="rounded border border-emerald-700 bg-emerald-900/30 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/60"
-                >
-                  Fix
-                </button>
-              )}
-              {row.status === 'fixed' && (
-                <button
-                  type="button"
-                  onClick={() => handleStatusAction(row, 'verified', {
-                    title: `Verify fix for "${row.title}"?`,
-                    confirmLabel: 'Verify',
-                  })}
-                  className="rounded border border-emerald-700 bg-emerald-900/30 px-2 py-1 text-xs text-emerald-200 hover:bg-emerald-900/60"
-                >
-                  Verify
-                </button>
-              )}
-              {row.status === 'verified' && (
-                <button
-                  type="button"
-                  onClick={() => handleResolve(row, 'closed')}
-                  className="rounded border border-gray-600 bg-gray-800/60 px-2 py-1 text-xs text-gray-200 hover:bg-gray-800"
-                >
-                  Close
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => handleStatusAction(row, 'rejected', {
-                  title: `Reject "${row.title}"?`,
-                  message: 'Provide a reason this report is invalid or duplicate.',
-                  confirmLabel: 'Reject',
-                  danger: true,
-                  requireReason: true,
-                })}
-                className="rounded border border-red-700 bg-red-900/30 px-2 py-1 text-xs text-red-200 hover:bg-red-900/60"
-              >
-                Reject
-              </button>
-            </>
+            <AdminActionButton variant="primary" onClick={() => setManageRow(row)}>
+              Manage
+            </AdminActionButton>
           )}
-        </div>
+        </AdminRowActions>
       </PermissionGate>
     )
   }
@@ -329,7 +334,20 @@ export default function BugTrackingPage() {
             selectedIds={bulk.selectedIds}
             onSelectionChange={bulk.setSelectedIds}
             columns={[
-              { key: 'title', label: 'Title', render: (r) => r.title || '—' },
+              {
+                key: 'title',
+                label: 'Title',
+                render: (r) => (
+                  <button
+                    type="button"
+                    className="max-w-xs truncate text-left text-blue-300 hover:underline"
+                    onClick={() => setDetailRow(r)}
+                    title={r.title || '—'}
+                  >
+                    {r.title || '—'}
+                  </button>
+                ),
+              },
               {
                 key: 'status',
                 label: 'Status',
@@ -337,7 +355,13 @@ export default function BugTrackingPage() {
               },
               { key: 'priority', label: 'Priority', render: (r) => r.priority || '—' },
               { key: 'severity', label: 'Severity', render: (r) => r.severity || '—' },
-              { key: 'created_at', label: 'Created', render: (r) => formatDate(r.created_at) },
+              {
+                key: 'created_at',
+                label: 'Created',
+                render: (r) => (
+                  <span title={formatDate(r.created_at)}>{formatDateShort(r.created_at)}</span>
+                ),
+              },
               {
                 key: 'actions',
                 label: 'Actions',
@@ -491,6 +515,14 @@ export default function BugTrackingPage() {
           </div>
         </form>
       </AdminModal>
+
+      <AdminRowManageModal
+        open={Boolean(manageRow)}
+        title="Manage bug report"
+        subtitle={manageRow?.title}
+        onClose={() => setManageRow(null)}
+        actions={buildBugManageActions(manageRow)}
+      />
 
       {modal}
     </div>

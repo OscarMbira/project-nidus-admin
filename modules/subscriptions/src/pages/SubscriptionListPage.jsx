@@ -7,6 +7,7 @@ import {
   fetchAllSubscriptions,
   fetchSubscriptionPlansCatalog,
   formatDate,
+  formatDateShort,
   formatSubscriptionAmount,
   formatSubscriptionPlanLabel,
   generateExportFilename,
@@ -16,12 +17,17 @@ import {
   notifyEmailEvent,
   SUBSCRIPTION_DISPLAY_TABLE,
   useBulkSelection,
+  useCurrentAdmin,
   useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
   AdminModal,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   BulkActionBar,
   BulkConfirmModal,
@@ -68,59 +74,20 @@ function enrichSubscriptionRow(row, planCatalog, allRows) {
 
 const SubscriptionListActions = memo(function SubscriptionListActions({
   row,
-  displayId,
   onView,
   onEdit,
-  onCancel,
-  onExtendTrial,
-  onDelete,
+  onManage,
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
-      <button
-        type="button"
-        onClick={() => onView(row, displayId)}
-        className="rounded border border-blue-700 bg-blue-900/40 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/70"
-      >
-        View
-      </button>
+    <AdminRowActions>
+      <AdminIconActionButton variant="view" label="View" onClick={() => onView(row)} />
       <PermissionGate permission="subscriptions.edit">
-        <button
-          type="button"
-          onClick={() => onEdit(row, displayId)}
-          className="rounded border border-cyan-700 bg-cyan-900/40 px-2 py-1 text-xs text-cyan-200 hover:bg-cyan-900/70"
-        >
-          Edit
-        </button>
+        <AdminIconActionButton variant="edit" label="Edit" onClick={() => onEdit(row)} />
+        <AdminActionButton variant="default" onClick={() => onManage(row)}>
+          More
+        </AdminActionButton>
       </PermissionGate>
-      <PermissionGate permission="subscriptions.edit">
-        <button
-          type="button"
-          onClick={() => onCancel(row)}
-          className="rounded border border-red-700 bg-red-900/40 px-2 py-1 text-xs text-red-200 hover:bg-red-900/70"
-        >
-          Cancel
-        </button>
-      </PermissionGate>
-      <PermissionGate permission="subscriptions.edit">
-        <button
-          type="button"
-          onClick={() => onExtendTrial(row)}
-          className="rounded border border-amber-700 bg-amber-900/40 px-2 py-1 text-xs text-amber-200 hover:bg-amber-900/70"
-        >
-          Extend Trial
-        </button>
-      </PermissionGate>
-      <PermissionGate permission="subscriptions.delete">
-        <button
-          type="button"
-          onClick={() => onDelete(row)}
-          className="rounded border border-rose-800 bg-rose-950/40 px-2 py-1 text-xs text-rose-200 hover:bg-rose-950/70"
-        >
-          Delete
-        </button>
-      </PermissionGate>
-    </div>
+    </AdminRowActions>
   )
 })
 
@@ -129,6 +96,7 @@ export default function SubscriptionListPage() {
   const [searchParams] = useSearchParams()
   const { confirm, modal } = useConfirmAction()
   const { showSuccess, showError } = useToast()
+  const { hasPermission } = useCurrentAdmin()
 
   const [rows, setRows] = useState([])
   const [planCatalog, setPlanCatalog] = useState([])
@@ -152,6 +120,7 @@ export default function SubscriptionListPage() {
     reason: '',
     submitting: false,
   })
+  const [manageRow, setManageRow] = useState(null)
   const [bulkModal, setBulkModal] = useState({ open: false, action: null, reason: '', newStatus: 'active' })
 
   const loadSubscriptions = useCallback(async ({ silent = false } = {}) => {
@@ -417,17 +386,41 @@ export default function SubscriptionListPage() {
     })
   }, [confirm, displayIdMap, loadSubscriptions, showError, showSuccess])
 
+  const buildSubscriptionManageActions = useCallback((row) => {
+    if (!row) return []
+    const actions = [
+      {
+        key: 'cancel',
+        label: 'Cancel subscription',
+        variant: 'danger',
+        onClick: () => handleCancel(row),
+      },
+      {
+        key: 'extendTrial',
+        label: 'Extend trial',
+        variant: 'warning',
+        onClick: () => openExtendTrialModal(row),
+      },
+    ]
+    if (hasPermission('subscriptions.delete')) {
+      actions.push({
+        key: 'delete',
+        label: 'Delete subscription',
+        variant: 'danger',
+        onClick: () => handleDelete(row),
+      })
+    }
+    return actions
+  }, [handleCancel, handleDelete, hasPermission, openExtendTrialModal])
+
   const renderActions = useCallback((row) => (
     <SubscriptionListActions
       row={row}
-      displayId={displayIdMap[row.id]}
-      onView={navigateToDetail}
-      onEdit={navigateToEdit}
-      onCancel={handleCancel}
-      onExtendTrial={openExtendTrialModal}
-      onDelete={handleDelete}
+      onView={(subscriptionRow) => navigateToDetail(subscriptionRow, displayIdMap[subscriptionRow.id])}
+      onEdit={(subscriptionRow) => navigateToEdit(subscriptionRow, displayIdMap[subscriptionRow.id])}
+      onManage={setManageRow}
     />
-  ), [displayIdMap, navigateToDetail, navigateToEdit, handleCancel, openExtendTrialModal, handleDelete])
+  ), [displayIdMap, navigateToDetail, navigateToEdit])
 
   const columns = useMemo(() => [
     { key: 'display_id', label: 'Display ID', sortable: false, render: (r) => displayIdMap[r.id] || '—' },
@@ -449,8 +442,12 @@ export default function SubscriptionListPage() {
       render: (r) => <AdminBadge label={(r.status || 'unknown').replaceAll('_', ' ')} variant={r.status || 'default'} />,
     },
     { key: 'amount', label: 'Amount', render: (r) => r._amountLabel },
-    { key: 'started_at', label: 'Start Date', render: (r) => formatDate(r.started_at) },
-    { key: 'expires_at', label: 'Expires', render: (r) => formatDate(r.expires_at) },
+    { key: 'started_at', label: 'Start Date', render: (r) => (
+      <span title={formatDate(r.started_at)}>{formatDateShort(r.started_at)}</span>
+    ) },
+    { key: 'expires_at', label: 'Expires', render: (r) => (
+      <span title={formatDate(r.expires_at)}>{formatDateShort(r.expires_at)}</span>
+    ) },
     { key: 'actions', label: 'Actions', sortable: false, render: renderActions },
   ], [displayIdMap, renderActions])
 
@@ -675,6 +672,14 @@ export default function SubscriptionListPage() {
             />
           </div>
         </AdminModal>
+
+        <AdminRowManageModal
+          open={Boolean(manageRow)}
+          title="Subscription actions"
+          subtitle={manageRow ? (displayIdMap[manageRow.id] || manageRow.id) : ''}
+          onClose={() => setManageRow(null)}
+          actions={buildSubscriptionManageActions(manageRow)}
+        />
 
         {modal}
       </div>

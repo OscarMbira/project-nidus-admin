@@ -5,7 +5,9 @@ import {
   PermissionGate,
   fetchAdminUsers,
   fetchPendingAuthorisationRequests,
+  navId,
   processAuthoriserDecision,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import { AdminTable, AuthoriserReviewModal, EmptyState, LoadingState, PendingChangesDiff, useToast } from '@nidus-admin/ui'
 
@@ -50,10 +52,12 @@ function ChangeValuesCell({ values, fallback, tone = 'default' }) {
   return '—'
 }
 
-function recordHref(tableName, recordId) {
+// admin.subscription_plans and admin.payment_gateways don't have an ID Generation rule yet
+// (v205) — those two branches stay on the raw UUID until a rule seed lands for them.
+function recordHref(tableName, recordId, affiliateDisplayIdMap) {
   if (!recordId) return null
   if (tableName === 'subscription_plans') return `/subscriptions/plan-catalog-form?id=${recordId}`
-  if (tableName === 'affiliates') return `/affiliates/affiliate-form?id=${recordId}`
+  if (tableName === 'affiliates') return `/affiliates/affiliate-form?id=${navId(affiliateDisplayIdMap, recordId)}`
   if (tableName === 'payment_gateways') return `/subscriptions/payment-gateway-form?id=${recordId}`
   return null
 }
@@ -70,6 +74,12 @@ export default function MyApprovalsPage() {
     () => Object.fromEntries(adminUsers.map((user) => [user.id, user.full_name || user.email || user.id])),
     [adminUsers],
   )
+
+  const affiliateRecordIds = useMemo(
+    () => [...new Set(rows.filter((r) => r.table_name === 'affiliates').map((r) => r.record_id).filter(Boolean))],
+    [rows],
+  )
+  const { displayIdMap: affiliateDisplayIdMap } = useDisplayIdMap('admin.affiliates', affiliateRecordIds)
 
   const load = async () => {
     setLoading(true)
@@ -147,7 +157,7 @@ export default function MyApprovalsPage() {
                 key: 'record_label',
                 label: 'Record',
                 render: (row) => {
-                  const href = recordHref(row.table_name, row.record_id)
+                  const href = recordHref(row.table_name, row.record_id, affiliateDisplayIdMap)
                   return (
                     <div>
                       <div className="font-medium text-gray-100">
@@ -268,7 +278,7 @@ export default function MyApprovalsPage() {
           decision={reviewState?.decision}
           tableLabel={reviewState ? TABLE_LABELS[reviewState.row.table_name] : null}
           submitterName={reviewState ? adminNameMap[reviewState.row.submitted_by] : null}
-          recordLink={reviewState ? recordHref(reviewState.row.table_name, reviewState.row.record_id) : null}
+          recordLink={reviewState ? recordHref(reviewState.row.table_name, reviewState.row.record_id, affiliateDisplayIdMap) : null}
           onClose={() => setReviewState(null)}
           onConfirm={submitDecision}
         />

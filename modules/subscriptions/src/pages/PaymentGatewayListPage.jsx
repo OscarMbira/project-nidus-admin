@@ -9,7 +9,16 @@ import {
   setDefaultPaymentGateway,
   togglePaymentGateway,
 } from '@nidus-admin/shared'
-import { AdminBadge, AdminCard, EmptyState, LoadingState, SearchBar, useConfirmAction, useToast } from '@nidus-admin/ui'
+import {
+  AdminBadge,
+  AdminCard,
+  AdminIconActionButton,
+  EmptyState,
+  LoadingState,
+  SearchBar,
+  useConfirmAction,
+  useToast,
+} from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
 
@@ -126,13 +135,13 @@ export default function PaymentGatewayListPage() {
                   <td className="px-4 py-3">{row.is_default ? 'Yes' : '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end flex-wrap gap-2">
-                      <button type="button" onClick={() => navigate(`/subscriptions/payment-gateway-form?id=${row.id}`)} className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300 hover:bg-gray-800">Edit</button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/subscriptions/payment-gateway-form?id=${row.id}`)} />
                       <PermissionGate permission="billing.payment_config.edit">
                         <button type="button" disabled={busyId === row.id} onClick={() => handleToggle(row)} className="rounded border border-amber-700 px-2 py-1 text-xs text-amber-200 hover:bg-amber-900/40 disabled:opacity-50">{row.is_active ? 'Deactivate' : 'Activate'}</button>
                         {!row.is_default && row.is_active && (
                           <button type="button" disabled={busyId === row.id} onClick={() => handleSetDefault(row)} className="rounded border border-blue-700 px-2 py-1 text-xs text-blue-200 hover:bg-blue-900/40 disabled:opacity-50">Set Default</button>
                         )}
-                        <button type="button" disabled={busyId === row.id} onClick={() => handleDelete(row)} className="rounded border border-red-700 px-2 py-1 text-xs text-red-200 hover:bg-red-900/40 disabled:opacity-50">Delete</button>
+                        <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(row)} disabled={busyId === row.id} />
                       </PermissionGate>
                     </div>
                   </td>

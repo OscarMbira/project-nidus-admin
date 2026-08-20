@@ -9,7 +9,11 @@ import {
   setSubscriptionPlanCatalogActive,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
+  AdminIconActionButton,
+  AdminRowActions,
+  AdminRowManageModal,
   AdminTable,
   EmptyState,
   LoadingState,
@@ -46,6 +50,7 @@ export default function PlanCatalogListPage() {
   const [sortKey, setSortKey] = useState('catalog_scope')
   const [sortDir, setSortDir] = useState('asc')
   const [busyId, setBusyId] = useState('')
+  const [manageRow, setManageRow] = useState(null)
 
   const load = async () => {
     setLoading(true)
@@ -121,6 +126,26 @@ export default function PlanCatalogListPage() {
         }
       },
     })
+  }
+
+  const buildPlanManageActions = (row) => {
+    if (!row) return []
+    return [
+      {
+        key: 'toggle',
+        label: row.is_active ? 'Deactivate plan' : 'Activate plan',
+        variant: 'warning',
+        disabled: busyId === row.id,
+        onClick: () => handleToggle(row),
+      },
+      {
+        key: 'delete',
+        label: 'Delete plan',
+        variant: 'danger',
+        disabled: busyId === row.id,
+        onClick: () => handleDelete(row),
+      },
+    ]
   }
 
   if (loading) return <LoadingState message="Loading plan catalog..." />
@@ -207,33 +232,15 @@ export default function PlanCatalogListPage() {
                   label: 'Actions',
                   sortable: false,
                   render: (row) => (
-                    <div className="flex flex-wrap justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/subscriptions/plan-catalog-form?id=${row.id}`)}
-                        className="rounded border border-gray-600 px-2 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                      >
-                        Edit
-                      </button>
+                    <AdminRowActions>
+                      <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/subscriptions/plan-catalog-form?id=${row.id}&view=1`)} />
                       <PermissionGate permission="pricing.edit">
-                        <button
-                          type="button"
-                          disabled={busyId === row.id}
-                          onClick={() => handleToggle(row)}
-                          className="rounded border border-amber-700 px-2 py-1 text-xs text-amber-200 hover:bg-amber-900/40 disabled:opacity-50"
-                        >
-                          {row.is_active ? 'Deactivate' : 'Activate'}
-                        </button>
-                        <button
-                          type="button"
-                          disabled={busyId === row.id}
-                          onClick={() => handleDelete(row)}
-                          className="rounded border border-red-700 px-2 py-1 text-xs text-red-200 hover:bg-red-900/40 disabled:opacity-50"
-                        >
-                          Delete
-                        </button>
+                        <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/subscriptions/plan-catalog-form?id=${row.id}`)} />
+                        <AdminActionButton variant="default" onClick={() => setManageRow(row)}>
+                          More
+                        </AdminActionButton>
                       </PermissionGate>
-                    </div>
+                    </AdminRowActions>
                   ),
                 },
               ]}
@@ -265,6 +272,13 @@ export default function PlanCatalogListPage() {
             </div>
           </>
         )}
+        <AdminRowManageModal
+          open={Boolean(manageRow)}
+          title="Plan actions"
+          subtitle={manageRow ? (manageRow.plan_name || formatPlanLabel(manageRow.plan_type)) : ''}
+          onClose={() => setManageRow(null)}
+          actions={buildPlanManageActions(manageRow)}
+        />
         {modal}
       </div>
     </PermissionGate>

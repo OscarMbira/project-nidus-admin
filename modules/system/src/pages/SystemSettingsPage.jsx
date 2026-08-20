@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchSystemSettings, formatDate, updateSystemSetting } from '@nidus-admin/shared'
-import { EmptyState, LoadingState, SearchBar, useToast } from '@nidus-admin/ui'
+import {
+  AdminIconActionButton,
+  EmptyState,
+  LoadingState,
+  SearchBar,
+  useToast,
+} from '@nidus-admin/ui'
 
 const typeInputClass = 'w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none'
 
@@ -206,13 +212,7 @@ export default function SystemSettingsPage() {
                               </button>
                             </>
                           ) : (
-                            <button
-                              type="button"
-                              onClick={() => startEdit(setting)}
-                              className="rounded border border-blue-700 bg-blue-900/30 px-3 py-1.5 text-xs text-blue-200 hover:bg-blue-900/50"
-                            >
-                              Edit
-                            </button>
+                            <AdminIconActionButton variant="edit" label="Edit" onClick={() => startEdit(setting)} />
                           )}
                         </div>
                       </div>

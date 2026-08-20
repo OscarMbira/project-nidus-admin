@@ -10,11 +10,12 @@ import {
   AdminBadge,
   AdminField,
   AdminForm,
+  AdminIconActionButton,
   AdminModal,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
 } from '@nidus-admin/ui'
@@ -202,13 +203,7 @@ export default function EmailTemplateListPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/content/email-template-editor?id=${encodeURIComponent(template.id)}`)}
-                        className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-                      >
-                        Edit
-                      </button>
+                      <AdminIconActionButton variant="edit" label="Edit" onClick={() => navigate(`/content/email-template-editor?id=${encodeURIComponent(template.id)}`)} />
                       <button
                         type="button"
                         disabled={busyId === template.id}
@@ -217,14 +212,7 @@ export default function EmailTemplateListPage() {
                       >
                         {template.is_active ? 'Deactivate' : 'Activate'}
                       </button>
-                      <button
-                        type="button"
-                        disabled={busyId === template.id}
-                        onClick={() => handleDelete(template)}
-                        className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60"
-                      >
-                        Delete
-                      </button>
+                      <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(template)} disabled={busyId === template.id} />
                     </div>
                   </td>
                 </tr>

@@ -6,7 +6,13 @@ import {
   CLI_COMMANDS,
   formatDate,
 } from '@nidus-admin/shared'
-import { AdminBadge, AdminCard, LoadingState, AdminTable } from '@nidus-admin/ui'
+import {
+  AdminBadge,
+  AdminCard,
+  AdminIconActionButton,
+  AdminTable,
+  LoadingState,
+} from '@nidus-admin/ui'
 
 const STATUS_VARIANT = {
   completed: 'success',
@@ -48,9 +54,7 @@ export default function TestDashboardPage() {
     { key: 'duration_ms', label: 'Duration', render: (row) => row.duration_ms ? `${Math.round(row.duration_ms / 1000)}s` : '—' },
     { key: 'created_at', label: 'Started', render: (row) => formatDate(row.created_at) },
     { key: 'id', label: '', render: (row) => (
-      <button type="button" className="text-blue-400 hover:underline" onClick={() => navigate(`/system/test-run-detail?runId=${row.id}`)}>
-        View
-      </button>
+      <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/system/test-run-detail?runId=${row.id}`)} />
     ) },
   ]
 

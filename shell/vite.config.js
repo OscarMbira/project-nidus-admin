@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
+import { adminBrowserResolveAliases } from '../packages/shared/viteBrowserShims.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -56,7 +57,11 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, 'src'),
         '@nidus-admin/ui': path.resolve(__dirname, '../packages/ui/src'),
         '@nidus-admin/shared': path.resolve(__dirname, '../packages/shared/src'),
+        ...adminBrowserResolveAliases(),
       },
+    },
+    optimizeDeps: {
+      exclude: ['xlsx-js-style'],
     },
     envDir: path.resolve(__dirname, '..'),
     build: { target: 'esnext', minify: false, cssCodeSplit: false, modulePreload: false },

@@ -9,10 +9,12 @@ import {
   fetchTicketById,
   fetchTicketMessages,
   formatDate,
+  navId,
   PermissionGate,
   updateTicketPriority,
   updateTicketStatus,
   useDisplayId,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
@@ -20,6 +22,11 @@ import {
   LoadingState,
   useConfirmAction,
   useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
 } from '@nidus-admin/ui'
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'waiting_user', 'resolved', 'closed']
@@ -45,6 +52,12 @@ export default function SupportTicketDetailPage() {
   const [errorContext, setErrorContext] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
+
+  const { displayIdMap: errorDisplayIdMap } = useDisplayIdMap(
+    'admin.error_aggregations',
+    useMemo(() => (errorContext?.aggregation?.id ? [errorContext.aggregation.id] : []), [errorContext?.aggregation?.id]),
+  )
 
   const loadData = async () => {
     if (!ticketId) {
@@ -267,6 +280,28 @@ export default function SupportTicketDetailPage() {
         </div>
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <AuditDetailsPanel description="How this ticket is classified and when it last changed.">
+          <AuditCard title="Identity" description="How this ticket is identified.">
+            <AuditField label="Subject" value={ticket.subject} />
+            <AuditField label="Submitted by" value={ticket.user_id} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this ticket sits.">
+            <AuditField label="Status" value={ticket.status} />
+            <AuditField label="Priority" value={ticket.priority} />
+            <AuditField label="Category" value={ticket.category} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this ticket was created and last changed.">
+            <AuditTimestampPair dateLabel="Created at" value={ticket.created_at} />
+            <AuditTimestampPair dateLabel="Last updated" value={ticket.updated_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <>
       {ticket.is_auto_created && errorContext && (
         <div className="rounded-lg border border-amber-800/60 bg-amber-950/20 p-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -279,7 +314,7 @@ export default function SupportTicketDetailPage() {
             {errorContext.aggregation?.id && (
               <button
                 type="button"
-                onClick={() => navigate(`/errors/error-detail?id=${errorContext.aggregation.id}`)}
+                onClick={() => navigate(`/errors/error-detail?id=${navId(errorDisplayIdMap, errorContext.aggregation.id)}`)}
                 className="rounded border border-blue-700 bg-blue-900/40 px-3 py-1.5 text-xs text-blue-200 hover:bg-blue-900/70"
               >
                 Open Error Dashboard
@@ -456,6 +491,8 @@ export default function SupportTicketDetailPage() {
           </div>
         </form>
       </PermissionGate>
+      </>
+      )}
 
       {modal}
     </div>

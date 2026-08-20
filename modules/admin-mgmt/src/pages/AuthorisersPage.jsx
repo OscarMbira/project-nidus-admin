@@ -6,7 +6,7 @@ import {
   fetchLifecycleAuthorisers,
   upsertRecordAuthoriser,
 } from '@nidus-admin/shared'
-import { AdminField, AdminForm, AdminTable, EmptyState, LoadingState, SearchableSelect, inputClass, useToast } from '@nidus-admin/ui'
+import { AdminField, AdminForm, AdminTable, EmptyState, LoadingState, SearchableSelect, inputClass, useToast, DetailAuditTabList } from '@nidus-admin/ui'
 
 const EMPTY = {
   table_name: 'subscription_plans',
@@ -23,6 +23,7 @@ export default function AuthorisersPage() {
   const [admins, setAdmins] = useState([])
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [detailTab, setDetailTab] = useState('details')
 
   const load = async () => {
     setLoading(true)
@@ -74,6 +75,16 @@ export default function AuthorisersPage() {
 
         <section className="rounded-lg border border-gray-700 bg-gray-900 p-5">
           <h2 className="mb-4 text-sm font-semibold text-gray-200">Add / update authoriser</h2>
+
+          <div className="mb-4">
+            <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+          </div>
+
+          {detailTab === 'audit' && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this authoriser is saved.</p>
+          )}
+
+          {detailTab === 'details' && (
           <AdminForm onSubmit={save}>
             <div className="grid gap-4 md:grid-cols-2">
               <AdminField label="Table">
@@ -102,6 +113,7 @@ export default function AuthorisersPage() {
               {saving ? 'Saving…' : 'Save authoriser'}
             </button>
           </AdminForm>
+          )}
         </section>
 
         <AdminTable

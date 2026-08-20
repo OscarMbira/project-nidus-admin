@@ -1,4 +1,4 @@
-# Starting Individual Modules
+.# Starting Individual Modules
 
 `pnpm run dev` only starts the light set (shell, platform, users, admin-mgmt).
 `pnpm run dev:full` starts everything.

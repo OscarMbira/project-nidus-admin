@@ -16,6 +16,24 @@ const UnsavedChangesContext = createContext(null)
 
 const DEFAULT_MESSAGE = 'You have unsaved changes. Discard them and leave this page?'
 
+function confirmDiscardFallback(isDirty, message, onProceed) {
+  if (!isDirty) {
+    onProceed?.()
+    return true
+  }
+  if (window.confirm(message || DEFAULT_MESSAGE)) {
+    onProceed?.()
+    return true
+  }
+  return false
+}
+
+function requestNavigationFallback(isDirty, message, navigate, to, options) {
+  if (!isDirty || window.confirm(message || DEFAULT_MESSAGE)) {
+    navigate(to, options)
+  }
+}
+
 export function UnsavedChangesProvider({ children }) {
   const navigate = useNavigate()
   const [guards, setGuards] = useState(() => new Map())
@@ -185,17 +203,49 @@ export function useUnsavedChangesContext() {
 
 /**
  * Register a form/page dirty state with the global unsaved-changes guard.
+ * When the provider is unavailable (e.g. federated remote using a separate shared bundle),
+ * falls back to confirm + navigate — same pattern as useToast().
  * @param {boolean} isDirty
  * @param {string} [message]
  */
 export function useUnsavedChangesGuard(isDirty, message) {
+  const ctx = useContext(UnsavedChangesContext)
+  const navigate = useNavigate()
   const id = useId()
-  const { registerGuard, unregisterGuard, requestNavigation, confirmDiscard } = useUnsavedChangesContext()
 
   useEffect(() => {
-    registerGuard(id, isDirty, message)
-    return () => unregisterGuard(id)
-  }, [id, isDirty, message, registerGuard, unregisterGuard])
+    if (!ctx) return undefined
+    ctx.registerGuard(id, isDirty, message)
+    return () => ctx.unregisterGuard(id)
+  }, [ctx, id, isDirty, message])
+
+  useEffect(() => {
+    if (ctx || !isDirty) return undefined
+
+    const onBeforeUnload = (event) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [ctx, isDirty])
+
+  const requestNavigation = useCallback((to, options) => {
+    if (ctx) {
+      ctx.requestNavigation(to, options)
+      return
+    }
+    requestNavigationFallback(isDirty, message, navigate, to, options)
+  }, [ctx, isDirty, message, navigate])
+
+  const confirmDiscard = useCallback((onProceed) => {
+    if (ctx) {
+      ctx.confirmDiscard(onProceed)
+      return
+    }
+    confirmDiscardFallback(isDirty, message, onProceed)
+  }, [ctx, isDirty, message])
 
   return { requestNavigation, confirmDiscard }
 }

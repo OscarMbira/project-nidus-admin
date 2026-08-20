@@ -5,11 +5,25 @@ import {
   fetchErrorById,
   fetchErrorLogEntries,
   formatDate,
+  getDisplayIdForRecord,
+  navId,
   PermissionGate,
   updateErrorSeverity,
   updateErrorStatus,
+  useDisplayId,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
-import { AdminCard, EmptyState, LoadingState, useToast } from '@nidus-admin/ui'
+import {
+  AdminCard,
+  EmptyState,
+  LoadingState,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const STATUS_OPTIONS = ['new', 'acknowledged', 'investigating', 'resolved', 'ignored', 'recurring']
 const SEVERITY_OPTIONS = ['low', 'medium', 'high', 'critical']
@@ -18,6 +32,8 @@ export default function ErrorDetailPage() {
   const navigate = useNavigate()
   const { showSuccess, showError } = useToast()
   const [params, setParams] = useSearchParams()
+  const idParam = params.get('id')
+  const { uuid: resolvedId, loading: resolving } = useDisplayId('admin.error_aggregations', idParam)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState('')
   const [errorAgg, setErrorAgg] = useState(null)
@@ -26,12 +42,13 @@ export default function ErrorDetailPage() {
   const [notes, setNotes] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('new')
   const [selectedSeverity, setSelectedSeverity] = useState('low')
+  const [detailTab, setDetailTab] = useState('details')
 
   const loadData = async () => {
     setLoading(true)
-    let selectedId = params.get('id')
+    let selectedId = resolvedId
 
-    if (!selectedId) {
+    if (!idParam) {
       const fallbackRes = await fetchErrorAggregations({ limit: 1 })
       if (fallbackRes.error) {
         showError(fallbackRes.error.message || String(fallbackRes.error))
@@ -39,7 +56,10 @@ export default function ErrorDetailPage() {
         return
       }
       selectedId = fallbackRes.data?.[0]?.id || ''
-      if (selectedId) setParams({ id: selectedId }, { replace: true })
+      if (selectedId) {
+        const displayId = await getDisplayIdForRecord('admin.error_aggregations', selectedId).catch(() => null)
+        setParams({ id: displayId || selectedId }, { replace: true })
+      }
     }
 
     if (!selectedId) {
@@ -76,8 +96,9 @@ export default function ErrorDetailPage() {
   }
 
   useEffect(() => {
+    if (idParam && resolving) return // still resolving idParam -> uuid
     loadData()
-  }, [params.get('id')])
+  }, [idParam, resolvedId, resolving])
 
   const affectedUsers = useMemo(() => {
     const userIds = new Set()
@@ -132,7 +153,12 @@ export default function ErrorDetailPage() {
     await loadData()
   }
 
-  if (loading) return <LoadingState message="Loading error detail..." />
+  const { displayIdMap: ticketDisplayIdMap } = useDisplayIdMap(
+    'admin.support_tickets',
+    useMemo(() => (errorAgg?.auto_ticket_id ? [errorAgg.auto_ticket_id] : []), [errorAgg?.auto_ticket_id]),
+  )
+
+  if (loading || resolving) return <LoadingState message="Loading error detail..." />
   if (!errorAgg) {
     return (
       <div className="p-4 md:p-6">
@@ -156,11 +182,11 @@ export default function ErrorDetailPage() {
           <div className="grid gap-2 text-xs text-gray-400">
             <p>System: <span className="text-gray-200">{errorAgg.system || 'unknown'}</span></p>
             <p>Last Seen: <span className="text-gray-200">{formatDate(errorAgg.last_seen_at)}</span></p>
-            <p>Linked Ticket: <span className="text-gray-200">{errorAgg.auto_ticket_id || 'Not linked'}</span></p>
+            <p>Linked Ticket: <span className="text-gray-200">{ticketDisplayIdMap[errorAgg.auto_ticket_id] || errorAgg.auto_ticket_id || 'Not linked'}</span></p>
             {errorAgg.auto_ticket_id && (
               <button
                 type="button"
-                onClick={() => navigate(`/support/support-ticket-detail?id=${errorAgg.auto_ticket_id}`)}
+                onClick={() => navigate(`/support/support-ticket-detail?id=${navId(ticketDisplayIdMap, errorAgg.auto_ticket_id)}`)}
                 className="mt-1 rounded border border-gray-600 px-2 py-1 text-left text-xs text-blue-300 hover:bg-gray-800"
               >
                 Open linked support ticket
@@ -188,9 +214,33 @@ export default function ErrorDetailPage() {
         <AdminCard title="Current Severity" value={errorAgg.severity || 'low'} />
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <AuditDetailsPanel description="How this error was detected and classified. Aggregations are system-generated, not user-authored — there is no creator to attribute.">
+          <AuditCard title="Identity" description="How this error is identified.">
+            <AuditField label="Error type" value={errorAgg.error_type} />
+            <AuditField label="Error hash" value={errorAgg.error_hash} />
+            <AuditField label="Route" value={errorAgg.page_route} />
+          </AuditCard>
+          <AuditCard title="Classification" description="Where this error sits.">
+            <AuditField label="System" value={errorAgg.system} />
+            <AuditField label="Status" value={errorAgg.status} />
+            <AuditField label="Severity" value={errorAgg.severity} />
+          </AuditCard>
+          <AuditCard title="Record history" description="When this error was first and last detected.">
+            <AuditTimestampPair dateLabel="First seen" value={errorAgg.first_seen_at} />
+            <AuditTimestampPair dateLabel="Last seen" value={errorAgg.last_seen_at} />
+          </AuditCard>
+        </AuditDetailsPanel>
+      )}
+
+      {detailTab === 'details' && (
+      <>
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="rounded-lg border border-gray-700 bg-gray-900 p-4">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Status Action</h2>
+          <PermissionGate permission="errors.status.manage">
           <div className="mt-3 space-y-3">
             <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100">
               {STATUS_OPTIONS.map((status) => <option key={status} value={status}>{status}</option>)}
@@ -211,10 +261,12 @@ export default function ErrorDetailPage() {
               {busy === 'status' ? 'Saving...' : 'Save Status'}
             </button>
           </div>
+          </PermissionGate>
         </section>
 
         <section className="rounded-lg border border-gray-700 bg-gray-900 p-4">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Severity Action</h2>
+          <PermissionGate permission="errors.status.manage">
           <div className="mt-3 space-y-3">
             <select value={selectedSeverity} onChange={(e) => setSelectedSeverity(e.target.value)} className="w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100">
               {SEVERITY_OPTIONS.map((severity) => <option key={severity} value={severity}>{severity}</option>)}
@@ -228,6 +280,7 @@ export default function ErrorDetailPage() {
               {busy === 'severity' ? 'Saving...' : 'Save Severity'}
             </button>
           </div>
+          </PermissionGate>
         </section>
       </div>
 
@@ -324,6 +377,8 @@ export default function ErrorDetailPage() {
           </div>
         )}
       </section>
+      </>
+      )}
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { fetchUserFeedback, formatDate } from '@nidus-admin/shared'
 import {
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
   AdminModal,
   AdminTable,
   EmptyState,
@@ -165,13 +166,7 @@ export default function FeedbackAnalysisPage() {
                 label: 'Actions',
                 sortable: false,
                 render: (r) => (
-                  <button
-                    type="button"
-                    onClick={() => setDetailRow(r)}
-                    className="rounded border border-gray-600 bg-gray-800/60 px-2 py-1 text-xs text-gray-200 hover:bg-gray-800"
-                  >
-                    View
-                  </button>
+                  <AdminIconActionButton variant="view" label="View" onClick={() => setDetailRow(r)} />
                 ),
               },
             ]}

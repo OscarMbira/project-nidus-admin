@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getAdminAvatarSignedUrl } from '@nidus-admin/shared'
+import { getAdminAvatarSignedUrl, peekAdminAvatarDisplayUrl } from '@nidus-admin/shared'
 import { ZoomableImage } from './ZoomableImage.jsx'
 
 /**
@@ -9,18 +9,28 @@ import { ZoomableImage } from './ZoomableImage.jsx'
  * pre-v207 initials-only badge in AdminHeader, so admins without a picture see
  * no visual change.
  */
-export function AdminAvatarBadge({ avatarPath, initials, sizeClassName = 'h-8 w-8', zoomable = false }) {
-  const [signedUrl, setSignedUrl] = useState(null)
+export function AdminAvatarBadge({
+  avatarPath,
+  initials,
+  sizeClassName = 'h-8 w-8',
+  zoomable = false,
+  refreshNonce = 0,
+}) {
+  const [signedUrl, setSignedUrl] = useState(() => (avatarPath ? peekAdminAvatarDisplayUrl(avatarPath) : null))
 
   useEffect(() => {
     let cancelled = false
-    setSignedUrl(null)
-    if (!avatarPath) return undefined
+    if (!avatarPath) {
+      setSignedUrl(null)
+      return undefined
+    }
+    const cached = peekAdminAvatarDisplayUrl(avatarPath)
+    if (cached) setSignedUrl(cached)
     getAdminAvatarSignedUrl(avatarPath).then((result) => {
       if (!cancelled && result.success) setSignedUrl(result.data)
     })
     return () => { cancelled = true }
-  }, [avatarPath])
+  }, [avatarPath, refreshNonce])
 
   if (signedUrl) {
     const imgClassName = `${sizeClassName} rounded-full object-cover shadow-md`
@@ -31,6 +41,7 @@ export function AdminAvatarBadge({ avatarPath, initials, sizeClassName = 'h-8 w-
           alt="Your profile picture"
           imgClassName={imgClassName}
           hoverPreviewClassName="h-48 w-48 rounded-full object-cover"
+          priority
         />
       )
     }
@@ -39,6 +50,7 @@ export function AdminAvatarBadge({ avatarPath, initials, sizeClassName = 'h-8 w-
         src={signedUrl}
         alt="Your profile picture"
         className={imgClassName}
+        decoding="async"
       />
     )
   }

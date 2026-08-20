@@ -19,6 +19,7 @@ export function useIdGenerationRuleFormMode() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const ruleIdFromUrl = searchParams.get('id')
+  const isViewOnly = searchParams.get('view') === '1' && Boolean(ruleIdFromUrl)
   const presetTable = searchParams.get('table')
     ? normalizeTargetTable(searchParams.get('table'))
     : ''
@@ -137,6 +138,7 @@ export function useIdGenerationRuleFormMode() {
 
   return {
     isEdit,
+    isViewOnly,
     loading,
     resolutionComplete,
     ruleError,

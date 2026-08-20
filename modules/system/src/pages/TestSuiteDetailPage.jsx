@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { fetchTestSuiteById, fetchTestCases, fetchTestRuns, formatDate } from '@nidus-admin/shared'
-import { AdminBadge, LoadingState, AdminTable } from '@nidus-admin/ui'
+import {
+  AdminBadge,
+  AdminIconActionButton,
+  AdminTable,
+  LoadingState,
+} from '@nidus-admin/ui'
 
 export default function TestSuiteDetailPage() {
   const [params] = useSearchParams()
@@ -57,9 +62,7 @@ export default function TestSuiteDetailPage() {
             { key: 'status', label: 'Status' },
             { key: 'created_at', label: 'Date', render: (row) => formatDate(row.created_at) },
             { key: 'id', label: '', render: (row) => (
-              <button type="button" className="text-blue-400 hover:underline" onClick={() => navigate(`/system/test-run-detail?runId=${row.id}`)}>
-                View
-              </button>
+              <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/system/test-run-detail?runId=${row.id}`)} />
             ) },
           ]}
           rows={runs}

@@ -8,7 +8,19 @@ import {
   listSettlementAccounts,
   upsertSettlementAccount,
 } from '@nidus-admin/shared'
-import { AdminCard, AdminField, AdminForm, LoadingState, inputClass, useToast } from '@nidus-admin/ui'
+import {
+  AdminCard,
+  AdminField,
+  AdminForm,
+  LoadingState,
+  inputClass,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+  DetailAuditTabList,
+} from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
 
@@ -36,6 +48,8 @@ export default function SettlementAccountFormPage() {
   const [maskedAccount, setMaskedAccount] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [record, setRecord] = useState(null)
+  const [detailTab, setDetailTab] = useState('details')
 
   useEffect(() => {
     const load = async () => {
@@ -64,6 +78,7 @@ export default function SettlementAccountFormPage() {
             return
           }
           setMaskedAccount(account.account_number_masked || '')
+          setRecord(account)
           setForm({
             account_name: account.account_name || '',
             gateway_id: account.gateway_id || '',
@@ -137,6 +152,37 @@ export default function SettlementAccountFormPage() {
           </h1>
         </div>
 
+        <div className="mx-auto max-w-3xl">
+          <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+        </div>
+
+        {detailTab === 'audit' && !record && (
+          <p className="mx-auto max-w-3xl text-sm text-gray-500 dark:text-gray-400">Audit details appear after this settlement account is saved.</p>
+        )}
+
+        {detailTab === 'audit' && record && (
+          <div className="mx-auto max-w-3xl">
+            <AuditDetailsPanel description="Who created or changed this settlement account, and how it is classified.">
+              <AuditCard title="Identity" description="How this account is labelled.">
+                <AuditField label="Account name" value={record.account_name} />
+                <AuditField label="Bank name" value={record.bank_name} />
+              </AuditCard>
+              <AuditCard title="Classification" description="Where this account sits.">
+                <AuditField label="Currency" value={record.currency_code} />
+                <AuditField label="Account type" value={record.account_type} />
+                <AuditField label="Active" value={record.is_active ? 'Yes' : 'No'} />
+              </AuditCard>
+              <AuditCard title="Record history" description="When this account was created and last changed.">
+                <AuditField label="Created by" value={record.created_by || null} />
+                <AuditTimestampPair dateLabel="Created at" value={record.created_at} />
+                <AuditField label="Updated by" value={record.updated_by || null} />
+                <AuditTimestampPair dateLabel="Last updated" value={record.updated_at} />
+              </AuditCard>
+            </AuditDetailsPanel>
+          </div>
+        )}
+
+        {detailTab === 'details' && (
         <AdminForm onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-6">
           <AdminCard title="Account Details">
             <div className="space-y-4 p-4">
@@ -271,6 +317,7 @@ export default function SettlementAccountFormPage() {
             </button>
           </div>
         </AdminForm>
+        )}
       </div>
     </PermissionGate>
   )

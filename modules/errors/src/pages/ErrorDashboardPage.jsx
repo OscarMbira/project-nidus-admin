@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   fetchErrorAggregations,
   formatDate,
+  formatDateShort,
+  PermissionGate,
+  ReleaseReadinessBannerGate,
   updateErrorSeverity,
   updateErrorStatus,
   useBulkSelection,
 } from '@nidus-admin/shared'
 import {
+  AdminActionButton,
   AdminBadge,
   AdminModal,
+  AdminRowActions,
   AdminTable,
   BulkActionBar,
   EmptyState,
@@ -22,21 +28,25 @@ const STATUS_OPTIONS = ['all', 'new', 'acknowledged', 'investigating', 'resolved
 const SYSTEM_OPTIONS = ['all', 'platform', 'simulator']
 const BULK_STATUS_OPTIONS = ['acknowledged', 'investigating', 'resolved', 'ignored']
 const BULK_SEVERITY_OPTIONS = ['critical', 'high', 'medium', 'low']
+const ROW_STATUS_OPTIONS = ['acknowledged', 'investigating', 'resolved', 'ignored']
 
 export default function ErrorDashboardPage() {
   const { showSuccess, showError } = useToast()
+  const [searchParams] = useSearchParams()
   const [loading, setLoading] = useState(true)
   const [rows, setRows] = useState([])
   const [search, setSearch] = useState('')
   const [busyId, setBusyId] = useState('')
+  const [readinessReloadKey, setReadinessReloadKey] = useState(0)
   const [bulkModal, setBulkModal] = useState({ open: false, action: null, newStatus: 'acknowledged', newSeverity: 'medium' })
-  const [filters, setFilters] = useState({
-    severity: 'all',
-    status: 'all',
+  const [statusModal, setStatusModal] = useState({ open: false, row: null, newStatus: 'acknowledged' })
+  const [filters, setFilters] = useState(() => ({
+    severity: searchParams.get('severity') || 'all',
+    status: searchParams.get('status') || 'all',
     system: 'all',
     dateFrom: '',
     dateTo: '',
-  })
+  }))
 
   const loadData = async () => {
     setLoading(true)
@@ -54,6 +64,7 @@ export default function ErrorDashboardPage() {
       return
     }
     setRows(data || [])
+    setReadinessReloadKey((key) => key + 1)
     setLoading(false)
   }
 
@@ -87,10 +98,21 @@ export default function ErrorDashboardPage() {
     setBusyId('')
     if (error) {
       showError(error.message || String(error))
-      return
+      return false
     }
     showSuccess(`Error marked as ${status}.`)
     await loadData()
+    return true
+  }
+
+  const confirmRowStatus = async () => {
+    const { row, newStatus } = statusModal
+    if (!row || !newStatus || newStatus === row.status) {
+      setStatusModal({ open: false, row: null, newStatus: 'acknowledged' })
+      return
+    }
+    const ok = await runStatusAction(row, newStatus)
+    if (ok) setStatusModal({ open: false, row: null, newStatus: 'acknowledged' })
   }
 
   const confirmBulkAction = async () => {
@@ -107,10 +129,10 @@ export default function ErrorDashboardPage() {
     await loadData()
   }
 
-  if (loading) return <LoadingState message="Loading error dashboard..." />
-
   return (
     <div className="space-y-6 p-4 md:p-6">
+      <ReleaseReadinessBannerGate reloadKey={readinessReloadKey} />
+
       <div>
         <h1 className="text-2xl font-semibold text-gray-100">Error Dashboard</h1>
         <p className="text-sm text-gray-500">Filter by severity, status, system, and date range with quick triage actions.</p>
@@ -135,9 +157,12 @@ export default function ErrorDashboardPage() {
         </div>
       </div>
 
-      {!filteredRows.length ? (
+      {loading ? (
+        <LoadingState message="Loading error dashboard..." />
+      ) : !filteredRows.length ? (
         <EmptyState title="No errors found" description="No error aggregations match current filters." />
       ) : (
+        <>
         <AdminTable
           rows={filteredRows}
           selectable
@@ -188,31 +213,42 @@ export default function ErrorDashboardPage() {
               label: 'Severity',
               render: (row) => <AdminBadge label={row.severity || 'low'} variant={row.severity === 'critical' ? 'rejected' : 'default'} />,
             },
-            { key: 'last_seen_at', label: 'Last Seen', render: (row) => formatDate(row.last_seen_at) },
+            {
+              key: 'last_seen_at',
+              label: 'Last Seen',
+              render: (row) => (
+                <span title={formatDate(row.last_seen_at)}>{formatDateShort(row.last_seen_at)}</span>
+              ),
+            },
             {
               key: 'actions',
               label: 'Actions',
               sortable: false,
               render: (row) => (
-                <div className="flex flex-wrap justify-end gap-1.5">
-                  {['acknowledged', 'investigating', 'resolved', 'ignored'].map((status) => (
-                    <button
-                      key={status}
-                      type="button"
-                      disabled={busyId === `${row.id}-${status}`}
-                      onClick={() => runStatusAction(row, status)}
-                      className="rounded border border-gray-600 bg-gray-800 px-2 py-1 text-xs text-gray-300 hover:bg-gray-700 disabled:opacity-60"
+                <PermissionGate permission="errors.status.manage">
+                  <AdminRowActions>
+                    <AdminActionButton
+                      variant="primary"
+                      disabled={Boolean(busyId)}
+                      onClick={() => setStatusModal({
+                        open: true,
+                        row,
+                        newStatus: ROW_STATUS_OPTIONS.includes(row.status) ? row.status : 'acknowledged',
+                      })}
                     >
-                      {status.slice(0, 4)}
-                    </button>
-                  ))}
-                </div>
+                      Update status
+                    </AdminActionButton>
+                  </AdminRowActions>
+                </PermissionGate>
               ),
             },
           ]}
         />
+        </>
       )}
 
+      {!loading && filteredRows.length > 0 && (
+      <PermissionGate permission="errors.status.manage">
       <BulkActionBar
         selectedCount={bulk.selectedCount}
         processing={bulk.processing}
@@ -224,6 +260,8 @@ export default function ErrorDashboardPage() {
           { key: 'updateSeverity', label: 'Update Severity', onClick: () => setBulkModal({ open: true, action: 'updateSeverity', newStatus: 'acknowledged', newSeverity: 'medium' }) },
         ]}
       />
+      </PermissionGate>
+      )}
 
       <AdminModal
         open={bulkModal.open && bulkModal.action === 'updateStatus'}
@@ -257,6 +295,24 @@ export default function ErrorDashboardPage() {
         >
           {BULK_SEVERITY_OPTIONS.map((severity) => (
             <option key={severity} value={severity}>{severity}</option>
+          ))}
+        </select>
+      </AdminModal>
+
+      <AdminModal
+        open={statusModal.open}
+        title={statusModal.row ? `Update status — ${statusModal.row.error_type || 'Error'}` : 'Update status'}
+        onClose={() => setStatusModal({ open: false, row: null, newStatus: 'acknowledged' })}
+        onConfirm={confirmRowStatus}
+        confirmLabel="Apply status"
+      >
+        <select
+          value={statusModal.newStatus}
+          onChange={(event) => setStatusModal((prev) => ({ ...prev, newStatus: event.target.value }))}
+          className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100"
+        >
+          {ROW_STATUS_OPTIONS.map((status) => (
+            <option key={status} value={status}>{status}</option>
           ))}
         </select>
       </AdminModal>

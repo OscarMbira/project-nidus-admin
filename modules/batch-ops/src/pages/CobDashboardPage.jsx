@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   executeCobStep,
@@ -6,11 +6,15 @@ import {
   fetchCobRuns,
   fetchCurrentBusinessDate,
   formatDate,
+  getDisplayIdForRecord,
+  navId,
   startCobRun,
+  useDisplayIdMap,
 } from '@nidus-admin/shared'
 import {
   AdminBadge,
   AdminCard,
+  AdminIconActionButton,
   AdminTable,
   EmptyState,
   LoadingState,
@@ -88,6 +92,9 @@ export default function CobDashboardPage() {
 
   useEffect(() => { loadData() }, [])
 
+  const runIds = useMemo(() => runs.map((r) => r.id).filter(Boolean), [runs])
+  const { displayIdMap } = useDisplayIdMap('admin.cob_runs', runIds)
+
   const handleRunCob = async () => {
     setRunning(true)
     setCurrentStep(null)
@@ -107,7 +114,8 @@ export default function CobDashboardPage() {
       showSuccess('COB run completed.')
     }
     await loadData()
-    navigate(`/batch-ops/cob-run-detail?id=${encodeURIComponent(runId)}`)
+    const displayId = await getDisplayIdForRecord('admin.cob_runs', runId).catch(() => null)
+    navigate(`/batch-ops/cob-run-detail?id=${encodeURIComponent(displayId || runId)}`)
   }
 
   const columns = [
@@ -117,7 +125,7 @@ export default function CobDashboardPage() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => navigate(`/batch-ops/cob-run-detail?id=${encodeURIComponent(row.id)}`)}
+          onClick={() => navigate(`/batch-ops/cob-run-detail?id=${navId(displayIdMap, row.id)}`)}
           className="font-medium text-blue-300 hover:text-blue-200"
         >
           {row.business_date}
@@ -153,13 +161,7 @@ export default function CobDashboardPage() {
       label: 'Actions',
       sortable: false,
       render: (row) => (
-        <button
-          type="button"
-          onClick={() => navigate(`/batch-ops/cob-run-detail?id=${encodeURIComponent(row.id)}`)}
-          className="rounded border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:bg-gray-800"
-        >
-          View
-        </button>
+        <AdminIconActionButton variant="view" label="View" onClick={() => navigate(`/batch-ops/cob-run-detail?id=${navId(displayIdMap, row.id)}`)} />
       ),
     },
   ]

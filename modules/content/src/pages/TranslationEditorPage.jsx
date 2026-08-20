@@ -7,10 +7,11 @@ import {
   upsertTranslation,
 } from '@nidus-admin/shared'
 import {
+  AdminIconActionButton,
   EmptyState,
+  inputClass,
   LoadingState,
   SearchBar,
-  inputClass,
   useConfirmAction,
   useToast,
 } from '@nidus-admin/ui'
@@ -241,14 +242,7 @@ export default function TranslationEditorPage() {
                         >
                           {savingKeyId === key.id ? 'Saving...' : 'Save'}
                         </button>
-                        <button
-                          type="button"
-                          disabled={!existing || busyTranslationId === existing?.id}
-                          onClick={() => handleDelete(key)}
-                          className="rounded border border-red-700 bg-red-900/30 px-2.5 py-1 text-xs text-red-200 hover:bg-red-900/50 disabled:opacity-60"
-                        >
-                          Delete
-                        </button>
+                        <AdminIconActionButton variant="delete" label="Delete" onClick={() => handleDelete(key)} disabled={!existing || busyTranslationId === existing?.id} />
                       </div>
                     </td>
                   </tr>

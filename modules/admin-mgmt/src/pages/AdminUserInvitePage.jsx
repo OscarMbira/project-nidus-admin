@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { inviteAdminUser } from '@nidus-admin/shared'
-import { AdminField, AdminForm, inputClass, useToast } from '@nidus-admin/ui'
+import { AdminField, AdminForm, inputClass, useToast, DetailAuditTabList } from '@nidus-admin/ui'
 
 const INVITABLE_ROLES = [
   { value: 'system_admin', label: 'System Admin' },
@@ -19,6 +19,7 @@ export default function AdminUserInvitePage() {
   const [expiryHours, setExpiryHours] = useState(72)
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
+  const [detailTab, setDetailTab] = useState('details')
 
   const validate = () => {
     const nextErrors = {}
@@ -58,6 +59,13 @@ export default function AdminUserInvitePage() {
         <p className="text-sm text-gray-500">Create a role-scoped invitation for a new admin account.</p>
       </div>
 
+      <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
+
+      {detailTab === 'audit' && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this invitation is sent.</p>
+      )}
+
+      {detailTab === 'details' && (
       <div className="rounded-lg border border-gray-700 bg-gray-900 p-5">
         <AdminForm onSubmit={handleSubmit} className="space-y-5">
           <AdminField label="Email" required error={errors.email}>
@@ -123,6 +131,7 @@ export default function AdminUserInvitePage() {
           </div>
         </AdminForm>
       </div>
+      )}
     </div>
   )
 }

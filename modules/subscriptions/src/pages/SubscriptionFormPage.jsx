@@ -29,13 +29,28 @@ import {
   SUBSCRIPTION_DISPLAY_TABLE,
   useDisplayId,
 } from '@nidus-admin/shared'
-import { AdminField, AdminForm, EmptyState, inputClass, LoadingState, SearchBar, SubscriptionFeaturesEditor, SubscriptionFeaturesList, useToast } from '@nidus-admin/ui'
+import {
+  AdminField,
+  AdminForm,
+  EmptyState,
+  inputClass,
+  LoadingState,
+  SearchBar,
+  SubscriptionFeaturesEditor,
+  SubscriptionFeaturesList,
+  useToast,
+  AuditField,
+  AuditCard,
+  AuditTimestampPair,
+  AuditDetailsPanel,
+} from '@nidus-admin/ui'
 
 const SYSTEMS = ['platform', 'simulator']
 
 const FORM_TABS = [
   { id: 'details', label: 'Subscription Details' },
   { id: 'schedule', label: 'Schedule & Features' },
+  { id: 'audit', label: 'Audit details' },
 ]
 
 function tabForValidationError(message) {
@@ -104,6 +119,7 @@ export default function SubscriptionFormPage() {
   const [planCatalog, setPlanCatalog] = useState([])
   const [subscriptionRows, setSubscriptionRows] = useState([])
   const [planCatalogLoading, setPlanCatalogLoading] = useState(true)
+  const [record, setRecord] = useState(null)
 
   const applyCatalogAmount = (prev, updates = {}, catalog = planCatalog, subs = subscriptionRows) => {
     const next = { ...prev, ...updates }
@@ -235,6 +251,7 @@ export default function SubscriptionFormPage() {
           dbPlans: catalogRes.data || [],
           subscriptions: subsRes.data || [],
         })
+        setRecord(data)
         setForm({
           targetSystem: resolvedSystem,
           userId: data.user_id || '',
@@ -557,6 +574,30 @@ export default function SubscriptionFormPage() {
                     </button>
                   </div>
                 </>
+              )}
+
+              {activeTab === 'audit' && (
+                !record ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Audit details appear after this subscription is saved.</p>
+                ) : (
+                  <AuditDetailsPanel description="Who created or changed this subscription, and how it is classified.">
+                    <AuditCard title="Identity" description="How this subscription is identified.">
+                      <AuditField label="Subscription ID" value={record.id} />
+                      <AuditField label="User email" value={record.user_email} />
+                    </AuditCard>
+                    <AuditCard title="Classification" description="Where this subscription sits.">
+                      <AuditField label="System" value={systemLabel(form.targetSystem)} />
+                      <AuditField label="Plan type" value={record.plan_type} />
+                      <AuditField label="Status" value={record.status} />
+                    </AuditCard>
+                    <AuditCard title="Record history" description="When this subscription was created and last changed.">
+                      <AuditField label="Created by" value={record.created_by || null} />
+                      <AuditTimestampPair dateLabel="Created at" value={record.created_at} />
+                      <AuditField label="Updated by" value={record.updated_by || null} />
+                      <AuditTimestampPair dateLabel="Last updated" value={record.updated_at} />
+                    </AuditCard>
+                  </AuditDetailsPanel>
+                )
               )}
             </div>
 
