@@ -13,9 +13,9 @@ export function SearchBar({ value, onChange, placeholder = 'Search...', classNam
 
 export function ViewToggle({ view, onChange }) {
   return (
-    <div className="inline-flex rounded border border-gray-600">
-      <button type="button" onClick={() => onChange('card')} className={`px-3 py-1.5 text-sm ${view === 'card' ? 'bg-gray-700 text-white' : 'text-gray-400'}`} title="Card view">⊞</button>
-      <button type="button" onClick={() => onChange('table')} className={`px-3 py-1.5 text-sm ${view === 'table' ? 'bg-gray-700 text-white' : 'text-gray-400'}`} title="Table view">≡</button>
+    <div className="inline-flex rounded border border-gray-300 dark:border-gray-600">
+      <button type="button" onClick={() => onChange('card')} className={`px-3 py-1.5 text-sm ${view === 'card' ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`} title="Card view">⊞</button>
+      <button type="button" onClick={() => onChange('table')} className={`px-3 py-1.5 text-sm ${view === 'table' ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`} title="Table view">≡</button>
     </div>
   )
 }

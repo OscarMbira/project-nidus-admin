@@ -19,6 +19,7 @@ import {
   inputClass,
   LoadingState,
   SearchBar,
+  SelectField,
   useConfirmAction,
   useToast,
   AuditField,
@@ -250,10 +251,17 @@ export default function CountryListPage() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <AdminField label="Default Currency">
-          <select className={inputClass} value={form.default_currency} onChange={(e) => setForm((p) => ({ ...p, default_currency: e.target.value }))}>
-            <option value="">None</option>
-            {currencyOptions.map(({ code, label }) => <option key={code} value={code}>{label}</option>)}
-          </select>
+          <SelectField
+            value={form.default_currency}
+            onChange={(v) => setForm((p) => ({ ...p, default_currency: v }))}
+            placeholder="None"
+            searchPlaceholder="Search currency..."
+            forceSearchable
+            options={[
+              { value: '', label: 'None' },
+              ...currencyOptions.map(({ code, label }) => ({ value: code, label })),
+            ]}
+          />
         </AdminField>
         <AdminField label="Region">
           <select className={inputClass} value={form.region} onChange={(e) => setForm((p) => ({ ...p, region: e.target.value }))}>

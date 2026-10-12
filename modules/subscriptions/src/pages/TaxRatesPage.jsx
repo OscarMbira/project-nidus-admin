@@ -16,6 +16,7 @@ import {
   inputClass,
   LoadingState,
   SearchBar,
+  SelectField,
   useConfirmAction,
   useToast,
   AuditField,
@@ -197,19 +198,18 @@ export default function TaxRatesPage() {
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
       <AdminField label="Country" required>
-        <select
-          className={inputClass}
+        <SelectField
           value={form.country_code}
           disabled={isEdit}
-          onChange={(e) => setForm((prev) => ({ ...prev, country_code: e.target.value }))}
-        >
-          <option value="">Select country...</option>
-          {countries.map((country) => (
-            <option key={country.country_code} value={country.country_code}>
-              {country.country_code} — {country.country_name}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => setForm((prev) => ({ ...prev, country_code: v }))}
+          placeholder="Select country..."
+          searchPlaceholder="Search country..."
+          forceSearchable
+          options={countries.map((country) => ({
+            value: country.country_code,
+            label: `${country.country_code} — ${country.country_name}`,
+          }))}
+        />
       </AdminField>
       <AdminField label="Tax Name" required>
         <input className={inputClass} value={form.tax_name} onChange={(e) => setForm((prev) => ({ ...prev, tax_name: e.target.value }))} placeholder="VAT, GST, Sales Tax" />

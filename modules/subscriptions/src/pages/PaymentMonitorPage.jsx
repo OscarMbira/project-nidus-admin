@@ -21,6 +21,7 @@ import {
   EmptyState,
   LoadingState,
   inputClass,
+  SelectField,
   useToast,
 } from '@nidus-admin/ui'
 
@@ -199,10 +200,20 @@ export default function PaymentMonitorPage() {
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
-          <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className={inputClass}>
-            <option value="">All countries</option>
-            {countries.map((c) => <option key={c.country_code} value={c.country_code}>{c.country_code}</option>)}
-          </select>
+          <SelectField
+            value={countryCode}
+            onChange={setCountryCode}
+            placeholder="All countries"
+            searchPlaceholder="Search country..."
+            forceSearchable
+            options={[
+              { value: '', label: 'All countries' },
+              ...countries.map((c) => ({
+                value: c.country_code,
+                label: c.country_code,
+              })),
+            ]}
+          />
           <input
             type="search"
             placeholder="Email or transaction ID"

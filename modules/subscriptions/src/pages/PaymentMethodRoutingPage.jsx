@@ -22,6 +22,7 @@ import {
   EmptyState,
   inputClass,
   LoadingState,
+  SelectField,
   useConfirmAction,
   useToast,
   AuditField,
@@ -345,17 +346,17 @@ export default function PaymentMethodRoutingPage() {
             <p className="mt-1 text-sm text-gray-400">Admin view — gateway names shown for routing verification.</p>
             <div className="mt-4">
               <AdminField label="Customer country">
-                <select
-                  className={inputClass}
+                <SelectField
                   value={previewCountry}
-                  onChange={(e) => setPreviewCountry(e.target.value)}
-                >
-                  {countries.map((country) => (
-                    <option key={country.country_code} value={country.country_code}>
-                      {country.country_code} — {country.country_name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setPreviewCountry}
+                  placeholder="Select country..."
+                  searchPlaceholder="Search country..."
+                  forceSearchable
+                  options={countries.map((country) => ({
+                    value: country.country_code,
+                    label: `${country.country_code} — ${country.country_name}`,
+                  }))}
+                />
               </AdminField>
             </div>
             {previewLoading ? (

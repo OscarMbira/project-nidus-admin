@@ -11,6 +11,7 @@ export { AuditRecordDiffPanel, formatAuditActionLabel } from './AuditRecordDiffP
 export { LoadingState, EmptyState } from './LoadingState.jsx'
 export { SearchBar, ViewToggle, RowNumberBadge } from './SearchBar.jsx'
 export { SearchableSelect } from './SearchableSelect.jsx'
+export { SelectField, SEARCHABLE_SELECT_MIN_OPTIONS } from './SelectField.jsx'
 export { MultiSearchableSelect } from './MultiSearchableSelect.jsx'
 export {
   shouldShowCreateOption,
@@ -26,6 +27,11 @@ export { DetachButton } from './DetachButton.jsx'
 export { AdminActionButton } from './AdminActionButton.jsx'
 export { AdminIconActionButton } from './AdminIconActionButton.jsx'
 export { AdminTooltip } from './AdminTooltip.jsx'
+export {
+  AdminMultiLineListInput,
+  parseMultiLineValue,
+  joinMultiLineValue,
+} from './AdminMultiLineListInput.jsx'
 export { default as AuditField } from './AuditField.jsx'
 export { default as AuditCard } from './AuditCard.jsx'
 export { default as AuditTimestampPair } from './AuditTimestampPair.jsx'

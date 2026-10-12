@@ -26,6 +26,7 @@ import {
   inputClass,
   LoadingState,
   SearchBar,
+  SelectField,
   useConfirmAction,
   useToast,
   AuditField,
@@ -697,11 +698,17 @@ export default function InvoiceListPage() {
               </select>
             </AdminField>
             <AdminField label="Currency" required>
-              <select className={inputClass} value={createForm.currency} onChange={(e) => setCreateForm((prev) => ({ ...prev, currency: e.target.value }))}>
-                {currencies.map((currency) => (
-                  <option key={currency.currency_code} value={currency.currency_code}>{currency.currency_code} — {currency.currency_name}</option>
-                ))}
-              </select>
+              <SelectField
+                value={createForm.currency}
+                onChange={(v) => setCreateForm((prev) => ({ ...prev, currency: v }))}
+                placeholder="Select currency..."
+                searchPlaceholder="Search currency..."
+                forceSearchable
+                options={currencies.map((currency) => ({
+                  value: currency.currency_code,
+                  label: `${currency.currency_code} — ${currency.currency_name}`,
+                }))}
+              />
             </AdminField>
           </div>
           <AdminField label="Line Items" required>

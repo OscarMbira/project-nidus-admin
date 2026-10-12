@@ -36,6 +36,7 @@ import {
   inputClass,
   LoadingState,
   SearchBar,
+  SelectField,
   SubscriptionFeaturesEditor,
   SubscriptionFeaturesList,
   useToast,
@@ -493,15 +494,17 @@ export default function SubscriptionFormPage() {
                       />
                     </AdminField>
                     <AdminField label="Currency">
-                      <select
-                        className={inputClass}
+                      <SelectField
                         value={form.currency}
-                        onChange={(event) => setForm((prev) => ({ ...prev, currency: event.target.value }))}
-                      >
-                        {currencyOptions.map(({ code, label }) => (
-                          <option key={code} value={code}>{label}</option>
-                        ))}
-                      </select>
+                        onChange={(v) => setForm((prev) => ({ ...prev, currency: v }))}
+                        placeholder="Select currency..."
+                        searchPlaceholder="Search currency..."
+                        forceSearchable
+                        options={currencyOptions.map(({ code, label }) => ({
+                          value: code,
+                          label,
+                        }))}
+                      />
                     </AdminField>
                   </div>
 

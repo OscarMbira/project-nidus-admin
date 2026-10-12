@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import SystemSettingsPage from './pages/SystemSettingsPage.jsx'
 import FeatureFlagsPage from './pages/FeatureFlagsPage.jsx'
+import PlannerMenuAvailabilityPage from './pages/PlannerMenuAvailabilityPage.jsx'
 import MaintenanceModePage from './pages/MaintenanceModePage.jsx'
 import SystemHealthPage from './pages/SystemHealthPage.jsx'
 import CurrencyListPage from './pages/CurrencyListPage.jsx'
@@ -34,6 +35,7 @@ export default function SystemRoutes() {
     <Routes>
       <Route path="system-settings" element={<SystemSettingsPage />} />
       <Route path="feature-flags" element={<FeatureFlagsPage />} />
+      <Route path="planner-menu" element={<PlannerMenuAvailabilityPage />} />
       <Route path="maintenance-mode" element={<MaintenanceModePage />} />
       <Route path="system-health" element={<SystemHealthPage />} />
       <Route path="currencies" element={<CurrencyListPage />} />

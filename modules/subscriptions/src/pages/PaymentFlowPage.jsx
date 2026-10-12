@@ -18,7 +18,7 @@ import {
   listRoutingRules,
   useCurrentAdmin,
 } from '@nidus-admin/shared'
-import { AdminCard, EmptyState, LoadingState, inputClass } from '@nidus-admin/ui'
+import { AdminCard, EmptyState, LoadingState, SelectField } from '@nidus-admin/ui'
 import { buildFlowGraph } from '../components/paymentFlow/buildFlowGraph.js'
 import { flowNodeTypes } from '../components/paymentFlow/FlowNodes.jsx'
 
@@ -132,16 +132,20 @@ export default function PaymentFlowPage() {
             <p className="text-sm text-gray-500">Live routing architecture from payment method routing config</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <select
+            <SelectField
               value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value)}
-              className={inputClass}
-            >
-              <option value="">All countries</option>
-              {countries.map((c) => (
-                <option key={c.country_code} value={c.country_code}>{c.country_code} — {c.country_name}</option>
-              ))}
-            </select>
+              onChange={setCountryCode}
+              placeholder="All countries"
+              searchPlaceholder="Search country..."
+              forceSearchable
+              options={[
+                { value: '', label: 'All countries' },
+                ...countries.map((c) => ({
+                  value: c.country_code,
+                  label: `${c.country_code} — ${c.country_name}`,
+                })),
+              ]}
+            />
             <label className="flex items-center gap-2 text-xs text-gray-400">
               <input type="checkbox" checked={showInactive} onChange={(e) => setShowInactive(e.target.checked)} />
               Show inactive

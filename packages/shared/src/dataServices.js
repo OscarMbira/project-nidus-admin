@@ -110,7 +110,7 @@ export const fetchUserById = (id) =>
     .then(({ data, error }) => ({ data: data?.[0] ?? null, error }))
 
 export const fetchAccounts = (opts = {}) =>
-  q(getPublicDb(), 'accounts', 'id, account_name, is_verified, is_suspended, created_at, owner_user_id', {
+  q(getPublicDb(), 'accounts', 'id, account_name, is_verified, is_suspended, created_at, owner_user_id, product_edition', {
     order: { column: 'created_at', asc: false },
     limit: opts.limit || 500,
     range: opts.range,

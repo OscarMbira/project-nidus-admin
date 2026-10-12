@@ -15,6 +15,7 @@ import {
   EmptyState,
   inputClass,
   LoadingState,
+  SelectField,
   useToast,
   AuditField,
   AuditCard,
@@ -209,14 +210,26 @@ export default function ExchangeRateListPage() {
         <div className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 lg:max-w-xl">
             <AdminField label="From Currency">
-              <select className={inputClass} value={historyFrom} onChange={(e) => setHistoryFrom(e.target.value)}>
-                {currencyCodes.map((code) => <option key={code} value={code}>{code}</option>)}
-              </select>
+              <SelectField
+                value={historyFrom}
+                onChange={setHistoryFrom}
+                placeholder="Select currency..."
+                searchPlaceholder="Search currency..."
+                forceSearchable
+                options={currencyCodes.map((code) => ({ value: code, label: code }))}
+              />
             </AdminField>
             <AdminField label="To Currency">
-              <select className={inputClass} value={historyTo} onChange={(e) => setHistoryTo(e.target.value)}>
-                {currencyCodes.filter((code) => code !== historyFrom).map((code) => <option key={code} value={code}>{code}</option>)}
-              </select>
+              <SelectField
+                value={historyTo}
+                onChange={setHistoryTo}
+                placeholder="Select currency..."
+                searchPlaceholder="Search currency..."
+                forceSearchable
+                options={currencyCodes
+                  .filter((code) => code !== historyFrom)
+                  .map((code) => ({ value: code, label: code }))}
+              />
             </AdminField>
           </div>
           {!historyRates.length ? (
@@ -254,16 +267,26 @@ export default function ExchangeRateListPage() {
         <AdminForm onSubmit={handleCreate} className="mt-2 space-y-3">
           <div className="grid gap-4 sm:grid-cols-2">
             <AdminField label="From Currency" required>
-              <select className={inputClass} value={createForm.from_currency} onChange={(e) => setCreateForm((p) => ({ ...p, from_currency: e.target.value }))}>
-                <option value="">Select...</option>
-                {currencyCodes.map((code) => <option key={code} value={code}>{code}</option>)}
-              </select>
+              <SelectField
+                value={createForm.from_currency}
+                onChange={(v) => setCreateForm((p) => ({ ...p, from_currency: v }))}
+                placeholder="Select..."
+                searchPlaceholder="Search currency..."
+                forceSearchable
+                options={currencyCodes.map((code) => ({ value: code, label: code }))}
+              />
             </AdminField>
             <AdminField label="To Currency" required>
-              <select className={inputClass} value={createForm.to_currency} onChange={(e) => setCreateForm((p) => ({ ...p, to_currency: e.target.value }))}>
-                <option value="">Select...</option>
-                {currencyCodes.filter((code) => code !== createForm.from_currency).map((code) => <option key={code} value={code}>{code}</option>)}
-              </select>
+              <SelectField
+                value={createForm.to_currency}
+                onChange={(v) => setCreateForm((p) => ({ ...p, to_currency: v }))}
+                placeholder="Select..."
+                searchPlaceholder="Search currency..."
+                forceSearchable
+                options={currencyCodes
+                  .filter((code) => code !== createForm.from_currency)
+                  .map((code) => ({ value: code, label: code }))}
+              />
             </AdminField>
           </div>
           <AdminField label="Rate" required>

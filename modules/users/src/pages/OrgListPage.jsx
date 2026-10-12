@@ -12,6 +12,9 @@ import {
   useCurrentAdmin,
   useDisplayIdMap,
   verifyOrganisation,
+  changeAccountEdition,
+  filterByEdition,
+  EDITION_LABELS,
 } from '@nidus-admin/shared'
 import {
   AdminActionButton,
@@ -50,6 +53,8 @@ export default function OrgListPage() {
   const [actionError, setActionError] = useState(null)
   const [search, setSearch] = useState('')
   const [verificationFilter, setVerificationFilter] = useState('all')
+  // v211 (monorepo v1239): Full PMIS vs Project Planner edition filter.
+  const [editionFilter, setEditionFilter] = useState('all')
 
   const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
   const { displayIdMap } = useDisplayIdMap('public.accounts', rowIds)
@@ -69,7 +74,7 @@ export default function OrgListPage() {
 
   const filteredRows = useMemo(() => {
     const query = search.toLowerCase().trim()
-    return rows.filter((row) => {
+    return filterByEdition(rows, editionFilter).filter((row) => {
       const matchesSearch = !query || [row.account_name, row.id]
         .some((value) => String(value ?? '').toLowerCase().includes(query))
       if (!matchesSearch) return false
@@ -78,7 +83,7 @@ export default function OrgListPage() {
       if (verificationFilter === 'unverified') return !row.is_verified && !row.is_suspended
       return !!row.is_suspended
     })
-  }, [rows, search, verificationFilter])
+  }, [rows, search, verificationFilter, editionFilter])
 
   const bulk = useBulkSelection({ rows: filteredRows, idKey: 'id' })
 
@@ -143,6 +148,15 @@ export default function OrgListPage() {
         onClick: () => handleVerify(row),
       })
     }
+    if (hasPermission('accounts.edition.change')) {
+      const target = (row.product_edition || 'platform') === 'planner' ? 'platform' : 'planner'
+      actions.push({
+        key: 'edition',
+        label: `Change edition to ${EDITION_LABELS[target]}`,
+        variant: 'default',
+        onClick: () => handleChangeEdition(row, target),
+      })
+    }
     if (hasPermission('orgs.suspend')) {
       actions.push({
         key: 'suspend',
@@ -190,6 +204,27 @@ export default function OrgListPage() {
     })
   }
 
+  const handleChangeEdition = (row, target) => {
+    confirm({
+      title: `Switch ${row.account_name || row.id} to ${EDITION_LABELS[target]}?`,
+      message: target === 'planner'
+        ? 'Members will only see the planning menus. No data is deleted; switching back restores everything.'
+        : 'Members will see the full PMIS. Their plans and records carry over unchanged.',
+      confirmLabel: 'Change edition',
+      requireReason: true,
+      onConfirm: async (reason) => {
+        setActionError(null)
+        const { error: mutationError } = await changeAccountEdition(row.id, target, reason)
+        if (mutationError) {
+          setActionError(mutationError.message || String(mutationError))
+          return
+        }
+        showSuccess(`${row.account_name || row.id} now uses ${EDITION_LABELS[target]}.`)
+        await loadAccounts()
+      },
+    })
+  }
+
   if (loading) return <LoadingState message="Loading organisations..." />
   if (error) return <div className="p-6 text-red-400">{error}</div>
 
@@ -227,6 +262,22 @@ export default function OrgListPage() {
             {filter.label}
           </button>
         ))}
+        <span className="mx-1 self-center text-xs text-gray-500 dark:text-gray-400">Edition:</span>
+        {[['all', 'All'], ['platform', EDITION_LABELS.platform], ['planner', EDITION_LABELS.planner]].map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setEditionFilter(key)}
+            aria-pressed={editionFilter === key}
+            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+              editionFilter === key
+                ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-600/20 dark:text-blue-200'
+                : 'border-gray-300 bg-white text-gray-600 hover:border-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-gray-500 dark:hover:text-gray-200'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -257,6 +308,17 @@ export default function OrgListPage() {
                 {r.account_name || '—'}
               </button>
             ) },
+            {
+              key: 'edition',
+              label: 'Edition',
+              sortable: false,
+              render: (r) => (
+                <AdminBadge
+                  label={EDITION_LABELS[r.product_edition || 'platform']}
+                  variant={(r.product_edition || 'platform') === 'planner' ? 'pending_activation' : 'active'}
+                />
+              ),
+            },
             {
               key: 'verification',
               label: 'Verification',

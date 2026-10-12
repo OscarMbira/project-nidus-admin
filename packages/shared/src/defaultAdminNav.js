@@ -406,6 +406,15 @@ export const DEFAULT_NAV_SECTIONS = [
           { label: 'Help Management', path: '/content/help-management', roles: ['super_admin', 'system_admin', 'content_admin'] },
           { label: 'PWA Settings', path: '/content/p-w-a-settings', roles: ['super_admin', 'system_admin'] },
           { label: 'Role Menu Config', path: '/content/role-menu-config', roles: ['super_admin'] },
+          // v225 (monorepo v1241): public brand site product cards and copy
+          { label: 'Public Site Products', path: '/content/public-site', roles: ['super_admin', 'system_admin'], activePaths: ['/content/public-site-product', '/content/public-site-content'] },
+          { label: 'Public Site Pages & Menus', path: '/content/public-site-pages', roles: ['super_admin', 'system_admin'], activePaths: ['/content/public-site-page', '/content/public-site-link'] },
+          { label: 'Site Enquiries', path: '/content/site-enquiries', roles: ['super_admin', 'system_admin'], activePaths: ['/content/site-enquiry'] },
+          { label: 'Site Sections', path: '/content/site-sections', roles: ['super_admin', 'system_admin'], activePaths: ['/content/site-section'] },
+          { label: 'Blog Posts', path: '/content/blog-posts', roles: ['super_admin', 'system_admin'], activePaths: ['/content/blog-post'] },
+          { label: 'Blog Categories', path: '/content/blog-categories', roles: ['super_admin', 'system_admin'] },
+          // v233 (monorepo v1264): each public header's colours and main button
+          { label: 'Public Site Headers', path: '/content/site-headers', roles: ['super_admin', 'system_admin'], activePaths: ['/content/site-header'] },
         ],
       },
       {
@@ -435,6 +444,8 @@ export const DEFAULT_NAV_SECTIONS = [
           { label: 'System Settings', path: '/system/system-settings', roles: ['super_admin', 'system_admin'] },
           { label: 'Email Provider', path: '/system/email-provider', roles: ['super_admin'] },
           { label: 'Maintenance', path: '/system/maintenance-mode', roles: ['super_admin'] },
+          // v228 (monorepo v1239): which Project Planner menus Planner workspaces can see
+          { label: 'Planner Menu Availability', path: '/system/planner-menu', roles: ['super_admin', 'system_admin'] },
         ],
       },
       {

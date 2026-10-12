@@ -11,6 +11,7 @@ export const PLATFORM_PLAN_TYPES = [
   'lifetime_starter',
   'lifetime_professional',
   'lifetime_enterprise',
+  'planner', // v1239: Project Planner per-seat plans (sold in the Planner only)
 ]
 
 export const SIMULATOR_PLAN_TYPES = [

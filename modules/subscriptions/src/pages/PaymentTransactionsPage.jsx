@@ -21,6 +21,7 @@ import {
   EmptyState,
   LoadingState,
   SearchBar,
+  SelectField,
   useToast,
 } from '@nidus-admin/ui'
 
@@ -202,12 +203,17 @@ export default function PaymentTransactionsPage() {
           </div>
           <div>
             <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Currency</label>
-            <select value={currencyFilter} onChange={(event) => setCurrencyFilter(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none">
-              <option value="all">All currencies</option>
-              {currencyOptions.map(({ code, label }) => (
-                <option key={code} value={code}>{label}</option>
-              ))}
-            </select>
+            <SelectField
+              value={currencyFilter}
+              onChange={setCurrencyFilter}
+              placeholder="All currencies"
+              searchPlaceholder="Search currency..."
+              forceSearchable
+              options={[
+                { value: 'all', label: 'All currencies' },
+                ...currencyOptions.map(({ code, label }) => ({ value: code, label })),
+              ]}
+            />
           </div>
           <div className="flex items-end">
             <button type="button" onClick={loadTransactions} className="w-full rounded border border-blue-700 bg-blue-900/40 px-3 py-2 text-sm text-blue-200 hover:bg-blue-900/70">Apply Filters</button>
