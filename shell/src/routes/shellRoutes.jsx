@@ -33,6 +33,7 @@ const SystemTestersModule = lazyRemote(() => import('admin_system_testers/routes
 const DocsCentreModule = lazyRemote(() => import('admin_docs_centre/routes'))
 const TestingCentreModule = lazyRemote(() => import('admin_testing_centre/routes'))
 const EmailCentreModule = lazyRemote(() => import('admin_email_centre/routes'))
+const AiCentreModule = lazyRemote(() => import('admin_ai/routes'))
 
 // Single source of truth for module route mounting — rendered once under AdminLayout
 // (full shell chrome) and again under PopoutShell (chromeless, for detached/second-monitor
@@ -56,6 +57,7 @@ const MODULE_ROUTES = [
   { path: 'docs-centre', module: 'docs-centre', Component: DocsCentreModule },
   { path: 'testing-centre', module: 'testing-centre', Component: TestingCentreModule },
   { path: 'email-centre', module: 'email-centre', Component: EmailCentreModule },
+  { path: 'ai', module: 'ai', Component: AiCentreModule },
   { path: 'admin-mgmt', module: 'admin-mgmt', Component: AdminMgmtModule },
 ]
 

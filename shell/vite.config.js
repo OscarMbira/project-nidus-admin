@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
           admin_docs_centre: remote('VITE_ADMIN_DOCS_CENTRE_URL', 5196),
           admin_testing_centre: remote('VITE_ADMIN_TESTING_CENTRE_URL', 5197),
           admin_email_centre: remote('VITE_ADMIN_EMAIL_CENTRE_URL', 5198),
+          admin_ai: remote('VITE_ADMIN_AI_URL', 5199),
         },
       shared: {
         react: { singleton: true, requiredVersion: '^18.3.1', eager: true },

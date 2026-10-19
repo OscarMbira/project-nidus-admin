@@ -8,7 +8,7 @@ Standalone admin application for Project Nidus — separate codebase, separate d
 cd "E:\project-nidus-admin"
 pnpm install
 pnpm run dev          # Shell (5175) + light set (platform, users, admin-mgmt)
-pnpm run dev:full     # Shell (5175) + all modules (5180-5198)
+pnpm run dev:full     # Shell (5175) + all modules (5180-5199)
 ```
 
 Focused module dev:

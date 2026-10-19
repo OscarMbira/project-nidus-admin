@@ -12,13 +12,13 @@ export function AdminField({ label, error, children, required }) {
     : undefined
   return (
     <div data-testid={testId}>
-      <label className="mb-1 block text-sm text-gray-300">
-        {label}{required && <span className="text-red-400"> *</span>}
+      <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">
+        {label}{required && <span className="text-red-600 dark:text-red-400"> *</span>}
       </label>
       {children}
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
     </div>
   )
 }
 
-export const inputClass = 'w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:outline-none'
+export const inputClass = 'w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 focus:outline-none'

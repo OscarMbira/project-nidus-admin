@@ -95,6 +95,11 @@ export const MODULE_REGISTRY = {
     devCommand: 'pnpm exec turbo dev --filter=@nidus-admin/shell --filter=@nidus-admin/email-centre',
     load: () => import('admin_email_centre/routes'),
   },
+  ai: {
+    label: 'AI Centre',
+    devCommand: 'pnpm exec turbo dev --filter=@nidus-admin/shell --filter=@nidus-admin/ai',
+    load: () => import('admin_ai/routes'),
+  },
 }
 
 const ROUTE_PREFIXES = Object.keys(MODULE_REGISTRY)

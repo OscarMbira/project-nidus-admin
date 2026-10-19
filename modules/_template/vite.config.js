@@ -31,6 +31,6 @@ export default defineConfig({
     },
   },
   build: { target: 'esnext', minify: false, cssCodeSplit: false, modulePreload: false },
-  server: { port: 5199, strictPort: true, cors: true, host: '127.0.0.1' },
-  preview: { port: 5199, strictPort: true, cors: true, host: '127.0.0.1' },
+  server: { port: 5299, strictPort: true, cors: true, host: '127.0.0.1' },
+  preview: { port: 5299, strictPort: true, cors: true, host: '127.0.0.1' },
 })

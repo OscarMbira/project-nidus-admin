@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom'
  */
 export function AdminCard({ title, value, trend, className = '', children, onClick, to }) {
   const interactive = Boolean(onClick || to)
-  const baseClassName = `rounded-lg border border-gray-700 bg-gray-900 p-4 text-left w-full ${
-    interactive ? 'cursor-pointer transition-colors hover:border-blue-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900' : ''
+  const baseClassName = `rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-left w-full ${
+    interactive ? 'cursor-pointer transition-colors hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900' : ''
   } ${className}`
 
   const content = (
@@ -19,8 +19,8 @@ export function AdminCard({ title, value, trend, className = '', children, onCli
         <div className={title ? 'mt-4' : ''}>{children}</div>
       ) : (
         <>
-          <p className="mt-2 text-2xl font-semibold text-gray-100">{value ?? '—'}</p>
-          {trend && <p className="mt-1 text-xs text-gray-400">{trend}</p>}
+          <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">{value ?? '—'}</p>
+          {trend && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{trend}</p>}
         </>
       )}
     </>

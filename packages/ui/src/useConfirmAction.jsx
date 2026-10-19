@@ -51,7 +51,7 @@ export function useConfirmAction() {
       <p>{state.message}</p>
       {state.requireReason && (
         <textarea
-          className="mt-3 w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100"
+          className="mt-3 w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
           placeholder={state.reasonLabel || 'Reason (required)'}
           rows={3}
           value={state.reason}

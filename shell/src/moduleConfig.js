@@ -20,4 +20,5 @@ export default {
   ADMIN_DOCS_CENTRE_URL: env.VITE_ADMIN_DOCS_CENTRE_URL || 'http://127.0.0.1:5196/assets/remoteEntry.js',
   ADMIN_TESTING_CENTRE_URL: env.VITE_ADMIN_TESTING_CENTRE_URL || 'http://127.0.0.1:5197/assets/remoteEntry.js',
   ADMIN_EMAIL_CENTRE_URL: env.VITE_ADMIN_EMAIL_CENTRE_URL || 'http://127.0.0.1:5198/assets/remoteEntry.js',
+  ADMIN_AI_URL: env.VITE_ADMIN_AI_URL || 'http://127.0.0.1:5199/assets/remoteEntry.js',
 }

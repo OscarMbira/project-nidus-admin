@@ -52,6 +52,7 @@ Port: **5175**
 | docs-centre | 5196 | `pnpm exec turbo dev --filter=@nidus-admin/shell --filter=@nidus-admin/docs-centre` |
 | testing-centre | 5197 | `pnpm exec turbo dev --filter=@nidus-admin/shell --filter=@nidus-admin/testing-centre` |
 | email-centre | 5198 | `pnpm exec turbo dev --filter=@nidus-admin/shell --filter=@nidus-admin/email-centre` |
+| ai | 5199 | `pnpm exec turbo dev --filter=@nidus-admin/shell --filter=@nidus-admin/ai` |
 
 ## Multiple modules at once
 
