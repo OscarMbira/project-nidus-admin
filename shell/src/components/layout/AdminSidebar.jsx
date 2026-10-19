@@ -367,7 +367,8 @@ export default function AdminSidebar({ collapsed }) {
           .filter((subsection) => subsection.groups.length > 0),
       }))
       .filter((section) => section.groups.length > 0 || section.subsections.length > 0),
-    [role],
+    // NAV_SECTIONS changes when the DB menu (admin.nav_nodes) replaces the fallback after loading.
+    [role, NAV_SECTIONS],
   )
 
   useEffect(() => {
