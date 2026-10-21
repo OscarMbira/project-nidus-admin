@@ -446,6 +446,7 @@ export const DEFAULT_NAV_SECTIONS = [
           { label: 'Maintenance', path: '/system/maintenance-mode', roles: ['super_admin'] },
           // v228 (monorepo v1239): which Project Planner menus Planner workspaces can see
           { label: 'Planner Menu Availability', path: '/system/planner-menu', roles: ['super_admin', 'system_admin'] },
+          { label: 'Register Custom Field Limits', path: '/system/register-custom-fields', roles: ['super_admin', 'system_admin'] },
         ],
       },
       {
