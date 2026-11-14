@@ -15,6 +15,8 @@ import {
   changeAccountEdition,
   filterByEdition,
   EDITION_LABELS,
+  fetchAccountMenuSettings,
+  setAccountConsolidatedMenu,
 } from '@nidus-admin/shared'
 import {
   AdminActionButton,
@@ -59,12 +61,19 @@ export default function OrgListPage() {
   const rowIds = useMemo(() => rows.map((row) => row.id).filter(Boolean), [rows])
   const { displayIdMap } = useDisplayIdMap('public.accounts', rowIds)
 
+  // v249 (monorepo v1341 D20): which organisations have the single sidebar per role switched on.
+  const [menuSwitchById, setMenuSwitchById] = useState(new Map())
+
   const loadAccounts = async () => {
     setLoading(true)
     setError(null)
-    const { data, error: fetchError } = await fetchAccounts()
+    const [{ data, error: fetchError }, menuRes] = await Promise.all([
+      fetchAccounts(),
+      fetchAccountMenuSettings().catch(() => ({ data: [] })), // permission error → no column data
+    ])
     if (fetchError) setError(fetchError.message || String(fetchError))
     else setRows(data || [])
+    setMenuSwitchById(new Map((menuRes.data || []).map((m) => [m.account_id, !!m.consolidated_menu_enabled])))
     setLoading(false)
   }
 
@@ -157,6 +166,15 @@ export default function OrgListPage() {
         onClick: () => handleChangeEdition(row, target),
       })
     }
+    if (hasPermission('system.menu_placements.edit')) {
+      const on = menuSwitchById.get(row.id) === true
+      actions.push({
+        key: 'consolidated-menu',
+        label: on ? 'Turn single sidebar off' : 'Turn single sidebar on',
+        variant: 'default',
+        onClick: () => handleConsolidatedMenu(row, !on),
+      })
+    }
     if (hasPermission('orgs.suspend')) {
       actions.push({
         key: 'suspend',
@@ -220,6 +238,27 @@ export default function OrgListPage() {
           return
         }
         showSuccess(`${row.account_name || row.id} now uses ${EDITION_LABELS[target]}.`)
+        await loadAccounts()
+      },
+    })
+  }
+
+  const handleConsolidatedMenu = (row, enabled) => {
+    confirm({
+      title: `${enabled ? 'Turn on' : 'Turn off'} the single sidebar per role for ${row.account_name || row.id}?`,
+      message: enabled
+        ? 'Everyone in this organisation moves to the consolidated sidebar at their next page load.'
+        : 'Everyone in this organisation goes back to the previous sidebar. Nothing else changes.',
+      confirmLabel: enabled ? 'Turn on' : 'Turn off',
+      requireReason: true,
+      onConfirm: async (reason) => {
+        setActionError(null)
+        const { error: mutationError } = await setAccountConsolidatedMenu(row.id, enabled, reason)
+        if (mutationError) {
+          setActionError(mutationError.message || String(mutationError))
+          return
+        }
+        showSuccess(`Single sidebar per role is now ${enabled ? 'on' : 'off'} for ${row.account_name || row.id}.`)
         await loadAccounts()
       },
     })
@@ -308,6 +347,14 @@ export default function OrgListPage() {
                 {r.account_name || '—'}
               </button>
             ) },
+            ...(hasPermission('system.menu_placements.view') ? [{
+              key: 'consolidated_menu',
+              label: 'Single sidebar',
+              sortable: false,
+              render: (r) => (
+                <AdminBadge label={menuSwitchById.get(r.id) ? 'On' : 'Off'} variant={menuSwitchById.get(r.id) ? 'active' : 'suspended'} />
+              ),
+            }] : []),
             {
               key: 'edition',
               label: 'Edition',

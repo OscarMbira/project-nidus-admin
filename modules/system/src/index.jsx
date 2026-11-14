@@ -2,6 +2,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import SystemSettingsPage from './pages/SystemSettingsPage.jsx'
 import FeatureFlagsPage from './pages/FeatureFlagsPage.jsx'
 import PlannerMenuAvailabilityPage from './pages/PlannerMenuAvailabilityPage.jsx'
+import MenuPlacementsPage from './pages/MenuPlacementsPage.jsx'
+import MenuPlacementFormPage from './pages/MenuPlacementFormPage.jsx'
+import MenuSectionsPage from './pages/MenuSectionsPage.jsx'
+import MenuSectionFormPage from './pages/MenuSectionFormPage.jsx'
 import RegisterCustomFieldLimitsPage from './pages/RegisterCustomFieldLimitsPage.jsx'
 import MaintenanceModePage from './pages/MaintenanceModePage.jsx'
 import SystemHealthPage from './pages/SystemHealthPage.jsx'
@@ -37,6 +41,11 @@ export default function SystemRoutes() {
       <Route path="system-settings" element={<SystemSettingsPage />} />
       <Route path="feature-flags" element={<FeatureFlagsPage />} />
       <Route path="planner-menu" element={<PlannerMenuAvailabilityPage />} />
+      {/* v217 (monorepo v1341): consolidated role menu placements */}
+      <Route path="menu-placements" element={<MenuPlacementsPage />} />
+      <Route path="menu-placement-form" element={<MenuPlacementFormPage />} />
+      <Route path="menu-sections" element={<MenuSectionsPage />} />
+      <Route path="menu-section-form" element={<MenuSectionFormPage />} />
       <Route path="register-custom-fields" element={<RegisterCustomFieldLimitsPage />} />
       <Route path="maintenance-mode" element={<MaintenanceModePage />} />
       <Route path="system-health" element={<SystemHealthPage />} />
