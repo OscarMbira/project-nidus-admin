@@ -39,7 +39,8 @@ describe('menuPlacementServices (v217)', () => {
   })
 
   it('labels every placement key used by the monorepo CHECK constraint', () => {
-    expect(Object.keys(PLACEMENT_KEY_LABELS)).toHaveLength(15)
+    expect(Object.keys(PLACEMENT_KEY_LABELS)).toHaveLength(16) // + support (monorepo v1471)
+    expect(PLACEMENT_KEY_LABELS.support).toBe('Project Administrator (Support)')
   })
 
   it('groups placements by section in sidebar order, footer last', () => {

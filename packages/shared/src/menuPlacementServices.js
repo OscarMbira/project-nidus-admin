@@ -18,6 +18,7 @@ export const PLACEMENT_KEY_LABELS = {
   pm: 'Project Manager',
   team: 'Team Lead / Team Manager',
   team_member: 'Team Member',
+  support: 'Project Administrator (Support)', // monorepo v1343 / SQL v1471
   programme: 'Programme Manager',
   portfolio: 'Portfolio Manager',
   pmo_oversight: 'PMO Admin / Account Owner',
