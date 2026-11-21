@@ -104,6 +104,13 @@ still wins over speculative optimization). See monorepo `organisationCustomRoleS
 
 22. **Bulk upload templates must include a legend / data dictionary (mandatory for NEW and AMENDED bulk-import flows — matches monorepo rule 71, v1101).** Whenever Admin offers a downloadable bulk-upload template (CSV, Excel/XLSX, JSON, or other formats), **every** downloadable format must embed a **legend / file dictionary** (field name, required, data type, max length, allowed values, format notes, aliases). Excel: Instructions + Legend sheets; CSV: `# DATA DICTIONARY` comment block; JSON: `DATA_DICTIONARY` alongside the data array. Do not ship bare header-only templates. Adopt opportunistically when amending an existing Admin bulk import; every new bulk-upload feature must include legends in all offered formats from day one. See monorepo `CLAUDE.md` rule **71**.
 
+23. **Field-level contextual help (mandatory for every NEW user-facing field, and for every field you touch when amending a form or view page — matches monorepo rule 76, v1345; owner decision 2026-11-21 that the help applies to all four systems: Platform, Simulator, Planner and Admin).** Each Admin capture field (and the same field on its view page) shows an ⓘ with what the field is for, an example and any format notes.
+   - **Admin's own store, no cross-schema read:** help lives in `admin.field_help` (key `admin.<table>.<column>`), seeded by versioned SQL in `E:\project-nidus-admin\SQL\`. Admin never reads `public.field_help`; nothing is imported from the monorepo (rule 34.3/46 there).
+   - **Admin's own copies of the controls:** label each field with the `@nidus-admin/ui` field-help label inside its field-help scope listing the page's keys — same contract as the monorepo `FieldLabelWithHelp` / `FieldHelpScope`. No help row → plain label, no ⓘ.
+   - **Same content rules as monorepo rule 76:** purpose + example required; do not restate derivable rules (required, max length, allowed values); plain text only; examples follow monorepo rule 77 (role titles, "Example … Ltd", globally familiar places, `.example` emails); record / people pickers never list their options in help.
+   - **Same exclusions:** chrome, `#` / pagination, technical IDs, transient search / filter boxes, bulk-action confirmations, table column headers.
+   - **Ship the help in the same change** as the field. Existing pages are covered by the v1345 Admin slice (see monorepo `projectplan/v1345_field_level_contextual_help_plan.md`), then adopted when next touched.
+
 ## Architecture
 
 - **Shell** (`@nidus-admin/shell`) — auth, layout, federation host
