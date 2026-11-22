@@ -111,6 +111,12 @@ still wins over speculative optimization). See monorepo `organisationCustomRoleS
    - **Same exclusions:** chrome, `#` / pagination, technical IDs, transient search / filter boxes, bulk-action confirmations, table column headers.
    - **Ship the help in the same change** as the field. Existing pages are covered by the v1345 Admin slice (see monorepo `projectplan/v1345_field_level_contextual_help_plan.md`), then adopted when next touched.
 
+24. **Admin date input for every date and date-time field (mandatory for every NEW field, and for every date field you touch when amending a page — matches monorepo rule 79, owner decision 2026-11-22, monorepo v1351).** Browser date pickers (`<input type="date">`, `<input type="datetime-local">`) show dates in the computer's own language and region, so they look different from the rest of the app.
+   - **Use `AdminDateInput`** from `@nidus-admin/ui` (Admin's own copy of the monorepo `RegionalDateInput` — rule 34.4, no cross-repo import); add `withTime` for a date and time. Never add a new `type="date"` or `type="datetime-local"` input.
+   - **Fixed format:** Admin has no organisation Regional & Format setting, so dates show as D MMM YYYY and times as 24-hour, everywhere in Admin. People type the date or pick it from a calendar.
+   - **Same value as before:** `YYYY-MM-DD` for a date, the existing ISO value for a date and time; pass the same props the native input had; label it with Admin's field-help label (rule 23).
+   - **Until the control ships** (monorepo v1351, in progress), do not add new date fields with a browser picker. A check fails CI on browser date pickers once the existing 24 files are replaced. See monorepo `projectprd/v1351_regional_date_input_PRD.md`.
+
 ## Architecture
 
 - **Shell** (`@nidus-admin/shell`) — auth, layout, federation host
