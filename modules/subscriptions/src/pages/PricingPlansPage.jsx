@@ -19,8 +19,7 @@ import {
   SearchBar,
   useConfirmAction,
   useToast,
-  AdminDateInput,
-} from '@nidus-admin/ui'
+  AdminDateInput, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const PAGE_SIZE = 12
 
@@ -329,8 +328,8 @@ export default function PricingPlansPage() {
               Update monthly price and effective date. A reason will be required on confirmation.
             </p>
             <div>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">New Monthly Price</label>
-              <input
+              <AdminFieldLabelWithHelp helpKey="admin.pricing_changes.new_price" htmlFor="fh-pricing-changes-new-price" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">New Monthly Price</AdminFieldLabelWithHelp>
+              <input id="fh-pricing-changes-new-price"
                 type="number"
                 min={0}
                 step="0.01"
@@ -340,8 +339,8 @@ export default function PricingPlansPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Effective Date</label>
-              <AdminDateInput eventStyle
+              <AdminFieldLabelWithHelp helpKey="admin.pricing_changes.effective_date" htmlFor="fh-pricing-changes-effective-date" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Effective Date</AdminFieldLabelWithHelp>
+              <AdminDateInput id="fh-pricing-changes-effective-date" eventStyle
                 value={editModal.effectiveDate}
                 onChange={(event) => setEditModal((prev) => ({ ...prev, effectiveDate: event.target.value }))}
                 className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"

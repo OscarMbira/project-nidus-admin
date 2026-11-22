@@ -186,16 +186,16 @@ export default function SettlementAccountFormPage() {
         <AdminForm onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-6">
           <AdminCard title="Account Details">
             <div className="space-y-4 p-4">
-              <AdminField label="Account Name" required>
-                <input
+              <AdminField helpKey="admin.settlement_accounts.account_name" htmlFor="fh-settlement-accounts-account-name" label="Account Name" required>
+                <input id="fh-settlement-accounts-account-name"
                   className={inputClass}
                   value={form.account_name}
                   onChange={(e) => setForm((p) => ({ ...p, account_name: e.target.value }))}
                   placeholder="USD Operating Account"
                 />
               </AdminField>
-              <AdminField label="Linked Gateway">
-                <select
+              <AdminField helpKey="admin.settlement_accounts.gateway_id" htmlFor="fh-settlement-accounts-gateway-id" label="Linked Gateway">
+                <select id="fh-settlement-accounts-gateway-id"
                   className={inputClass}
                   value={form.gateway_id}
                   onChange={(e) => setForm((p) => ({ ...p, gateway_id: e.target.value }))}
@@ -208,16 +208,16 @@ export default function SettlementAccountFormPage() {
                   ))}
                 </select>
               </AdminField>
-              <AdminField label="Bank Name" required>
-                <input
+              <AdminField helpKey="admin.settlement_accounts.bank_name" htmlFor="fh-settlement-accounts-bank-name" label="Bank Name" required>
+                <input id="fh-settlement-accounts-bank-name"
                   className={inputClass}
                   value={form.bank_name}
                   onChange={(e) => setForm((p) => ({ ...p, bank_name: e.target.value }))}
                 />
               </AdminField>
               <div className="grid gap-4 sm:grid-cols-2">
-                <AdminField label="Account Number" required={!accountId}>
-                  <input
+                <AdminField helpKey="admin.settlement_accounts.account_number" htmlFor="fh-settlement-accounts-account-number" label="Account Number" required={!accountId}>
+                  <input id="fh-settlement-accounts-account-number"
                     className={inputClass}
                     value={form.account_number}
                     onChange={(e) => setForm((p) => ({ ...p, account_number: e.target.value }))}
@@ -227,8 +227,8 @@ export default function SettlementAccountFormPage() {
                     <p className="mt-1 text-xs text-gray-500">Current: {maskedAccount}</p>
                   )}
                 </AdminField>
-                <AdminField label="Routing / SWIFT Code">
-                  <input
+                <AdminField helpKey="admin.settlement_accounts.routing_code" htmlFor="fh-settlement-accounts-routing-code" label="Routing / SWIFT Code">
+                  <input id="fh-settlement-accounts-routing-code"
                     className={inputClass}
                     value={form.routing_code}
                     onChange={(e) => setForm((p) => ({ ...p, routing_code: e.target.value }))}
@@ -237,8 +237,8 @@ export default function SettlementAccountFormPage() {
                 </AdminField>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <AdminField label="Currency" required>
-                  <select
+                <AdminField helpKey="admin.settlement_accounts.currency_code" htmlFor="fh-settlement-accounts-currency-code" label="Currency" required>
+                  <select id="fh-settlement-accounts-currency-code"
                     className={inputClass}
                     value={form.currency_code}
                     onChange={(e) => setForm((p) => ({ ...p, currency_code: e.target.value }))}
@@ -254,8 +254,8 @@ export default function SettlementAccountFormPage() {
                     )}
                   </select>
                 </AdminField>
-                <AdminField label="Account Type">
-                  <select
+                <AdminField helpKey="admin.settlement_accounts.account_type" htmlFor="fh-settlement-accounts-account-type" label="Account Type">
+                  <select id="fh-settlement-accounts-account-type"
                     className={inputClass}
                     value={form.account_type}
                     onChange={(e) => setForm((p) => ({ ...p, account_type: e.target.value }))}
@@ -273,7 +273,7 @@ export default function SettlementAccountFormPage() {
 
           <AdminCard title="Status">
             <div className="space-y-3 p-4">
-              <label className="flex items-center gap-2 text-sm text-gray-300">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                 <input
                   type="checkbox"
                   checked={form.is_default}
@@ -281,7 +281,7 @@ export default function SettlementAccountFormPage() {
                 />
                 Default for this currency
               </label>
-              <label className="flex items-center gap-2 text-sm text-gray-300">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                 <input
                   type="checkbox"
                   checked={form.is_active}
@@ -289,8 +289,8 @@ export default function SettlementAccountFormPage() {
                 />
                 Active
               </label>
-              <AdminField label="Notes">
-                <textarea
+              <AdminField helpKey="admin.settlement_accounts.notes" htmlFor="fh-settlement-accounts-notes" label="Notes">
+                <textarea id="fh-settlement-accounts-notes"
                   rows={3}
                   className={inputClass}
                   value={form.notes}

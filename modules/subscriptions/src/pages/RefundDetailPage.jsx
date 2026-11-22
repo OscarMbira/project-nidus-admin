@@ -425,11 +425,11 @@ export default function RefundDetailPage() {
 
       <AdminModal open={showEdit} title="Edit Refund" onClose={() => setShowEdit(false)}>
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
-          <AdminField label="Amount" required>
-            <input type="number" min={0} step="0.01" className={inputClass} value={editForm.amount} onChange={(e) => setEditForm((prev) => ({ ...prev, amount: e.target.value }))} />
+          <AdminField helpKey="admin.refunds.amount" htmlFor="fh-refunds-amount" label="Amount" required>
+            <input id="fh-refunds-amount" type="number" min={0} step="0.01" className={inputClass} value={editForm.amount} onChange={(e) => setEditForm((prev) => ({ ...prev, amount: e.target.value }))} />
           </AdminField>
-          <AdminField label="Reason" required>
-            <textarea rows={4} className={inputClass} value={editForm.reason} onChange={(e) => setEditForm((prev) => ({ ...prev, reason: e.target.value }))} />
+          <AdminField helpKey="admin.refunds.reason" htmlFor="fh-refunds-reason" label="Reason" required>
+            <textarea id="fh-refunds-reason" rows={4} className={inputClass} value={editForm.reason} onChange={(e) => setEditForm((prev) => ({ ...prev, reason: e.target.value }))} />
           </AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setShowEdit(false)} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>

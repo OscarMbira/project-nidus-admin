@@ -617,7 +617,7 @@ export default function InvoiceListPage() {
       <AdminModal open={Boolean(editingInvoice)} title={editingInvoice ? `Edit ${editingInvoice.invoice_number}` : 'Edit Invoice'} onClose={() => { setEditingInvoice(null); setEditForm(null) }}>
         {editingInvoice && editForm && (
           <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
-            <AdminField label="Line Items" required>
+            <AdminField helpKey="admin.invoices.line_items" label="Line Items" required>
               <InvoiceLineItemsEditor
                 items={editForm.lineItems}
                 currency={editingInvoice.currency}
@@ -629,22 +629,22 @@ export default function InvoiceListPage() {
               />
             </AdminField>
             <div className="grid gap-4 sm:grid-cols-3">
-              <AdminField label="Subtotal">
-                <input type="number" readOnly className={`${inputClass} bg-gray-950 text-gray-300`} value={editForm.subtotal} />
+              <AdminField helpKey="admin.invoices.subtotal" htmlFor="fh-invoices-subtotal" label="Subtotal">
+                <input id="fh-invoices-subtotal" type="number" readOnly className={`${inputClass} bg-gray-950 text-gray-300`} value={editForm.subtotal} />
                 <p className="mt-1 text-xs text-gray-500">Calculated from line items</p>
               </AdminField>
-              <AdminField label="Tax Amount">
-                <input type="number" min={0} step="0.01" className={inputClass} value={editForm.tax_amount} onChange={(e) => setEditForm((prev) => ({ ...prev, tax_amount: e.target.value }))} />
+              <AdminField helpKey="admin.invoices.tax_amount" htmlFor="fh-invoices-tax-amount" label="Tax Amount">
+                <input id="fh-invoices-tax-amount" type="number" min={0} step="0.01" className={inputClass} value={editForm.tax_amount} onChange={(e) => setEditForm((prev) => ({ ...prev, tax_amount: e.target.value }))} />
               </AdminField>
-              <AdminField label="Tax Rate %">
-                <input type="number" min={0} max={100} step="0.01" className={inputClass} value={editForm.tax_rate_applied} onChange={(e) => setEditForm((prev) => ({ ...prev, tax_rate_applied: e.target.value }))} />
+              <AdminField helpKey="admin.invoices.tax_rate_applied" htmlFor="fh-invoices-tax-rate-applied" label="Tax Rate %">
+                <input id="fh-invoices-tax-rate-applied" type="number" min={0} max={100} step="0.01" className={inputClass} value={editForm.tax_rate_applied} onChange={(e) => setEditForm((prev) => ({ ...prev, tax_rate_applied: e.target.value }))} />
               </AdminField>
             </div>
-            <AdminField label="Due Date">
-              <AdminDateInput eventStyle withTime className={inputClass} value={editForm.due_at} onChange={(e) => setEditForm((prev) => ({ ...prev, due_at: e.target.value }))} />
+            <AdminField helpKey="admin.invoices.due_at" htmlFor="fh-invoices-due-at" label="Due Date">
+              <AdminDateInput id="fh-invoices-due-at" eventStyle withTime className={inputClass} value={editForm.due_at} onChange={(e) => setEditForm((prev) => ({ ...prev, due_at: e.target.value }))} />
             </AdminField>
-            <AdminField label="Notes">
-              <textarea rows={2} className={inputClass} value={editForm.notes} onChange={(e) => setEditForm((prev) => ({ ...prev, notes: e.target.value }))} />
+            <AdminField helpKey="admin.invoices.notes" htmlFor="fh-invoices-notes" label="Notes">
+              <textarea id="fh-invoices-notes" rows={2} className={inputClass} value={editForm.notes} onChange={(e) => setEditForm((prev) => ({ ...prev, notes: e.target.value }))} />
             </AdminField>
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => { setEditingInvoice(null); setEditForm(null) }} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>
@@ -665,18 +665,18 @@ export default function InvoiceListPage() {
               </span>
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
-              <AdminField label="Amount" required>
-                <input type="number" min={0} step="0.01" className={inputClass} value={refundForm.amount} onChange={(e) => setRefundForm((prev) => ({ ...prev, amount: e.target.value }))} />
+              <AdminField helpKey="admin.credit_notes.amount" htmlFor="fh-credit-notes-amount" label="Amount" required>
+                <input id="fh-credit-notes-amount" type="number" min={0} step="0.01" className={inputClass} value={refundForm.amount} onChange={(e) => setRefundForm((prev) => ({ ...prev, amount: e.target.value }))} />
               </AdminField>
-              <AdminField label="Currency" required>
-                <input className={inputClass} value={refundForm.currency} onChange={(e) => setRefundForm((prev) => ({ ...prev, currency: e.target.value }))} />
+              <AdminField helpKey="admin.credit_notes.currency" htmlFor="fh-credit-notes-currency" label="Currency" required>
+                <input id="fh-credit-notes-currency" className={inputClass} value={refundForm.currency} onChange={(e) => setRefundForm((prev) => ({ ...prev, currency: e.target.value }))} />
               </AdminField>
             </div>
-            <AdminField label="Reason" required>
-              <textarea rows={3} className={inputClass} value={refundForm.reason} onChange={(e) => setRefundForm((prev) => ({ ...prev, reason: e.target.value }))} />
+            <AdminField helpKey="admin.credit_notes.reason" htmlFor="fh-credit-notes-reason" label="Reason" required>
+              <textarea id="fh-credit-notes-reason" rows={3} className={inputClass} value={refundForm.reason} onChange={(e) => setRefundForm((prev) => ({ ...prev, reason: e.target.value }))} />
             </AdminField>
-            <AdminField label="Payment Transaction ID">
-              <input className={`${inputClass} font-mono text-xs`} value={refundForm.payment_transaction_id} onChange={(e) => setRefundForm((prev) => ({ ...prev, payment_transaction_id: e.target.value }))} />
+            <AdminField helpKey="admin.credit_notes.payment_transaction_id" htmlFor="fh-credit-notes-payment-transaction-id" label="Payment Transaction ID">
+              <input id="fh-credit-notes-payment-transaction-id" className={`${inputClass} font-mono text-xs`} value={refundForm.payment_transaction_id} onChange={(e) => setRefundForm((prev) => ({ ...prev, payment_transaction_id: e.target.value }))} />
             </AdminField>
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => { setRefundingInvoice(null); setRefundForm(EMPTY_REFUND_FORM) }} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>
@@ -688,18 +688,18 @@ export default function InvoiceListPage() {
 
       <AdminModal open={showCreate} title="Create Invoice" onClose={() => setShowCreate(false)}>
         <AdminForm onSubmit={handleCreate} className="mt-2 space-y-3">
-          <AdminField label="User ID" required>
-            <input className={inputClass} value={createForm.user_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, user_id: e.target.value }))} />
+          <AdminField helpKey="admin.invoices.user_id" listOptions={false} htmlFor="fh-invoices-user-id" label="User ID" required>
+            <input id="fh-invoices-user-id" className={inputClass} value={createForm.user_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, user_id: e.target.value }))} />
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Target System" required>
-              <select className={inputClass} value={createForm.target_system} onChange={(e) => setCreateForm((prev) => ({ ...prev, target_system: e.target.value }))}>
+            <AdminField helpKey="admin.invoices.target_system" htmlFor="fh-invoices-target-system" label="Target System" required>
+              <select id="fh-invoices-target-system" className={inputClass} value={createForm.target_system} onChange={(e) => setCreateForm((prev) => ({ ...prev, target_system: e.target.value }))}>
                 <option value="platform">Platform</option>
                 <option value="simulator">Simulator</option>
               </select>
             </AdminField>
-            <AdminField label="Currency" required>
-              <SelectField
+            <AdminField helpKey="admin.invoices.currency" htmlFor="fh-invoices-currency" label="Currency" required>
+              <SelectField id="fh-invoices-currency"
                 value={createForm.currency}
                 onChange={(v) => setCreateForm((prev) => ({ ...prev, currency: v }))}
                 placeholder="Select currency..."
@@ -712,7 +712,7 @@ export default function InvoiceListPage() {
               />
             </AdminField>
           </div>
-          <AdminField label="Line Items" required>
+          <AdminField helpKey="admin.invoices.line_items" label="Line Items" required>
             <InvoiceLineItemsEditor
               items={createForm.lineItems}
               currency={createForm.currency}
@@ -724,25 +724,25 @@ export default function InvoiceListPage() {
             />
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-3">
-            <AdminField label="Subtotal">
-              <input type="number" readOnly className={`${inputClass} bg-gray-950 text-gray-300`} value={createForm.subtotal} />
+            <AdminField helpKey="admin.invoices.subtotal" htmlFor="fh-invoices-subtotal" label="Subtotal">
+              <input id="fh-invoices-subtotal" type="number" readOnly className={`${inputClass} bg-gray-950 text-gray-300`} value={createForm.subtotal} />
               <p className="mt-1 text-xs text-gray-500">Calculated from line items</p>
             </AdminField>
-            <AdminField label="Tax Amount">
-              <input type="number" min={0} step="0.01" className={inputClass} value={createForm.tax_amount} onChange={(e) => setCreateForm((prev) => ({ ...prev, tax_amount: e.target.value }))} />
+            <AdminField helpKey="admin.invoices.tax_amount" htmlFor="fh-invoices-tax-amount" label="Tax Amount">
+              <input id="fh-invoices-tax-amount" type="number" min={0} step="0.01" className={inputClass} value={createForm.tax_amount} onChange={(e) => setCreateForm((prev) => ({ ...prev, tax_amount: e.target.value }))} />
             </AdminField>
-            <AdminField label="Tax Rate %">
-              <input type="number" min={0} max={100} step="0.01" className={inputClass} value={createForm.tax_rate_applied} onChange={(e) => setCreateForm((prev) => ({ ...prev, tax_rate_applied: e.target.value }))} />
+            <AdminField helpKey="admin.invoices.tax_rate_applied" htmlFor="fh-invoices-tax-rate-applied" label="Tax Rate %">
+              <input id="fh-invoices-tax-rate-applied" type="number" min={0} max={100} step="0.01" className={inputClass} value={createForm.tax_rate_applied} onChange={(e) => setCreateForm((prev) => ({ ...prev, tax_rate_applied: e.target.value }))} />
             </AdminField>
           </div>
-          <AdminField label="Subscription ID">
-            <input className={inputClass} value={createForm.subscription_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, subscription_id: e.target.value }))} />
+          <AdminField helpKey="admin.invoices.subscription_id" listOptions={false} htmlFor="fh-invoices-subscription-id" label="Subscription ID">
+            <input id="fh-invoices-subscription-id" className={inputClass} value={createForm.subscription_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, subscription_id: e.target.value }))} />
           </AdminField>
-          <AdminField label="Due Date">
-            <AdminDateInput eventStyle withTime className={inputClass} value={createForm.due_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, due_at: e.target.value }))} />
+          <AdminField helpKey="admin.invoices.due_at" htmlFor="fh-invoices-due-at" label="Due Date">
+            <AdminDateInput id="fh-invoices-due-at" eventStyle withTime className={inputClass} value={createForm.due_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, due_at: e.target.value }))} />
           </AdminField>
-          <AdminField label="Notes">
-            <textarea rows={2} className={inputClass} value={createForm.notes} onChange={(e) => setCreateForm((prev) => ({ ...prev, notes: e.target.value }))} />
+          <AdminField helpKey="admin.invoices.notes" htmlFor="fh-invoices-notes" label="Notes">
+            <textarea id="fh-invoices-notes" rows={2} className={inputClass} value={createForm.notes} onChange={(e) => setCreateForm((prev) => ({ ...prev, notes: e.target.value }))} />
           </AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setShowCreate(false)} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>

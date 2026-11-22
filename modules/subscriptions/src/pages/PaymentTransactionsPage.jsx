@@ -185,15 +185,15 @@ export default function PaymentTransactionsPage() {
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
           <div>
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">From Date</label>
+            <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">From Date</label>
             <AdminDateInput eventStyle value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">To Date</label>
+            <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">To Date</label>
             <AdminDateInput eventStyle value={dateTo} onChange={(event) => setDateTo(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
+            <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none">
               <option value="all">All statuses</option>
               <option value="paid">Paid</option>
@@ -203,7 +203,7 @@ export default function PaymentTransactionsPage() {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Currency</label>
+            <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Currency</label>
             <SelectField
               value={currencyFilter}
               onChange={setCurrencyFilter}

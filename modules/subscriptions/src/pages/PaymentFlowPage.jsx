@@ -146,11 +146,11 @@ export default function PaymentFlowPage() {
                 })),
               ]}
             />
-            <label className="flex items-center gap-2 text-xs text-gray-400">
+            <label data-help="exempt" className="flex items-center gap-2 text-xs text-gray-400">
               <input type="checkbox" checked={showInactive} onChange={(e) => setShowInactive(e.target.checked)} />
               Show inactive
             </label>
-            <label className="flex items-center gap-2 text-xs text-gray-400">
+            <label data-help="exempt" className="flex items-center gap-2 text-xs text-gray-400">
               <input type="checkbox" checked={showFallback} onChange={(e) => setShowFallback(e.target.checked)} />
               Show fallback
             </label>

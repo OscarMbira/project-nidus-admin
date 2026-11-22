@@ -227,8 +227,8 @@ export default function PromoCodeFormPage() {
               <section className="space-y-3 xl:col-span-4">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Promo Details</h2>
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
-                  <AdminField label="Code" required>
-                    <input
+                  <AdminField helpKey="admin.promo_codes.code" htmlFor="fh-promo-codes-code" label="Code" required>
+                    <input id="fh-promo-codes-code"
                       className={`${inputClass} font-mono uppercase`}
                       value={form.code}
                       disabled={Boolean(promoId)}
@@ -236,8 +236,8 @@ export default function PromoCodeFormPage() {
                       placeholder="SUMMER20"
                     />
                   </AdminField>
-                  <AdminField label="Name" required>
-                    <input
+                  <AdminField helpKey="admin.promo_codes.name" htmlFor="fh-promo-codes-name" label="Name" required>
+                    <input id="fh-promo-codes-name"
                       className={inputClass}
                       value={form.name}
                       onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
@@ -245,8 +245,8 @@ export default function PromoCodeFormPage() {
                     />
                   </AdminField>
                 </div>
-                <AdminField label="Description">
-                  <textarea
+                <AdminField helpKey="admin.promo_codes.description" htmlFor="fh-promo-codes-description" label="Description">
+                  <textarea id="fh-promo-codes-description"
                     rows={2}
                     className={inputClass}
                     value={form.description}
@@ -257,8 +257,8 @@ export default function PromoCodeFormPage() {
 
               <section className="space-y-3 xl:col-span-3">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Discount</h2>
-                <AdminField label="Discount Type" required>
-                  <select
+                <AdminField helpKey="admin.promo_codes.discount_type" htmlFor="fh-promo-codes-discount-type" label="Discount Type" required>
+                  <select id="fh-promo-codes-discount-type"
                     className={inputClass}
                     value={form.discount_type}
                     onChange={(e) => setForm((p) => ({ ...p, discount_type: e.target.value }))}
@@ -268,8 +268,8 @@ export default function PromoCodeFormPage() {
                     ))}
                   </select>
                 </AdminField>
-                <AdminField label="Discount Value" required>
-                  <input
+                <AdminField helpKey="admin.promo_codes.discount_value" htmlFor="fh-promo-codes-discount-value" label="Discount Value" required>
+                  <input id="fh-promo-codes-discount-value"
                     type="number"
                     min={0}
                     step={form.discount_type === 'percentage' ? '1' : '0.01'}
@@ -287,8 +287,8 @@ export default function PromoCodeFormPage() {
               <section className="space-y-3 xl:col-span-5">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Limits & Validity</h2>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <AdminField label="Max Uses">
-                    <input
+                  <AdminField helpKey="admin.promo_codes.max_uses" htmlFor="fh-promo-codes-max-uses" label="Max Uses">
+                    <input id="fh-promo-codes-max-uses"
                       type="number"
                       min={1}
                       className={inputClass}
@@ -298,30 +298,30 @@ export default function PromoCodeFormPage() {
                     />
                   </AdminField>
                   {promoId ? (
-                    <AdminField label="Current Uses">
-                      <input className={inputClass} readOnly value={currentUses ?? 0} />
+                    <AdminField helpKey="admin.promo_codes.current_uses" htmlFor="fh-promo-codes-current-uses" label="Current Uses">
+                      <input id="fh-promo-codes-current-uses" className={inputClass} readOnly value={currentUses ?? 0} />
                     </AdminField>
                   ) : (
                     <div className="hidden sm:block" aria-hidden="true" />
                   )}
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <AdminField label="Valid From">
-                    <AdminDateInput eventStyle
+                  <AdminField helpKey="admin.promo_codes.valid_from" htmlFor="fh-promo-codes-valid-from" label="Valid From">
+                    <AdminDateInput id="fh-promo-codes-valid-from" eventStyle
                       className={inputClass}
                       value={form.valid_from}
                       onChange={(e) => setForm((p) => ({ ...p, valid_from: e.target.value }))}
                     />
                   </AdminField>
-                  <AdminField label="Valid Until">
-                    <AdminDateInput eventStyle
+                  <AdminField helpKey="admin.promo_codes.valid_until" htmlFor="fh-promo-codes-valid-until" label="Valid Until">
+                    <AdminDateInput id="fh-promo-codes-valid-until" eventStyle
                       className={inputClass}
                       value={form.valid_until}
                       onChange={(e) => setForm((p) => ({ ...p, valid_until: e.target.value }))}
                     />
                   </AdminField>
                 </div>
-                <label className="flex items-center gap-2 text-sm text-gray-300">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                   <input
                     type="checkbox"
                     checked={form.is_active}

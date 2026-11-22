@@ -494,8 +494,8 @@ export default function PlanCatalogFormPage() {
               <AdminCard title="Plan Identity" className="!p-3">
                   <div className="mt-2 grid gap-3 sm:grid-cols-2">
                     <div className="sm:col-span-2">
-                      <AdminField label="Plan Name" required>
-                        <input
+                      <AdminField helpKey="admin.subscription_plans.plan_name" htmlFor="fh-subscription-plans-plan-name" label="Plan Name" required>
+                        <input id="fh-subscription-plans-plan-name"
                           className={`${inputClass} py-1.5 text-sm`}
                           value={form.plan_name}
                           onChange={(e) => setForm((p) => ({ ...p, plan_name: e.target.value }))}
@@ -503,8 +503,8 @@ export default function PlanCatalogFormPage() {
                         />
                       </AdminField>
                     </div>
-                    <AdminField label="Plan Type" required>
-                      <select
+                    <AdminField helpKey="admin.subscription_plans.plan_type" htmlFor="fh-subscription-plans-plan-type" label="Plan Type" required>
+                      <select id="fh-subscription-plans-plan-type"
                         className={`${inputClass} py-1.5 text-sm`}
                         value={form.plan_type}
                         disabled={isEdit}
@@ -515,8 +515,8 @@ export default function PlanCatalogFormPage() {
                         ))}
                       </select>
                     </AdminField>
-                    <AdminField label="Billing Cycle" required>
-                      <select
+                    <AdminField helpKey="admin.subscription_plans.billing_cycle" htmlFor="fh-subscription-plans-billing-cycle" label="Billing Cycle" required>
+                      <select id="fh-subscription-plans-billing-cycle"
                         className={`${inputClass} py-1.5 text-sm`}
                         value={form.billing_cycle}
                         disabled={isEdit}
@@ -527,8 +527,8 @@ export default function PlanCatalogFormPage() {
                         ))}
                       </select>
                     </AdminField>
-                    <AdminField label="System" required>
-                      <select
+                    <AdminField helpKey="admin.subscription_plans.catalog_scope" htmlFor="fh-subscription-plans-catalog-scope" label="System" required>
+                      <select id="fh-subscription-plans-catalog-scope"
                         className={`${inputClass} py-1.5 text-sm`}
                         value={form.catalog_scope}
                         disabled={isEdit}
@@ -544,8 +544,8 @@ export default function PlanCatalogFormPage() {
 
               <AdminCard title="Pricing & Limits" className="!p-3">
                   <div className="mt-2 grid gap-3 sm:grid-cols-2">
-                    <AdminField label="Price" required>
-                      <input
+                    <AdminField helpKey="admin.subscription_plans.price" htmlFor="fh-subscription-plans-price" label="Price" required>
+                      <input id="fh-subscription-plans-price"
                         type="number"
                         min="0"
                         step="0.01"
@@ -554,8 +554,8 @@ export default function PlanCatalogFormPage() {
                         onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))}
                       />
                     </AdminField>
-                    <AdminField label="Original Price">
-                      <input
+                    <AdminField helpKey="admin.subscription_plans.original_price" htmlFor="fh-subscription-plans-original-price" label="Original Price">
+                      <input id="fh-subscription-plans-original-price"
                         type="number"
                         min="0"
                         step="0.01"
@@ -565,8 +565,8 @@ export default function PlanCatalogFormPage() {
                         placeholder="Strike-through"
                       />
                     </AdminField>
-                    <AdminField label="Currency" required>
-                      <select
+                    <AdminField helpKey="admin.subscription_plans.currency" htmlFor="fh-subscription-plans-currency" label="Currency" required>
+                      <select id="fh-subscription-plans-currency"
                         className={`${inputClass} py-1.5 text-sm`}
                         value={form.currency}
                         onChange={(e) => setForm((p) => ({ ...p, currency: e.target.value }))}
@@ -576,16 +576,16 @@ export default function PlanCatalogFormPage() {
                         ))}
                       </select>
                     </AdminField>
-                    <AdminField label="Display Order">
-                      <input
+                    <AdminField helpKey="admin.subscription_plans.display_order" htmlFor="fh-subscription-plans-display-order" label="Display Order">
+                      <input id="fh-subscription-plans-display-order"
                         type="number"
                         className={`${inputClass} py-1.5 text-sm`}
                         value={form.display_order}
                         onChange={(e) => setForm((p) => ({ ...p, display_order: e.target.value }))}
                       />
                     </AdminField>
-                    <AdminField label="Member Limit">
-                      <input
+                    <AdminField helpKey="admin.subscription_plans.member_limit" htmlFor="fh-subscription-plans-member-limit" label="Member Limit">
+                      <input id="fh-subscription-plans-member-limit"
                         type="number"
                         min="0"
                         className={`${inputClass} py-1.5 text-sm`}
@@ -593,8 +593,8 @@ export default function PlanCatalogFormPage() {
                         onChange={(e) => setForm((p) => ({ ...p, member_limit: e.target.value }))}
                       />
                     </AdminField>
-                    <AdminField label="Project Limit">
-                      <input
+                    <AdminField helpKey="admin.subscription_plans.project_limit" htmlFor="fh-subscription-plans-project-limit" label="Project Limit">
+                      <input id="fh-subscription-plans-project-limit"
                         type="number"
                         min="0"
                         className={`${inputClass} py-1.5 text-sm`}
@@ -603,8 +603,8 @@ export default function PlanCatalogFormPage() {
                       />
                     </AdminField>
                     <div className="sm:col-span-2">
-                      <AdminField label="Extra Member Price">
-                        <input
+                      <AdminField helpKey="admin.subscription_plans.additional_member_price" htmlFor="fh-subscription-plans-additional-member-price" label="Extra Member Price">
+                        <input id="fh-subscription-plans-additional-member-price"
                           type="number"
                           min="0"
                           step="0.01"
@@ -637,7 +637,7 @@ export default function PlanCatalogFormPage() {
             {!isReadOnly && (
             <div className="shrink-0 rounded-lg border border-gray-700 bg-gray-900 p-3">
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-200">
-                <label className="flex items-center gap-2">
+                <label data-help="exempt" className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={form.platform_included}
@@ -645,7 +645,7 @@ export default function PlanCatalogFormPage() {
                   />
                   Platform
                 </label>
-                <label className="flex items-center gap-2">
+                <label data-help="exempt" className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={form.simulator_included}
@@ -653,7 +653,7 @@ export default function PlanCatalogFormPage() {
                   />
                   Simulator
                 </label>
-                <label className="flex items-center gap-2">
+                <label data-help="exempt" className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={form.is_popular}
@@ -661,7 +661,7 @@ export default function PlanCatalogFormPage() {
                   />
                   Popular
                 </label>
-                <label className="flex items-center gap-2">
+                <label data-help="exempt" className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={form.is_active}
@@ -672,8 +672,8 @@ export default function PlanCatalogFormPage() {
               </div>
               <div className="mt-3 flex flex-wrap items-end gap-3">
                 <div className="min-w-[12rem] flex-1">
-                  <AdminField label="Audit reason" required>
-                    <input
+                  <AdminField helpKey="admin.audit_reasons.reason" htmlFor="fh-audit-reasons-reason" label="Audit reason" required>
+                    <input id="fh-audit-reasons-reason"
                       className={`${inputClass} py-1.5 text-sm`}
                       value={form.reason}
                       onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))}

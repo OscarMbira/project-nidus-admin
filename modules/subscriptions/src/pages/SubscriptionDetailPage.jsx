@@ -31,8 +31,7 @@ import {
   AuditCard,
   AuditTimestampPair,
   AuditDetailsPanel,
-  DetailAuditTabList,
-} from '@nidus-admin/ui'
+  DetailAuditTabList, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const CONTENT_TABS = [
   { value: 'Overview', label: 'Overview' },
@@ -336,8 +335,8 @@ export default function SubscriptionDetailPage() {
                 <h2 className="text-sm font-semibold text-gray-200">Update status</h2>
                 <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
                   <div className="w-full sm:max-w-xs">
-                    <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">New status</label>
-                    <select value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100">
+                    <AdminFieldLabelWithHelp helpKey="admin.subscriptions.status" htmlFor="fh-subscriptions-status" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">New status</AdminFieldLabelWithHelp>
+                    <select id="fh-subscriptions-status" value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100">
                       {STATUS_OPTIONS.filter((status) => targetSystem !== 'simulator' || status !== 'paused').map((status) => (
                         <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>
                       ))}
@@ -400,12 +399,12 @@ export default function SubscriptionDetailPage() {
         <AdminModal open={trialModal.open} title="Extend Subscription Trial" onClose={() => setTrialModal({ open: false, extensionDays: '7', reason: '', submitting: false })} onConfirm={handleExtendTrial} confirmLabel={trialModal.submitting ? 'Saving...' : 'Extend Trial'}>
           <div className="space-y-3">
             <div>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Extension Days</label>
-              <input type="number" min={1} value={trialModal.extensionDays} onChange={(event) => setTrialModal((prev) => ({ ...prev, extensionDays: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
+              <AdminFieldLabelWithHelp helpKey="admin.subscription_extensions.extension_days" htmlFor="fh-subscription-extensions-extension-days" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Extension Days</AdminFieldLabelWithHelp>
+              <input id="fh-subscription-extensions-extension-days" type="number" min={1} value={trialModal.extensionDays} onChange={(event) => setTrialModal((prev) => ({ ...prev, extensionDays: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
             </div>
             <div>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Reason</label>
-              <textarea rows={3} value={trialModal.reason} onChange={(event) => setTrialModal((prev) => ({ ...prev, reason: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
+              <AdminFieldLabelWithHelp helpKey="admin.subscription_extensions.reason" htmlFor="fh-subscription-extensions-reason" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Reason</AdminFieldLabelWithHelp>
+              <textarea id="fh-subscription-extensions-reason" rows={3} value={trialModal.reason} onChange={(event) => setTrialModal((prev) => ({ ...prev, reason: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
             </div>
           </div>
         </AdminModal>

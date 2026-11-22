@@ -268,8 +268,8 @@ export default function PaymentMethodFormPage() {
               <section className="space-y-3 xl:col-span-4">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Method Details</h2>
                 {!methodId && (
-                  <AdminField label="Gateway" required>
-                    <select
+                  <AdminField helpKey="admin.payment_methods.gateway_id" htmlFor="fh-payment-methods-gateway-id" label="Gateway" required>
+                    <select id="fh-payment-methods-gateway-id"
                       className={inputClass}
                       value={form.gateway_id}
                       onChange={(e) => handleGatewayChange(e.target.value)}
@@ -285,8 +285,8 @@ export default function PaymentMethodFormPage() {
                 )}
 
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <AdminField label="Method Type" required>
-                    <select
+                  <AdminField helpKey="admin.payment_methods.method_type" htmlFor="fh-payment-methods-method-type" label="Method Type" required>
+                    <select id="fh-payment-methods-method-type"
                       className={inputClass}
                       value={form.method_type}
                       disabled={!form.gateway_id}
@@ -298,8 +298,8 @@ export default function PaymentMethodFormPage() {
                       ))}
                     </select>
                   </AdminField>
-                  <AdminField label="Display Order">
-                    <input
+                  <AdminField helpKey="admin.payment_methods.display_order" htmlFor="fh-payment-methods-display-order" label="Display Order">
+                    <input id="fh-payment-methods-display-order"
                       type="number"
                       min={0}
                       className={inputClass}
@@ -309,8 +309,8 @@ export default function PaymentMethodFormPage() {
                   </AdminField>
                 </div>
 
-                <AdminField label="Display Name" required>
-                  <input
+                <AdminField helpKey="admin.payment_methods.display_name" htmlFor="fh-payment-methods-display-name" label="Display Name" required>
+                  <input id="fh-payment-methods-display-name"
                     className={inputClass}
                     value={form.display_name}
                     onChange={(e) => setForm((p) => ({ ...p, display_name: e.target.value }))}
@@ -321,12 +321,12 @@ export default function PaymentMethodFormPage() {
 
               <section className="space-y-3 xl:col-span-5">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Currencies & Limits</h2>
-                <AdminField label="Supported Currencies" required>
+                <AdminField helpKey="admin.payment_methods.supported_currencies" label="Supported Currencies" required>
                   <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-4 2xl:grid-cols-5">
                     {currencies.map((currency) => {
                       const selected = form.supported_currencies.includes(currency.currency_code)
                       return (
-                        <label
+                        <label data-help="exempt"
                           key={currency.currency_code}
                           title={currency.currency_name || currency.currency_code}
                           className={`flex cursor-pointer items-center justify-center rounded border px-2 py-1 text-xs ${
@@ -352,8 +352,8 @@ export default function PaymentMethodFormPage() {
                 </AdminField>
 
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <AdminField label="Minimum Amount">
-                    <input
+                  <AdminField helpKey="admin.payment_methods.min_amount" htmlFor="fh-payment-methods-min-amount" label="Minimum Amount">
+                    <input id="fh-payment-methods-min-amount"
                       type="number"
                       min={0}
                       step="0.01"
@@ -362,8 +362,8 @@ export default function PaymentMethodFormPage() {
                       onChange={(e) => setForm((p) => ({ ...p, min_amount: e.target.value }))}
                     />
                   </AdminField>
-                  <AdminField label="Maximum Amount">
-                    <input
+                  <AdminField helpKey="admin.payment_methods.max_amount" htmlFor="fh-payment-methods-max-amount" label="Maximum Amount">
+                    <input id="fh-payment-methods-max-amount"
                       type="number"
                       min={0}
                       step="0.01"
@@ -379,8 +379,8 @@ export default function PaymentMethodFormPage() {
               <section className="space-y-3 xl:col-span-3">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Fees & Status</h2>
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                  <AdminField label="Fee Type">
-                    <select
+                  <AdminField helpKey="admin.payment_methods.fee_type" htmlFor="fh-payment-methods-fee-type" label="Fee Type">
+                    <select id="fh-payment-methods-fee-type"
                       className={inputClass}
                       value={form.fee_type}
                       onChange={(e) => setForm((p) => ({ ...p, fee_type: e.target.value }))}
@@ -390,8 +390,8 @@ export default function PaymentMethodFormPage() {
                       ))}
                     </select>
                   </AdminField>
-                  <AdminField label="Fee Value">
-                    <input
+                  <AdminField helpKey="admin.payment_methods.fee_value" htmlFor="fh-payment-methods-fee-value" label="Fee Value">
+                    <input id="fh-payment-methods-fee-value"
                       type="number"
                       min={0}
                       step="0.01"
@@ -403,7 +403,7 @@ export default function PaymentMethodFormPage() {
                   </AdminField>
                 </div>
 
-                <label className="flex items-center gap-2 rounded border border-gray-700 px-3 py-2 text-sm text-gray-300">
+                <label data-help="exempt" className="flex items-center gap-2 rounded border border-gray-700 px-3 py-2 text-sm text-gray-300">
                   <input
                     type="checkbox"
                     checked={form.is_enabled}

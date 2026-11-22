@@ -404,8 +404,8 @@ export default function SubscriptionFormPage() {
             <div className="space-y-5 p-4">
               {activeTab === 'details' && (
                 <>
-                  <AdminField label="Target system" required>
-                    <select
+                  <AdminField helpKey="admin.subscriptions.target_system" htmlFor="fh-subscriptions-target-system" label="Target system" required>
+                    <select id="fh-subscriptions-target-system"
                       className={inputClass}
                       value={form.targetSystem}
                       disabled={isEdit}
@@ -420,9 +420,9 @@ export default function SubscriptionFormPage() {
                     </select>
                   </AdminField>
 
-                  <AdminField label="User" required>
+                  <AdminField helpKey="admin.subscriptions.user_id" listOptions={false} htmlFor="fh-subscriptions-user-id" label="User" required>
                     <SearchBar value={search} onChange={setSearch} placeholder="Search users by name or email..." />
-                    <select
+                    <select id="fh-subscriptions-user-id"
                       className={`${inputClass} mt-2`}
                       value={form.userId}
                       onChange={(event) => setForm((prev) => ({ ...prev, userId: event.target.value }))}
@@ -437,8 +437,8 @@ export default function SubscriptionFormPage() {
                   </AdminField>
 
                   {form.targetSystem === 'platform' && (
-                    <AdminField label="Account ID">
-                      <input
+                    <AdminField helpKey="admin.subscriptions.account_id" htmlFor="fh-subscriptions-account-id" label="Account ID">
+                      <input id="fh-subscriptions-account-id"
                         className={inputClass}
                         value={form.accountId}
                         onChange={(event) => setForm((prev) => ({ ...prev, accountId: event.target.value }))}
@@ -448,8 +448,8 @@ export default function SubscriptionFormPage() {
                   )}
 
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <AdminField label="Plan" required>
-                      <select
+                    <AdminField helpKey="admin.subscriptions.plan_type" htmlFor="fh-subscriptions-plan-type" label="Plan" required>
+                      <select id="fh-subscriptions-plan-type"
                         className={inputClass}
                         value={form.planType}
                         onChange={(event) => setForm((prev) => applyCatalogDefaults(prev, { planType: event.target.value }))}
@@ -459,8 +459,8 @@ export default function SubscriptionFormPage() {
                         ))}
                       </select>
                     </AdminField>
-                    <AdminField label="Status" required>
-                      <select
+                    <AdminField helpKey="admin.subscriptions.status" htmlFor="fh-subscriptions-status" label="Status" required>
+                      <select id="fh-subscriptions-status"
                         className={inputClass}
                         value={form.status}
                         onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value }))}
@@ -473,8 +473,8 @@ export default function SubscriptionFormPage() {
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-3">
-                    <AdminField label="Billing cycle">
-                      <select
+                    <AdminField helpKey="admin.subscriptions.billing_cycle" htmlFor="fh-subscriptions-billing-cycle" label="Billing cycle">
+                      <select id="fh-subscriptions-billing-cycle"
                         className={inputClass}
                         value={form.billingCycle}
                         onChange={(event) => setForm((prev) => applyCatalogDefaults(prev, { billingCycle: event.target.value }))}
@@ -484,8 +484,8 @@ export default function SubscriptionFormPage() {
                         ))}
                       </select>
                     </AdminField>
-                    <AdminField label="Amount">
-                      <input
+                    <AdminField helpKey="admin.subscriptions.amount_paid" htmlFor="fh-subscriptions-amount-paid" label="Amount">
+                      <input id="fh-subscriptions-amount-paid"
                         type="number"
                         step="0.01"
                         min="0"
@@ -494,8 +494,8 @@ export default function SubscriptionFormPage() {
                         onChange={(event) => setForm((prev) => ({ ...prev, amountPaid: event.target.value }))}
                       />
                     </AdminField>
-                    <AdminField label="Currency">
-                      <SelectField
+                    <AdminField helpKey="admin.subscriptions.currency" htmlFor="fh-subscriptions-currency" label="Currency">
+                      <SelectField id="fh-subscriptions-currency"
                         value={form.currency}
                         onChange={(v) => setForm((prev) => ({ ...prev, currency: v }))}
                         placeholder="Select currency..."
@@ -524,23 +524,23 @@ export default function SubscriptionFormPage() {
               {activeTab === 'schedule' && (
                 <>
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <AdminField label="Started at">
-                      <AdminDateInput eventStyle withTime className={inputClass} value={form.startedAt} onChange={(event) => setForm((prev) => ({ ...prev, startedAt: event.target.value }))} />
+                    <AdminField helpKey="admin.subscriptions.started_at" htmlFor="fh-subscriptions-started-at" label="Started at">
+                      <AdminDateInput id="fh-subscriptions-started-at" eventStyle withTime className={inputClass} value={form.startedAt} onChange={(event) => setForm((prev) => ({ ...prev, startedAt: event.target.value }))} />
                     </AdminField>
-                    <AdminField label="Expires at">
-                      <AdminDateInput eventStyle withTime className={inputClass} value={form.expiresAt} onChange={(event) => setForm((prev) => ({ ...prev, expiresAt: event.target.value }))} />
+                    <AdminField helpKey="admin.subscriptions.expires_at" htmlFor="fh-subscriptions-expires-at" label="Expires at">
+                      <AdminDateInput id="fh-subscriptions-expires-at" eventStyle withTime className={inputClass} value={form.expiresAt} onChange={(event) => setForm((prev) => ({ ...prev, expiresAt: event.target.value }))} />
                     </AdminField>
                     {form.targetSystem === 'platform' && (
-                      <AdminField label="Trial end">
-                        <AdminDateInput eventStyle withTime className={inputClass} value={form.trialEnd} onChange={(event) => setForm((prev) => ({ ...prev, trialEnd: event.target.value }))} />
+                      <AdminField helpKey="admin.subscriptions.trial_end" htmlFor="fh-subscriptions-trial-end" label="Trial end">
+                        <AdminDateInput id="fh-subscriptions-trial-end" eventStyle withTime className={inputClass} value={form.trialEnd} onChange={(event) => setForm((prev) => ({ ...prev, trialEnd: event.target.value }))} />
                       </AdminField>
                     )}
-                    <AdminField label="Next billing date">
-                      <AdminDateInput eventStyle withTime className={inputClass} value={form.nextBillingDate} onChange={(event) => setForm((prev) => ({ ...prev, nextBillingDate: event.target.value }))} />
+                    <AdminField helpKey="admin.subscriptions.next_billing_date" htmlFor="fh-subscriptions-next-billing-date" label="Next billing date">
+                      <AdminDateInput id="fh-subscriptions-next-billing-date" eventStyle withTime className={inputClass} value={form.nextBillingDate} onChange={(event) => setForm((prev) => ({ ...prev, nextBillingDate: event.target.value }))} />
                     </AdminField>
                   </div>
 
-                  <label className="flex items-center gap-2 text-sm text-gray-300">
+                  <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                     <input
                       type="checkbox"
                       checked={form.isLifetime}
@@ -549,7 +549,7 @@ export default function SubscriptionFormPage() {
                     Lifetime subscription
                   </label>
 
-                  <AdminField label="Features">
+                  <AdminField helpKey="admin.subscriptions.features" label="Features">
                     <SubscriptionFeaturesEditor
                       value={form.features}
                       onChange={(features) => setForm((prev) => ({ ...prev, features }))}
@@ -558,8 +558,8 @@ export default function SubscriptionFormPage() {
                     />
                   </AdminField>
 
-                  <AdminField label="Audit reason" required>
-                    <textarea
+                  <AdminField helpKey="admin.audit_reasons.reason" htmlFor="fh-audit-reasons-reason" label="Audit reason" required>
+                    <textarea id="fh-audit-reasons-reason"
                       rows={3}
                       className={inputClass}
                       value={form.reason}

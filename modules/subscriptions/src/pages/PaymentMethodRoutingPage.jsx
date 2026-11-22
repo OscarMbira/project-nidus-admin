@@ -345,7 +345,7 @@ export default function PaymentMethodRoutingPage() {
             <p className="text-xs uppercase tracking-wide text-gray-500">Checkout Preview</p>
             <p className="mt-1 text-sm text-gray-400">Admin view — gateway names shown for routing verification.</p>
             <div className="mt-4">
-              <AdminField label="Customer country">
+              <AdminField data-help="exempt" label="Customer country">
                 <SelectField
                   value={previewCountry}
                   onChange={setPreviewCountry}
@@ -419,16 +419,16 @@ export default function PaymentMethodRoutingPage() {
 
         {modalTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2 space-y-3">
-          <AdminField label="Display Label" required>
-            <input
+          <AdminField helpKey="admin.payment_routing_rules.display_label" htmlFor="fh-payment-routing-rules-display-label" label="Display Label" required>
+            <input id="fh-payment-routing-rules-display-label"
               className={inputClass}
               value={form.display_label}
               onChange={(e) => setForm((p) => ({ ...p, display_label: e.target.value }))}
               placeholder="EcoCash, M-Pesa, Pay by Card"
             />
           </AdminField>
-          <AdminField label="Payment Method" required>
-            <select
+          <AdminField helpKey="admin.payment_routing_rules.payment_method_id" htmlFor="fh-payment-routing-rules-payment-method-id" label="Payment Method" required>
+            <select id="fh-payment-routing-rules-payment-method-id"
               className={inputClass}
               value={form.payment_method_id}
               onChange={(e) => setForm((p) => ({ ...p, payment_method_id: e.target.value }))}
@@ -442,8 +442,8 @@ export default function PaymentMethodRoutingPage() {
             </select>
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Primary Gateway" required>
-              <select
+            <AdminField helpKey="admin.payment_routing_rules.primary_gateway_id" htmlFor="fh-payment-routing-rules-primary-gateway-id" label="Primary Gateway" required>
+              <select id="fh-payment-routing-rules-primary-gateway-id"
                 className={inputClass}
                 value={form.primary_gateway_id}
                 onChange={(e) => setForm((p) => ({ ...p, primary_gateway_id: e.target.value }))}
@@ -454,8 +454,8 @@ export default function PaymentMethodRoutingPage() {
                 ))}
               </select>
             </AdminField>
-            <AdminField label="Fallback Gateway">
-              <select
+            <AdminField helpKey="admin.payment_routing_rules.fallback_gateway_id" htmlFor="fh-payment-routing-rules-fallback-gateway-id" label="Fallback Gateway">
+              <select id="fh-payment-routing-rules-fallback-gateway-id"
                 className={inputClass}
                 value={form.fallback_gateway_id}
                 onChange={(e) => setForm((p) => ({ ...p, fallback_gateway_id: e.target.value }))}
@@ -468,8 +468,8 @@ export default function PaymentMethodRoutingPage() {
             </AdminField>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Region Scope" required>
-              <select
+            <AdminField helpKey="admin.payment_routing_rules.region_scope" htmlFor="fh-payment-routing-rules-region-scope" label="Region Scope" required>
+              <select id="fh-payment-routing-rules-region-scope"
                 className={inputClass}
                 value={form.region_scope}
                 onChange={(e) => setForm((p) => ({ ...p, region_scope: e.target.value }))}
@@ -479,8 +479,8 @@ export default function PaymentMethodRoutingPage() {
                 ))}
               </select>
             </AdminField>
-            <AdminField label="Display Order">
-              <input
+            <AdminField helpKey="admin.payment_routing_rules.display_order" htmlFor="fh-payment-routing-rules-display-order" label="Display Order">
+              <input id="fh-payment-routing-rules-display-order"
                 type="number"
                 min={0}
                 className={inputClass}
@@ -489,12 +489,12 @@ export default function PaymentMethodRoutingPage() {
               />
             </AdminField>
           </div>
-          <AdminField label="Supported Countries">
+          <AdminField helpKey="admin.payment_routing_rules.supported_countries" label="Supported Countries">
             <p className="mb-2 text-xs text-gray-500">Leave empty for all countries in the selected region.</p>
             <div className="max-h-48 overflow-y-auto rounded border border-gray-700 bg-gray-950 p-2">
               <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
                 {countries.map((country) => (
-                  <label key={country.country_code} className="flex items-center gap-2 rounded px-1 py-1 text-sm text-gray-300 hover:bg-gray-900">
+                  <label data-help="exempt" key={country.country_code} className="flex items-center gap-2 rounded px-1 py-1 text-sm text-gray-300 hover:bg-gray-900">
                     <input
                       type="checkbox"
                       checked={form.supported_countries.includes(country.country_code)}
@@ -511,7 +511,7 @@ export default function PaymentMethodRoutingPage() {
               </p>
             )}
           </AdminField>
-          <label className="flex items-center gap-2 text-sm text-gray-300">
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
             <input
               type="checkbox"
               checked={form.is_enabled}

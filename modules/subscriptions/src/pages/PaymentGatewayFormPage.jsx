@@ -227,25 +227,25 @@ export default function PaymentGatewayFormPage() {
           <fieldset disabled={isPendingApproval} className="space-y-6 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
           <AdminCard title="Gateway Details">
             <div className="space-y-4 p-4">
-              <AdminField label="Gateway Name" required>
-                <input className={inputClass} value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="PayNow Production" />
+              <AdminField helpKey="admin.payment_gateways.name" htmlFor="fh-payment-gateways-name" label="Gateway Name" required>
+                <input id="fh-payment-gateways-name" className={inputClass} value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="PayNow Production" />
               </AdminField>
               <div className="grid gap-4 sm:grid-cols-2">
-                <AdminField label="Provider" required>
-                  <select className={inputClass} value={form.provider_key} disabled={Boolean(gatewayId)} onChange={(e) => setForm((p) => ({ ...p, provider_key: e.target.value, display_name: p.display_name || providerLabel(e.target.value) }))}>
+                <AdminField helpKey="admin.payment_gateways.provider_key" htmlFor="fh-payment-gateways-provider-key" label="Provider" required>
+                  <select id="fh-payment-gateways-provider-key" className={inputClass} value={form.provider_key} disabled={Boolean(gatewayId)} onChange={(e) => setForm((p) => ({ ...p, provider_key: e.target.value, display_name: p.display_name || providerLabel(e.target.value) }))}>
                     {PAYMENT_PROVIDERS.map((p) => (
                       <option key={p.key} value={p.key} disabled={!p.active}>{p.label}{!p.active ? ' (future)' : ''}</option>
                     ))}
                   </select>
                 </AdminField>
-                <AdminField label="Environment" required>
-                  <select className={inputClass} value={form.environment} onChange={(e) => setForm((p) => ({ ...p, environment: e.target.value }))}>
+                <AdminField helpKey="admin.payment_gateways.environment" htmlFor="fh-payment-gateways-environment" label="Environment" required>
+                  <select id="fh-payment-gateways-environment" className={inputClass} value={form.environment} onChange={(e) => setForm((p) => ({ ...p, environment: e.target.value }))}>
                     {ENVIRONMENTS.map((e) => <option key={e.value} value={e.value}>{e.label}</option>)}
                   </select>
                 </AdminField>
               </div>
-              <AdminField label="Display Name" required>
-                <input className={inputClass} value={form.display_name} onChange={(e) => setForm((p) => ({ ...p, display_name: e.target.value }))} />
+              <AdminField helpKey="admin.payment_gateways.display_name" htmlFor="fh-payment-gateways-display-name" label="Display Name" required>
+                <input id="fh-payment-gateways-display-name" className={inputClass} value={form.display_name} onChange={(e) => setForm((p) => ({ ...p, display_name: e.target.value }))} />
               </AdminField>
             </div>
           </AdminCard>
@@ -253,33 +253,33 @@ export default function PaymentGatewayFormPage() {
           <AdminCard title="Credentials">
             <div className="space-y-4 p-4">
               <p className="text-xs text-gray-500">Secrets are write-only and never returned after save.</p>
-              <AdminField label={providerMeta.apiKeyLabel}>
-                <input className={inputClass} value={form.api_key} onChange={(e) => setForm((p) => ({ ...p, api_key: e.target.value }))} placeholder={gatewayId ? 'Leave blank to keep existing' : ''} />
+              <AdminField helpKey="admin.payment_gateways.api_key" htmlFor="fh-payment-gateways-api-key" label={providerMeta.apiKeyLabel}>
+                <input id="fh-payment-gateways-api-key" className={inputClass} value={form.api_key} onChange={(e) => setForm((p) => ({ ...p, api_key: e.target.value }))} placeholder={gatewayId ? 'Leave blank to keep existing' : ''} />
               </AdminField>
-              <AdminField label={providerMeta.apiSecretLabel}>
-                <input type="password" className={inputClass} value={form.api_secret} onChange={(e) => setForm((p) => ({ ...p, api_secret: e.target.value }))} placeholder={gatewayId ? '••••••••' : ''} />
+              <AdminField helpKey="admin.payment_gateways.api_secret" htmlFor="fh-payment-gateways-api-secret" label={providerMeta.apiSecretLabel}>
+                <input id="fh-payment-gateways-api-secret" type="password" className={inputClass} value={form.api_secret} onChange={(e) => setForm((p) => ({ ...p, api_secret: e.target.value }))} placeholder={gatewayId ? '••••••••' : ''} />
               </AdminField>
-              <AdminField label="Webhook Secret">
-                <input type="password" className={inputClass} value={form.webhook_secret} onChange={(e) => setForm((p) => ({ ...p, webhook_secret: e.target.value }))} placeholder={gatewayId ? '••••••••' : ''} />
+              <AdminField helpKey="admin.payment_gateways.webhook_secret" htmlFor="fh-payment-gateways-webhook-secret" label="Webhook Secret">
+                <input id="fh-payment-gateways-webhook-secret" type="password" className={inputClass} value={form.webhook_secret} onChange={(e) => setForm((p) => ({ ...p, webhook_secret: e.target.value }))} placeholder={gatewayId ? '••••••••' : ''} />
               </AdminField>
-              <AdminField label="Webhook URL">
-                <input className={inputClass} readOnly value={webhookUrl} />
+              <AdminField helpKey="admin.payment_gateways.webhook_url" htmlFor="fh-payment-gateways-webhook-url" label="Webhook URL">
+                <input id="fh-payment-gateways-webhook-url" className={inputClass} readOnly value={webhookUrl} />
               </AdminField>
             </div>
           </AdminCard>
 
           <AdminCard title="Status">
             <div className="space-y-3 p-4">
-              <label className="flex items-center gap-2 text-sm text-gray-300">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                 <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.checked }))} />
                 Active
               </label>
-              <label className="flex items-center gap-2 text-sm text-gray-300">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                 <input type="checkbox" checked={form.is_default} onChange={(e) => setForm((p) => ({ ...p, is_default: e.target.checked }))} />
                 Default gateway
               </label>
-              <AdminField label="Notes">
-                <textarea rows={3} className={inputClass} value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} />
+              <AdminField helpKey="admin.payment_gateways.notes" htmlFor="fh-payment-gateways-notes" label="Notes">
+                <textarea id="fh-payment-gateways-notes" rows={3} className={inputClass} value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} />
               </AdminField>
             </div>
           </AdminCard>

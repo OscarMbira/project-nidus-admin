@@ -538,8 +538,8 @@ export default function RefundListPage() {
 
       <AdminModal open={showCreate} title="Create Refund Request" onClose={() => setShowCreate(false)}>
         <AdminForm onSubmit={handleCreate} className="mt-2 space-y-3">
-          <AdminField label="Invoice" required>
-            <select className={inputClass} value={createForm.invoice_id} onChange={(e) => handleInvoiceChange(e.target.value)}>
+          <AdminField helpKey="admin.refunds.invoice_id" listOptions={false} htmlFor="fh-refunds-invoice-id" label="Invoice" required>
+            <select id="fh-refunds-invoice-id" className={inputClass} value={createForm.invoice_id} onChange={(e) => handleInvoiceChange(e.target.value)}>
               <option value="">Select invoice...</option>
               {refundableInvoices.map((invoice) => {
                 const daysLeft = daysRemainingForRefund(invoice.paid_at)
@@ -560,18 +560,18 @@ export default function RefundListPage() {
             )}
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Amount" required>
-              <input type="number" min={0} step="0.01" className={inputClass} value={createForm.amount} onChange={(e) => setCreateForm((prev) => ({ ...prev, amount: e.target.value }))} />
+            <AdminField helpKey="admin.refunds.amount" htmlFor="fh-refunds-amount" label="Amount" required>
+              <input id="fh-refunds-amount" type="number" min={0} step="0.01" className={inputClass} value={createForm.amount} onChange={(e) => setCreateForm((prev) => ({ ...prev, amount: e.target.value }))} />
             </AdminField>
-            <AdminField label="Currency" required>
-              <input className={inputClass} value={createForm.currency} onChange={(e) => setCreateForm((prev) => ({ ...prev, currency: e.target.value.toUpperCase() }))} maxLength={3} />
+            <AdminField helpKey="admin.refunds.currency" htmlFor="fh-refunds-currency" label="Currency" required>
+              <input id="fh-refunds-currency" className={inputClass} value={createForm.currency} onChange={(e) => setCreateForm((prev) => ({ ...prev, currency: e.target.value.toUpperCase() }))} maxLength={3} />
             </AdminField>
           </div>
-          <AdminField label="Reason" required>
-            <textarea rows={3} className={inputClass} value={createForm.reason} onChange={(e) => setCreateForm((prev) => ({ ...prev, reason: e.target.value }))} />
+          <AdminField helpKey="admin.refunds.reason" htmlFor="fh-refunds-reason" label="Reason" required>
+            <textarea id="fh-refunds-reason" rows={3} className={inputClass} value={createForm.reason} onChange={(e) => setCreateForm((prev) => ({ ...prev, reason: e.target.value }))} />
           </AdminField>
-          <AdminField label="Payment Transaction ID">
-            <input className={inputClass} value={createForm.payment_transaction_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, payment_transaction_id: e.target.value }))} />
+          <AdminField helpKey="admin.refunds.payment_transaction_id" htmlFor="fh-refunds-payment-transaction-id" label="Payment Transaction ID">
+            <input id="fh-refunds-payment-transaction-id" className={inputClass} value={createForm.payment_transaction_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, payment_transaction_id: e.target.value }))} />
           </AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setShowCreate(false)} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>
@@ -582,11 +582,11 @@ export default function RefundListPage() {
 
       <AdminModal open={Boolean(editingRefund)} title={`Edit Refund — ${invoiceMap.get(editingRefund?.invoice_id)?.invoice_number || editingRefund?.id || ''}`} onClose={() => setEditingRefund(null)}>
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
-          <AdminField label="Amount" required>
-            <input type="number" min={0} step="0.01" className={inputClass} value={editForm.amount} onChange={(e) => setEditForm((prev) => ({ ...prev, amount: e.target.value }))} />
+          <AdminField helpKey="admin.refunds.amount" htmlFor="fh-refunds-amount" label="Amount" required>
+            <input id="fh-refunds-amount" type="number" min={0} step="0.01" className={inputClass} value={editForm.amount} onChange={(e) => setEditForm((prev) => ({ ...prev, amount: e.target.value }))} />
           </AdminField>
-          <AdminField label="Reason" required>
-            <textarea rows={3} className={inputClass} value={editForm.reason} onChange={(e) => setEditForm((prev) => ({ ...prev, reason: e.target.value }))} />
+          <AdminField helpKey="admin.refunds.reason" htmlFor="fh-refunds-reason" label="Reason" required>
+            <textarea id="fh-refunds-reason" rows={3} className={inputClass} value={editForm.reason} onChange={(e) => setEditForm((prev) => ({ ...prev, reason: e.target.value }))} />
           </AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setEditingRefund(null)} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>

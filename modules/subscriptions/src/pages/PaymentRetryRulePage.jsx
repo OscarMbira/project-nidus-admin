@@ -241,10 +241,10 @@ export default function PaymentRetryRulePage() {
       <div className="space-y-2 rounded border border-gray-700 bg-gray-950/50 p-3">
         {normalizeSchedule(form.retry_schedule).map((row, index) => (
           <div key={index} className="grid gap-3 sm:grid-cols-[5rem_minmax(8rem,1fr)_auto_auto] sm:items-end">
-            <AdminField label="Attempt">
+            <AdminField helpKey="admin.payment_retry_rules.attempt" label="Attempt">
               <input className={`${inputClass} w-16`} readOnly value={row.attempt} />
             </AdminField>
-            <AdminField label="Delay (hours)">
+            <AdminField helpKey="admin.payment_retry_rules.delay_hours" label="Delay (hours)">
               <input
                 type="number"
                 min={0}
@@ -253,7 +253,7 @@ export default function PaymentRetryRulePage() {
                 onChange={(e) => updateScheduleRow(setForm, index, 'delay_hours', e.target.value)}
               />
             </AdminField>
-            <label className="flex items-center gap-2 pb-2 text-sm text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 pb-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={row.notify_customer}
@@ -278,8 +278,8 @@ export default function PaymentRetryRulePage() {
 
   const renderFormFields = (form, setForm) => (
     <>
-      <AdminField label="Rule Name" required>
-        <input
+      <AdminField helpKey="admin.payment_retry_rules.rule_name" htmlFor="fh-payment-retry-rules-rule-name" label="Rule Name" required>
+        <input id="fh-payment-retry-rules-rule-name"
           className={inputClass}
           value={form.rule_name}
           onChange={(e) => setForm((prev) => ({ ...prev, rule_name: e.target.value }))}
@@ -287,8 +287,8 @@ export default function PaymentRetryRulePage() {
         />
       </AdminField>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Gateway">
-          <select
+        <AdminField helpKey="admin.payment_retry_rules.gateway_id" htmlFor="fh-payment-retry-rules-gateway-id" label="Gateway">
+          <select id="fh-payment-retry-rules-gateway-id"
             className={inputClass}
             value={form.gateway_id}
             onChange={(e) => setForm((prev) => ({ ...prev, gateway_id: e.target.value }))}
@@ -301,8 +301,8 @@ export default function PaymentRetryRulePage() {
             ))}
           </select>
         </AdminField>
-        <AdminField label="Failure Code">
-          <input
+        <AdminField helpKey="admin.payment_retry_rules.failure_code" htmlFor="fh-payment-retry-rules-failure-code" label="Failure Code">
+          <input id="fh-payment-retry-rules-failure-code"
             className={inputClass}
             value={form.failure_code}
             onChange={(e) => setForm((prev) => ({ ...prev, failure_code: e.target.value }))}
@@ -311,7 +311,7 @@ export default function PaymentRetryRulePage() {
         </AdminField>
       </div>
       {renderScheduleEditor(form, setForm)}
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input
           type="checkbox"
           checked={form.is_active}

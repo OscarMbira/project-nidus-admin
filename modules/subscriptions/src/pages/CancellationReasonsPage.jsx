@@ -427,8 +427,8 @@ export default function CancellationReasonsPage() {
               disabled={categoryModal?.mode === 'edit' && categoryLifecycleMeta?.record_status === 'unauthorised'}
               className="space-y-0 border-0 p-0 m-0 min-w-0 disabled:opacity-95"
             >
-            <AdminField label="Code">
-              <input
+            <AdminField helpKey="admin.cancellation_categories.code" htmlFor="fh-cancellation-categories-code" label="Code">
+              <input id="fh-cancellation-categories-code"
                 className={inputClass}
                 value={categoryForm.code}
                 onChange={(e) => setCategoryForm((f) => ({ ...f, code: e.target.value }))}
@@ -436,31 +436,31 @@ export default function CancellationReasonsPage() {
                 required
               />
             </AdminField>
-            <AdminField label="Label">
-              <input
+            <AdminField helpKey="admin.cancellation_categories.label" htmlFor="fh-cancellation-categories-label" label="Label">
+              <input id="fh-cancellation-categories-label"
                 className={inputClass}
                 value={categoryForm.label}
                 onChange={(e) => setCategoryForm((f) => ({ ...f, label: e.target.value }))}
                 required
               />
             </AdminField>
-            <AdminField label="Description">
-              <textarea
+            <AdminField helpKey="admin.cancellation_categories.description" htmlFor="fh-cancellation-categories-description" label="Description">
+              <textarea id="fh-cancellation-categories-description"
                 className={inputClass}
                 rows={2}
                 value={categoryForm.description}
                 onChange={(e) => setCategoryForm((f) => ({ ...f, description: e.target.value }))}
               />
             </AdminField>
-            <AdminField label="Sort order">
-              <input
+            <AdminField helpKey="admin.cancellation_categories.sort_order" htmlFor="fh-cancellation-categories-sort-order" label="Sort order">
+              <input id="fh-cancellation-categories-sort-order"
                 type="number"
                 className={inputClass}
                 value={categoryForm.sort_order}
                 onChange={(e) => setCategoryForm((f) => ({ ...f, sort_order: e.target.value }))}
               />
             </AdminField>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={categoryForm.is_active}

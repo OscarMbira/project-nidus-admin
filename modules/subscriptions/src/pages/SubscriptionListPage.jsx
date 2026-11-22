@@ -35,8 +35,7 @@ import {
   LoadingState,
   SearchBar,
   useConfirmAction,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const PAGE_SIZE = 12
 const STATUS_FILTERS = ['all', 'active', 'trialing', 'cancelled', 'expired', 'past_due']
@@ -530,7 +529,7 @@ export default function SubscriptionListPage() {
         </div>
 
         <div className="max-w-xs">
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Plan Type</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Plan Type</label>
           <select
             value={planFilter}
             onChange={(event) => setPlanFilter(event.target.value)}
@@ -606,12 +605,12 @@ export default function SubscriptionListPage() {
           <div className="space-y-3">
             <p className="text-sm text-gray-400">Provide extension details for this trial subscription.</p>
             <div>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Extension Days</label>
-              <input type="number" min={1} value={trialModal.extensionDays} onChange={(event) => setTrialModal((prev) => ({ ...prev, extensionDays: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
+              <AdminFieldLabelWithHelp helpKey="admin.subscription_extensions.extension_days" htmlFor="fh-subscription-extensions-extension-days" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Extension Days</AdminFieldLabelWithHelp>
+              <input id="fh-subscription-extensions-extension-days" type="number" min={1} value={trialModal.extensionDays} onChange={(event) => setTrialModal((prev) => ({ ...prev, extensionDays: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
             </div>
             <div>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Reason</label>
-              <textarea rows={3} value={trialModal.reason} onChange={(event) => setTrialModal((prev) => ({ ...prev, reason: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" placeholder="Explain why this trial should be extended..." />
+              <AdminFieldLabelWithHelp helpKey="admin.subscription_extensions.reason" htmlFor="fh-subscription-extensions-reason" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Reason</AdminFieldLabelWithHelp>
+              <textarea id="fh-subscription-extensions-reason" rows={3} value={trialModal.reason} onChange={(event) => setTrialModal((prev) => ({ ...prev, reason: event.target.value }))} className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100" placeholder="Explain why this trial should be extended..." />
             </div>
           </div>
         </AdminModal>

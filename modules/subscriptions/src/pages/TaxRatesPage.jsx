@@ -198,8 +198,8 @@ export default function TaxRatesPage() {
 
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
-      <AdminField label="Country" required>
-        <SelectField
+      <AdminField helpKey="admin.tax_rates.country_code" htmlFor="fh-tax-rates-country-code" label="Country" required>
+        <SelectField id="fh-tax-rates-country-code"
           value={form.country_code}
           disabled={isEdit}
           onChange={(v) => setForm((prev) => ({ ...prev, country_code: v }))}
@@ -212,32 +212,32 @@ export default function TaxRatesPage() {
           }))}
         />
       </AdminField>
-      <AdminField label="Tax Name" required>
-        <input className={inputClass} value={form.tax_name} onChange={(e) => setForm((prev) => ({ ...prev, tax_name: e.target.value }))} placeholder="VAT, GST, Sales Tax" />
+      <AdminField helpKey="admin.tax_rates.tax_name" htmlFor="fh-tax-rates-tax-name" label="Tax Name" required>
+        <input id="fh-tax-rates-tax-name" className={inputClass} value={form.tax_name} onChange={(e) => setForm((prev) => ({ ...prev, tax_name: e.target.value }))} placeholder="VAT, GST, Sales Tax" />
       </AdminField>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Rate (%)" required>
-          <input type="number" min={0} max={100} step="0.01" className={inputClass} value={form.rate} onChange={(e) => setForm((prev) => ({ ...prev, rate: e.target.value }))} />
+        <AdminField helpKey="admin.tax_rates.rate" htmlFor="fh-tax-rates-rate" label="Rate (%)" required>
+          <input id="fh-tax-rates-rate" type="number" min={0} max={100} step="0.01" className={inputClass} value={form.rate} onChange={(e) => setForm((prev) => ({ ...prev, rate: e.target.value }))} />
         </AdminField>
-        <AdminField label="Applies To">
-          <select className={inputClass} value={form.applies_to} onChange={(e) => setForm((prev) => ({ ...prev, applies_to: e.target.value }))}>
+        <AdminField helpKey="admin.tax_rates.applies_to" htmlFor="fh-tax-rates-applies-to" label="Applies To">
+          <select id="fh-tax-rates-applies-to" className={inputClass} value={form.applies_to} onChange={(e) => setForm((prev) => ({ ...prev, applies_to: e.target.value }))}>
             {APPLIES_TO.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
         </AdminField>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Effective From" required>
-          <AdminDateInput eventStyle className={inputClass} value={form.effective_from} onChange={(e) => setForm((prev) => ({ ...prev, effective_from: e.target.value }))} />
+        <AdminField helpKey="admin.tax_rates.effective_from" htmlFor="fh-tax-rates-effective-from" label="Effective From" required>
+          <AdminDateInput id="fh-tax-rates-effective-from" eventStyle className={inputClass} value={form.effective_from} onChange={(e) => setForm((prev) => ({ ...prev, effective_from: e.target.value }))} />
         </AdminField>
-        <AdminField label="Effective To">
-          <AdminDateInput eventStyle className={inputClass} value={form.effective_to} onChange={(e) => setForm((prev) => ({ ...prev, effective_to: e.target.value }))} />
+        <AdminField helpKey="admin.tax_rates.effective_to" htmlFor="fh-tax-rates-effective-to" label="Effective To">
+          <AdminDateInput id="fh-tax-rates-effective-to" eventStyle className={inputClass} value={form.effective_to} onChange={(e) => setForm((prev) => ({ ...prev, effective_to: e.target.value }))} />
         </AdminField>
       </div>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_inclusive} onChange={(e) => setForm((prev) => ({ ...prev, is_inclusive: e.target.checked }))} />
         Tax inclusive (included in price)
       </label>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))} />
         Active
       </label>
