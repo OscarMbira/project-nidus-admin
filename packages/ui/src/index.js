@@ -63,3 +63,6 @@ export {
   getAdminSidebarNavTreeDotClassName,
 } from './sidebarNavUtils.js'
 export { AdminDateInput } from './AdminDateInput.jsx'
+export { AdminFieldLabelWithHelp } from './fieldHelp/AdminFieldLabelWithHelp.jsx'
+export { AdminFieldHelpScope, useAdminFieldHelp } from './fieldHelp/AdminFieldHelpScope.jsx'
+export { loadAdminFieldHelp, resolveAdminHelpTokens, parseAdminHelpText, buildAdminHelpRules } from './fieldHelp/adminFieldHelp.js'

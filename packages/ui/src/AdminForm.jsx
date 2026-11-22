@@ -1,3 +1,5 @@
+import { AdminFieldLabelWithHelp } from './fieldHelp/AdminFieldLabelWithHelp.jsx'
+
 export function AdminForm({ children, onSubmit, className = '', id }) {
   return (
     <form id={id} onSubmit={onSubmit} className={`space-y-4 ${className}`} noValidate>
@@ -6,15 +8,19 @@ export function AdminForm({ children, onSubmit, className = '', id }) {
   )
 }
 
-export function AdminField({ label, error, children, required }) {
+/**
+ * A labelled form field. Pass helpKey (admin.<table>.<column>, Admin rule 23) for contextual help, and htmlFor
+ * (the control's id) so the label is linked to the control and its rules can be read.
+ */
+export function AdminField({ label, error, children, required, helpKey, htmlFor, listOptions = true }) {
   const testId = label
     ? `field-${String(label).toLowerCase().replace(/\s+/g, '-')}`
     : undefined
   return (
     <div data-testid={testId}>
-      <label className="mb-1 block text-sm text-gray-700 dark:text-gray-300">
+      <AdminFieldLabelWithHelp helpKey={helpKey} htmlFor={htmlFor} listOptions={listOptions} className="mb-1 block text-sm text-gray-700 dark:text-gray-300">
         {label}{required && <span className="text-red-600 dark:text-red-400"> *</span>}
-      </label>
+      </AdminFieldLabelWithHelp>
       {children}
       {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
     </div>
