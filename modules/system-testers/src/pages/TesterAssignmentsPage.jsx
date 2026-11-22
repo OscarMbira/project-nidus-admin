@@ -176,15 +176,15 @@ export default function TesterAssignmentsPage() {
 
         {createTab === 'details' && (
         <AdminForm onSubmit={handleCreate}>
-          <label className="mb-2 flex items-center gap-2 text-sm text-gray-300">
+          <label data-help="exempt" className="mb-2 flex items-center gap-2 text-sm text-gray-300">
             <input type="checkbox" checked={bulkMode} onChange={(e) => setBulkMode(e.target.checked)} />
             Bulk assign multiple testers to one project
           </label>
 
           {bulkMode ? (
-            <AdminField label="Testers">
+            <AdminField helpKey="admin.tester_assignments.tester_ids" label="Testers">
               {testers.map((t) => (
-                <label key={t.id} className="block text-sm text-gray-300">
+                <label data-help="exempt" key={t.id} className="block text-sm text-gray-300">
                   <input
                     type="checkbox"
                     checked={form.tester_ids.includes(t.id)}
@@ -200,42 +200,42 @@ export default function TesterAssignmentsPage() {
               ))}
             </AdminField>
           ) : (
-            <AdminField label="Tester">
-              <select className={inputClass} value={form.tester_id} onChange={(e) => setForm({ ...form, tester_id: e.target.value })} required>
+            <AdminField helpKey="admin.tester_assignments.tester_id" listOptions={false} htmlFor="fh-tester-assignments-tester-id" label="Tester">
+              <select id="fh-tester-assignments-tester-id" className={inputClass} value={form.tester_id} onChange={(e) => setForm({ ...form, tester_id: e.target.value })} required>
                 <option value="">Select tester</option>
                 {testers.map((t) => <option key={t.id} value={t.id}>{t.email}</option>)}
               </select>
             </AdminField>
           )}
 
-          <AdminField label="Organisation">
-            <select className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value, project_id: '' })} required>
+          <AdminField helpKey="admin.tester_assignments.account_id" listOptions={false} htmlFor="fh-tester-assignments-account-id" label="Organisation">
+            <select id="fh-tester-assignments-account-id" className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value, project_id: '' })} required>
               <option value="">Select account</option>
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.account_name}</option>)}
             </select>
           </AdminField>
 
-          <AdminField label="Project">
-            <select className={inputClass} value={form.project_id} onChange={(e) => setForm({ ...form, project_id: e.target.value })}>
+          <AdminField helpKey="admin.tester_assignments.project_id" listOptions={false} htmlFor="fh-tester-assignments-project-id" label="Project">
+            <select id="fh-tester-assignments-project-id" className={inputClass} value={form.project_id} onChange={(e) => setForm({ ...form, project_id: e.target.value })}>
               <option value="">Org-level only</option>
               {accountProjects.map((p) => <option key={p.id} value={p.id}>{p.project_name}</option>)}
             </select>
           </AdminField>
 
-          <AdminField label="Org role">
-            <select className={inputClass} value={form.org_role} onChange={(e) => setForm({ ...form, org_role: e.target.value })}>
+          <AdminField helpKey="admin.tester_assignments.org_role" htmlFor="fh-tester-assignments-org-role" label="Org role">
+            <select id="fh-tester-assignments-org-role" className={inputClass} value={form.org_role} onChange={(e) => setForm({ ...form, org_role: e.target.value })}>
               {ORG_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
           </AdminField>
 
-          <AdminField label="Project role">
-            <select className={inputClass} value={form.project_role} onChange={(e) => setForm({ ...form, project_role: e.target.value })}>
+          <AdminField helpKey="admin.tester_assignments.project_role" htmlFor="fh-tester-assignments-project-role" label="Project role">
+            <select id="fh-tester-assignments-project-role" className={inputClass} value={form.project_role} onChange={(e) => setForm({ ...form, project_role: e.target.value })}>
               {PROJECT_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
           </AdminField>
 
-          <AdminField label="Notes">
-            <textarea className={inputClass} rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+          <AdminField helpKey="admin.tester_assignments.notes" htmlFor="fh-tester-assignments-notes" label="Notes">
+            <textarea id="fh-tester-assignments-notes" className={inputClass} rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
           </AdminField>
 
           <button type="submit" disabled={busy} className="rounded bg-blue-600 px-4 py-2 text-sm text-white">Create</button>

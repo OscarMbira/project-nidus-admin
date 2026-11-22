@@ -99,7 +99,7 @@ export default function AiOrganisationsPage() {
         <p className="text-sm text-gray-500 dark:text-gray-400">AI notice, on/off and credits used this billing period. Open an organisation to override its allowance, retention or switch AI off.</p>
       </div>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           AI status
           <select className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1 text-sm" value={stateFilter} onChange={(e) => setState(e.target.value)}>
             <option value="">All</option>

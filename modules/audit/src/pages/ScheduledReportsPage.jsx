@@ -210,8 +210,8 @@ export default function ScheduledReportsPage() {
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
       {!isEdit && (
-        <AdminField label="Report" required>
-          <select className={inputClass} value={form.report_id} onChange={(e) => setForm((prev) => ({ ...prev, report_id: e.target.value }))}>
+        <AdminField helpKey="admin.scheduled_reports.report_id" htmlFor="fh-scheduled-reports-report-id" label="Report" required>
+          <select id="fh-scheduled-reports-report-id" className={inputClass} value={form.report_id} onChange={(e) => setForm((prev) => ({ ...prev, report_id: e.target.value }))}>
             <option value="">Select report...</option>
             {reports.map((report) => (
               <option key={report.id} value={report.id}>{report.report_name}</option>
@@ -220,19 +220,19 @@ export default function ScheduledReportsPage() {
         </AdminField>
       )}
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Schedule Type" required>
-          <select className={inputClass} value={form.schedule_type} onChange={(e) => setForm((prev) => ({ ...prev, schedule_type: e.target.value }))}>
+        <AdminField helpKey="admin.scheduled_reports.schedule_type" htmlFor="fh-scheduled-reports-schedule-type" label="Schedule Type" required>
+          <select id="fh-scheduled-reports-schedule-type" className={inputClass} value={form.schedule_type} onChange={(e) => setForm((prev) => ({ ...prev, schedule_type: e.target.value }))}>
             {SCHEDULE_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
         </AdminField>
-        <AdminField label="Format">
-          <select className={inputClass} value={form.format} onChange={(e) => setForm((prev) => ({ ...prev, format: e.target.value }))}>
+        <AdminField helpKey="admin.scheduled_reports.format" htmlFor="fh-scheduled-reports-format" label="Format">
+          <select id="fh-scheduled-reports-format" className={inputClass} value={form.format} onChange={(e) => setForm((prev) => ({ ...prev, format: e.target.value }))}>
             {FORMATS.map((format) => <option key={format} value={format}>{format.toUpperCase()}</option>)}
           </select>
         </AdminField>
       </div>
-      <AdminField label="Recipients" required>
-        <textarea
+      <AdminField helpKey="admin.scheduled_reports.recipients" htmlFor="fh-scheduled-reports-recipients" label="Recipients" required>
+        <textarea id="fh-scheduled-reports-recipients"
           rows={3}
           className={inputClass}
           value={form.recipients}
@@ -240,15 +240,15 @@ export default function ScheduledReportsPage() {
           placeholder="admin@example.com, finance@example.com"
         />
       </AdminField>
-      <AdminField label="Schedule Config (JSON)">
-        <textarea
+      <AdminField helpKey="admin.scheduled_reports.schedule_config" htmlFor="fh-scheduled-reports-schedule-config" label="Schedule Config (JSON)">
+        <textarea id="fh-scheduled-reports-schedule-config"
           rows={5}
           className={`${inputClass} font-mono text-xs`}
           value={form.schedule_config}
           onChange={(e) => setForm((prev) => ({ ...prev, schedule_config: e.target.value }))}
         />
       </AdminField>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))} />
         Active
       </label>

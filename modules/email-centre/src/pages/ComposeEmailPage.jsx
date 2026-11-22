@@ -81,8 +81,8 @@ export default function ComposeEmailPage() {
 
       {step === 0 && (
         <div className="max-w-lg space-y-4">
-          <AdminField label="Template">
-            <select className={inputClass} value={templateId} onChange={(e) => setTemplateId(e.target.value)}>
+          <AdminField helpKey="admin.email_sends.template_id" htmlFor="fh-email-sends-template-id" label="Template">
+            <select id="fh-email-sends-template-id" className={inputClass} value={templateId} onChange={(e) => setTemplateId(e.target.value)}>
               <option value="">Select template...</option>
               {templates.map((t) => (
                 <option key={t.id} value={t.id}>{t.template_name} ({t.template_key})</option>
@@ -95,7 +95,7 @@ export default function ComposeEmailPage() {
 
       {step === 1 && (
         <div className="max-w-lg space-y-4">
-          <AdminField label="Search user">
+          <AdminField data-help="exempt" label="Search user">
             <input className={inputClass} value={userSearch} onChange={(e) => setUserSearch(e.target.value)} placeholder="Name or email..." />
           </AdminField>
           {userHits.length > 0 && (
@@ -109,8 +109,8 @@ export default function ComposeEmailPage() {
               ))}
             </ul>
           )}
-          <AdminField label="Recipient email">
-            <input className={inputClass} value={recipient} onChange={(e) => setRecipient(e.target.value)} type="email" />
+          <AdminField helpKey="admin.email_sends.recipient" htmlFor="fh-email-sends-recipient" label="Recipient email">
+            <input id="fh-email-sends-recipient" className={inputClass} value={recipient} onChange={(e) => setRecipient(e.target.value)} type="email" />
           </AdminField>
           <div className="flex gap-2">
             <button type="button" className="rounded border border-gray-600 px-4 py-2 text-sm" onClick={() => setStep(0)}>Back</button>
@@ -122,7 +122,7 @@ export default function ComposeEmailPage() {
       {step === 2 && (
         <div className="max-w-lg space-y-4">
           {varNames.map((name) => (
-            <AdminField key={name} label={name}>
+            <AdminField data-help="exempt" key={name} label={name}>
               <input className={inputClass} value={variables[name] || ''} onChange={(e) => setVariables((v) => ({ ...v, [name]: e.target.value }))} />
             </AdminField>
           ))}

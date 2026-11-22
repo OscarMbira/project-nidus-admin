@@ -211,31 +211,31 @@ export default function AiOrganisationPage() {
         <AdminForm id="ai-org-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : save}>
           <fieldset disabled={isViewOnly} className="flex flex-col gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
             <div className="grid gap-3 md:grid-cols-2">
-              <AdminField label="Disable AI for this organisation">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input type="checkbox" checked={form.admin_ai_disabled} onChange={set('admin_ai_disabled')} />
+              <AdminField helpKey="admin.ai_organisation_settings.admin_disabled" htmlFor="fh-ai-organisation-settings-admin-disabled" label="Disable AI for this organisation">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-ai-organisation-settings-admin-disabled" type="checkbox" checked={form.admin_ai_disabled} onChange={set('admin_ai_disabled')} />
                   AI is off for everyone in this organisation, whatever their own setting
                 </label>
               </AdminField>
-              <AdminField label="Reason shown to the organisation" required={form.admin_ai_disabled} error={errors.admin_disabled_reason}>
-                <input className={inputClass} value={form.admin_disabled_reason} onChange={set('admin_disabled_reason')} disabled={!form.admin_ai_disabled} />
+              <AdminField helpKey="admin.ai_organisation_settings.admin_disabled_reason" htmlFor="fh-ai-organisation-settings-admin-disabled-reason" label="Reason shown to the organisation" required={form.admin_ai_disabled} error={errors.admin_disabled_reason}>
+                <input id="fh-ai-organisation-settings-admin-disabled-reason" className={inputClass} value={form.admin_disabled_reason} onChange={set('admin_disabled_reason')} disabled={!form.admin_ai_disabled} />
               </AdminField>
             </div>
-            <AdminField label="Monthly credit allowance override" error={errors.credit_allowance_override}>
-              <input className={inputClass} type="number" min="0" value={form.credit_allowance_override} onChange={set('credit_allowance_override')} placeholder="Blank = the plan's allowance" />
+            <AdminField helpKey="admin.ai_organisation_settings.credit_allowance_override" htmlFor="fh-ai-organisation-settings-credit-allowance-override" label="Monthly credit allowance override" error={errors.credit_allowance_override}>
+              <input id="fh-ai-organisation-settings-credit-allowance-override" className={inputClass} type="number" min="0" value={form.credit_allowance_override} onChange={set('credit_allowance_override')} placeholder="Blank = the plan's allowance" />
             </AdminField>
             <div className="grid gap-3 md:grid-cols-3">
-              <AdminField label="Override retention">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input type="checkbox" checked={form.retention_admin_override} onChange={set('retention_admin_override')} />
+              <AdminField helpKey="admin.ai_organisation_settings.retention_override" htmlFor="fh-ai-organisation-settings-retention-override" label="Override retention">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-ai-organisation-settings-retention-override" type="checkbox" checked={form.retention_admin_override} onChange={set('retention_admin_override')} />
                   Admin sets the periods (e.g. legal hold); the organisation can't change them
                 </label>
               </AdminField>
-              <AdminField label="Keep conversations (months)" error={errors.conversation_retention_months}>
-                <input className={inputClass} type="number" min="1" value={form.conversation_retention_months} onChange={set('conversation_retention_months')} disabled={!form.retention_admin_override} />
+              <AdminField helpKey="admin.ai_organisation_settings.conversation_retention_months" htmlFor="fh-ai-organisation-settings-conversation-retention-months" label="Keep conversations (months)" error={errors.conversation_retention_months}>
+                <input id="fh-ai-organisation-settings-conversation-retention-months" className={inputClass} type="number" min="1" value={form.conversation_retention_months} onChange={set('conversation_retention_months')} disabled={!form.retention_admin_override} />
               </AdminField>
-              <AdminField label="Keep usage records (months)" error={errors.audit_retention_months}>
-                <input className={inputClass} type="number" min="1" value={form.audit_retention_months} onChange={set('audit_retention_months')} disabled={!form.retention_admin_override} />
+              <AdminField helpKey="admin.ai_organisation_settings.audit_retention_months" htmlFor="fh-ai-organisation-settings-audit-retention-months" label="Keep usage records (months)" error={errors.audit_retention_months}>
+                <input id="fh-ai-organisation-settings-audit-retention-months" className={inputClass} type="number" min="1" value={form.audit_retention_months} onChange={set('audit_retention_months')} disabled={!form.retention_admin_override} />
               </AdminField>
             </div>
           </fieldset>
@@ -245,17 +245,17 @@ export default function AiOrganisationPage() {
       {topup && (
         <AdminModal open title={`Add credits — ${record.account_name}`} onClose={() => setTopup(null)} onConfirm={submitTopup} confirmLabel="Add credits">
           <div className="space-y-3">
-            <AdminField label="Type">
-              <select className={inputClass} value={topup.entry_type} onChange={(e) => setTopup((t) => ({ ...t, entry_type: e.target.value }))}>
+            <AdminField helpKey="admin.ai_credit_adjustments.adjustment_type" htmlFor="fh-ai-credit-adjustments-adjustment-type" label="Type">
+              <select id="fh-ai-credit-adjustments-adjustment-type" className={inputClass} value={topup.entry_type} onChange={(e) => setTopup((t) => ({ ...t, entry_type: e.target.value }))}>
                 <option value="topup">Top-up (adds credits this period)</option>
                 <option value="adjustment">Adjustment (+ or −, e.g. a correction)</option>
               </select>
             </AdminField>
-            <AdminField label="Credits" required>
-              <input className={inputClass} type="number" value={topup.credits} onChange={(e) => setTopup((t) => ({ ...t, credits: e.target.value }))} />
+            <AdminField helpKey="admin.ai_credit_adjustments.credits" htmlFor="fh-ai-credit-adjustments-credits" label="Credits" required>
+              <input id="fh-ai-credit-adjustments-credits" className={inputClass} type="number" value={topup.credits} onChange={(e) => setTopup((t) => ({ ...t, credits: e.target.value }))} />
             </AdminField>
-            <AdminField label="Note (required, audited)" required>
-              <textarea className={inputClass} rows={2} value={topup.note} onChange={(e) => setTopup((t) => ({ ...t, note: e.target.value }))} />
+            <AdminField helpKey="admin.ai_credit_adjustments.note" htmlFor="fh-ai-credit-adjustments-note" label="Note (required, audited)" required>
+              <textarea id="fh-ai-credit-adjustments-note" className={inputClass} rows={2} value={topup.note} onChange={(e) => setTopup((t) => ({ ...t, note: e.target.value }))} />
             </AdminField>
           </div>
         </AdminModal>

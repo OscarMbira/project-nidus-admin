@@ -225,22 +225,22 @@ export default function CobProcessesPage() {
 
         {editTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2 space-y-3">
-          <AdminField label="Process Name" required>
-            <input
+          <AdminField helpKey="admin.cob_processes.process_name" htmlFor="fh-cob-processes-process-name" label="Process Name" required>
+            <input id="fh-cob-processes-process-name"
               className={inputClass}
               value={editForm.process_name}
               onChange={(e) => setEditForm((prev) => ({ ...prev, process_name: e.target.value }))}
             />
           </AdminField>
-          <AdminField label="Description">
-            <textarea
+          <AdminField helpKey="admin.cob_processes.description" htmlFor="fh-cob-processes-description" label="Description">
+            <textarea id="fh-cob-processes-description"
               className={`${inputClass} min-h-[80px]`}
               value={editForm.description}
               onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
             />
           </AdminField>
-          <AdminField label="Parameters (JSON)">
-            <textarea
+          <AdminField helpKey="admin.cob_processes.parameters_json" htmlFor="fh-cob-processes-parameters-json" label="Parameters (JSON)">
+            <textarea id="fh-cob-processes-parameters-json"
               className={`${inputClass} min-h-[120px] font-mono text-xs`}
               value={editForm.parametersJson}
               onChange={(e) => setEditForm((prev) => ({ ...prev, parametersJson: e.target.value }))}

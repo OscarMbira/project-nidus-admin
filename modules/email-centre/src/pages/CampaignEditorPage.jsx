@@ -149,35 +149,35 @@ export default function CampaignEditorPage() {
 
       {detailTab === 'details' && (
       <>
-      <AdminField label="Campaign name">
-        <input className={inputClass} value={form.campaign_name} onChange={(e) => setForm((f) => ({ ...f, campaign_name: e.target.value }))} />
+      <AdminField helpKey="admin.email_campaigns.campaign_name" htmlFor="fh-email-campaigns-campaign-name" label="Campaign name">
+        <input id="fh-email-campaigns-campaign-name" className={inputClass} value={form.campaign_name} onChange={(e) => setForm((f) => ({ ...f, campaign_name: e.target.value }))} />
       </AdminField>
-      <AdminField label="Description">
-        <textarea className={inputClass} rows={2} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
+      <AdminField helpKey="admin.email_campaigns.description" htmlFor="fh-email-campaigns-description" label="Description">
+        <textarea id="fh-email-campaigns-description" className={inputClass} rows={2} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
       </AdminField>
-      <AdminField label="Template">
-        <select className={inputClass} value={form.template_id} onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}>
+      <AdminField helpKey="admin.email_campaigns.template_id" htmlFor="fh-email-campaigns-template-id" label="Template">
+        <select id="fh-email-campaigns-template-id" className={inputClass} value={form.template_id} onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}>
           <option value="">Select...</option>
           {templates.map((t) => <option key={t.id} value={t.id}>{t.template_name}</option>)}
         </select>
       </AdminField>
-      <AdminField label="Subject override (optional)">
-        <input className={inputClass} value={form.subject_override} onChange={(e) => setForm((f) => ({ ...f, subject_override: e.target.value }))} />
+      <AdminField helpKey="admin.email_campaigns.subject_override" htmlFor="fh-email-campaigns-subject-override" label="Subject override (optional)">
+        <input id="fh-email-campaigns-subject-override" className={inputClass} value={form.subject_override} onChange={(e) => setForm((f) => ({ ...f, subject_override: e.target.value }))} />
       </AdminField>
 
       <fieldset className="space-y-3 rounded border border-gray-700 p-4">
         <legend className="px-1 text-sm font-medium text-gray-300">Audience</legend>
-        <AdminField label="Target system">
-          <select className={inputClass} value={form.audience_filter.system} onChange={(e) => setForm((f) => ({ ...f, audience_filter: { ...f.audience_filter, system: e.target.value } }))}>
+        <AdminField helpKey="admin.email_campaigns.target_system" htmlFor="fh-email-campaigns-target-system" label="Target system">
+          <select id="fh-email-campaigns-target-system" className={inputClass} value={form.audience_filter.system} onChange={(e) => setForm((f) => ({ ...f, audience_filter: { ...f.audience_filter, system: e.target.value } }))}>
             <option value="all">Both</option>
             <option value="platform">Platform</option>
             <option value="simulator">Simulator</option>
           </select>
         </AdminField>
-        <AdminField label="Plan type (optional)">
-          <input className={inputClass} value={form.audience_filter.plan_type || ''} onChange={(e) => setForm((f) => ({ ...f, audience_filter: { ...f.audience_filter, plan_type: e.target.value } }))} placeholder="e.g. professional" />
+        <AdminField helpKey="admin.email_campaigns.plan_type" htmlFor="fh-email-campaigns-plan-type" label="Plan type (optional)">
+          <input id="fh-email-campaigns-plan-type" className={inputClass} value={form.audience_filter.plan_type || ''} onChange={(e) => setForm((f) => ({ ...f, audience_filter: { ...f.audience_filter, plan_type: e.target.value } }))} placeholder="e.g. professional" />
         </AdminField>
-        <label className="flex items-center gap-2 text-sm text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
           <input type="checkbox" checked={form.audience_filter.is_affiliate} onChange={(e) => setForm((f) => ({ ...f, audience_filter: { ...f.audience_filter, is_affiliate: e.target.checked } }))} />
           Affiliates only
         </label>

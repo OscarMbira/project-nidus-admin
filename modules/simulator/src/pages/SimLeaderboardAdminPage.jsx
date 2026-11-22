@@ -154,7 +154,7 @@ export default function SimLeaderboardAdminPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Scenario</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Scenario</label>
           <select
             value={scenarioFilter}
             onChange={(event) => setScenarioFilter(event.target.value)}
@@ -167,7 +167,7 @@ export default function SimLeaderboardAdminPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date From</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date From</label>
           <AdminDateInput eventStyle
             value={dateFrom}
             onChange={(event) => setDateFrom(event.target.value)}
@@ -175,7 +175,7 @@ export default function SimLeaderboardAdminPage() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date To</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date To</label>
           <AdminDateInput eventStyle
             value={dateTo}
             onChange={(event) => setDateTo(event.target.value)}

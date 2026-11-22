@@ -133,24 +133,24 @@ export default function AiSimPersonaPage() {
       {tab === 'details' && (
         <AdminForm id="persona-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : save}>
           <fieldset disabled={isViewOnly} className="grid gap-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900 md:grid-cols-2">
-            <AdminField label="Personality">
-              <select className={inputClass} value={form.personality} onChange={set('personality')}>
+            <AdminField helpKey="admin.sim_npc_personas.personality" htmlFor="fh-sim-npc-personas-personality" label="Personality">
+              <select id="fh-sim-npc-personas-personality" className={inputClass} value={form.personality} onChange={set('personality')}>
                 {PERSONALITIES.map((p) => <option key={p} value={p}>{p}</option>)}
               </select>
             </AdminField>
-            <AdminField label="Communication style">
-              <input className={inputClass} value={form.communication_style} onChange={set('communication_style')} placeholder="e.g. Direct, board-focused updates." />
+            <AdminField helpKey="admin.sim_npc_personas.communication_style" htmlFor="fh-sim-npc-personas-communication-style" label="Communication style">
+              <input id="fh-sim-npc-personas-communication-style" className={inputClass} value={form.communication_style} onChange={set('communication_style')} placeholder="e.g. Direct, board-focused updates." />
             </AdminField>
             {LIST_FIELDS.map(([key, label, help]) => (
-              <AdminField key={key} label={label}>
+              <AdminField helpKey={`admin.sim_npc_personas.${key}`} key={key} label={label}>
                 <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">{help}</p>
                 <AdminMultiLineListInput viewModeId={`ai-sim-persona-${key}`} id={`persona-${key}`} value={form[key]} onChange={set(key)}
                   itemColumnLabel={label} ariaLabelPrefix={label.toLowerCase()} disabled={isViewOnly} />
               </AdminField>
             ))}
             <div className="md:col-span-2">
-              <AdminField label="Notes for the AI (optional)">
-                <textarea className={inputClass} rows={3} value={form.persona_notes} onChange={set('persona_notes')} placeholder="Background the stakeholder should keep in mind." />
+              <AdminField helpKey="admin.sim_npc_personas.persona_notes" htmlFor="fh-sim-npc-personas-persona-notes" label="Notes for the AI (optional)">
+                <textarea id="fh-sim-npc-personas-persona-notes" className={inputClass} rows={3} value={form.persona_notes} onChange={set('persona_notes')} placeholder="Background the stakeholder should keep in mind." />
               </AdminField>
             </div>
           </fieldset>

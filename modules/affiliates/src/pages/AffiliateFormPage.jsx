@@ -206,34 +206,34 @@ export default function AffiliateFormPage() {
 
         <AdminForm onSubmit={isPendingApproval ? (event) => event.preventDefault() : handleSubmit} className="space-y-4 rounded-lg border border-gray-700 bg-gray-900 p-5">
           <fieldset disabled={isPendingApproval} className="space-y-4 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
-          <AdminField label="Name" required><input className={inputClass} value={form.name} onChange={(e) => handleNameChange(e.target.value)} required /></AdminField>
-          <AdminField label="Email" required><input type="email" className={inputClass} value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required /></AdminField>
+          <AdminField helpKey="admin.affiliates.name" htmlFor="fh-affiliates-name" label="Name" required><input id="fh-affiliates-name" className={inputClass} value={form.name} onChange={(e) => handleNameChange(e.target.value)} required /></AdminField>
+          <AdminField helpKey="admin.affiliates.email" htmlFor="fh-affiliates-email" label="Email" required><input id="fh-affiliates-email" type="email" className={inputClass} value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required /></AdminField>
           {!isEdit && (
-            <AdminField label="Referral Code" required>
-              <input className={inputClass} value={form.code} onChange={(e) => setForm((p) => ({ ...p, code: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '') }))} required />
+            <AdminField helpKey="admin.affiliates.code" htmlFor="fh-affiliates-code" label="Referral Code" required>
+              <input id="fh-affiliates-code" className={inputClass} value={form.code} onChange={(e) => setForm((p) => ({ ...p, code: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '') }))} required />
             </AdminField>
           )}
-          {isEdit && <AdminField label="Referral Code"><input className={inputClass} value={form.code} readOnly /></AdminField>}
+          {isEdit && <AdminField helpKey="admin.affiliates.code" htmlFor="fh-affiliates-code" label="Referral Code"><input id="fh-affiliates-code" className={inputClass} value={form.code} readOnly /></AdminField>}
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Phone"><input className={inputClass} value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} /></AdminField>
-            <AdminField label="Website"><input className={inputClass} value={form.website} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} /></AdminField>
+            <AdminField helpKey="admin.affiliates.phone" htmlFor="fh-affiliates-phone" label="Phone"><input id="fh-affiliates-phone" className={inputClass} value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} /></AdminField>
+            <AdminField helpKey="admin.affiliates.website" htmlFor="fh-affiliates-website" label="Website"><input id="fh-affiliates-website" className={inputClass} value={form.website} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} /></AdminField>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Target System">
-              <select className={inputClass} value={form.target_system} onChange={(e) => setForm((p) => ({ ...p, target_system: e.target.value }))}>
+            <AdminField helpKey="admin.affiliates.target_system" htmlFor="fh-affiliates-target-system" label="Target System">
+              <select id="fh-affiliates-target-system" className={inputClass} value={form.target_system} onChange={(e) => setForm((p) => ({ ...p, target_system: e.target.value }))}>
                 {['platform', 'simulator', 'both'].map((v) => <option key={v} value={v}>{v}</option>)}
               </select>
             </AdminField>
-            <AdminField label="Commission Rate %">
-              <input type="number" min={0} max={100} step="0.01" className={inputClass} value={form.commission_rate_pct} onChange={(e) => setForm((p) => ({ ...p, commission_rate_pct: e.target.value }))} />
+            <AdminField helpKey="admin.affiliates.commission_rate_pct" htmlFor="fh-affiliates-commission-rate-pct" label="Commission Rate %">
+              <input id="fh-affiliates-commission-rate-pct" type="number" min={0} max={100} step="0.01" className={inputClass} value={form.commission_rate_pct} onChange={(e) => setForm((p) => ({ ...p, commission_rate_pct: e.target.value }))} />
             </AdminField>
           </div>
-          <AdminField label="Payout Method">
-            <select className={inputClass} value={form.payout_method} onChange={(e) => setForm((p) => ({ ...p, payout_method: e.target.value }))}>
+          <AdminField helpKey="admin.affiliates.payout_method" htmlFor="fh-affiliates-payout-method" label="Payout Method">
+            <select id="fh-affiliates-payout-method" className={inputClass} value={form.payout_method} onChange={(e) => setForm((p) => ({ ...p, payout_method: e.target.value }))}>
               {['bank_transfer', 'paypal', 'other'].map((v) => <option key={v} value={v}>{v}</option>)}
             </select>
           </AdminField>
-          <AdminField label="Internal Notes"><textarea rows={3} className={inputClass} value={form.application_notes} onChange={(e) => setForm((p) => ({ ...p, application_notes: e.target.value }))} /></AdminField>
+          <AdminField helpKey="admin.affiliates.application_notes" htmlFor="fh-affiliates-application-notes" label="Internal Notes"><textarea id="fh-affiliates-application-notes" rows={3} className={inputClass} value={form.application_notes} onChange={(e) => setForm((p) => ({ ...p, application_notes: e.target.value }))} /></AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => navigate(-1)} className="text-sm text-gray-400">Cancel</button>
             <button type="submit" disabled={saving} className="rounded bg-blue-700 px-4 py-2 text-sm text-white disabled:opacity-60">{saving ? 'Saving...' : isEdit ? 'Save' : 'Create'}</button>

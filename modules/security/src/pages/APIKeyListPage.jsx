@@ -243,27 +243,27 @@ export default function APIKeyListPage() {
 
       <AdminModal open={showCreate} title="Create API Key" onClose={() => setShowCreate(false)}>
         <AdminForm onSubmit={handleCreate} className="mt-2 space-y-3">
-          <AdminField label="Key Name" required>
-            <input className={inputClass} value={createForm.key_name} onChange={(e) => setCreateForm((prev) => ({ ...prev, key_name: e.target.value }))} placeholder="Mobile App Integration" />
+          <AdminField helpKey="admin.api_keys.key_name" htmlFor="fh-api-keys-key-name" label="Key Name" required>
+            <input id="fh-api-keys-key-name" className={inputClass} value={createForm.key_name} onChange={(e) => setCreateForm((prev) => ({ ...prev, key_name: e.target.value }))} placeholder="Mobile App Integration" />
           </AdminField>
-          <AdminField label="Permissions">
-            <textarea rows={3} className={inputClass} value={createForm.permissions} onChange={(e) => setCreateForm((prev) => ({ ...prev, permissions: e.target.value }))} placeholder="users.read, subscriptions.read" />
+          <AdminField helpKey="admin.api_keys.permissions" htmlFor="fh-api-keys-permissions" label="Permissions">
+            <textarea id="fh-api-keys-permissions" rows={3} className={inputClass} value={createForm.permissions} onChange={(e) => setCreateForm((prev) => ({ ...prev, permissions: e.target.value }))} placeholder="users.read, subscriptions.read" />
             <p className="mt-1 text-xs text-gray-500">Comma-separated scopes, e.g. users.read, subscriptions.read</p>
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Target System">
-              <select className={inputClass} value={createForm.target_system} onChange={(e) => setCreateForm((prev) => ({ ...prev, target_system: e.target.value }))}>
+            <AdminField helpKey="admin.api_keys.target_system" htmlFor="fh-api-keys-target-system" label="Target System">
+              <select id="fh-api-keys-target-system" className={inputClass} value={createForm.target_system} onChange={(e) => setCreateForm((prev) => ({ ...prev, target_system: e.target.value }))}>
                 <option value="all">All</option>
                 <option value="platform">Platform</option>
                 <option value="simulator">Simulator</option>
               </select>
             </AdminField>
-            <AdminField label="Rate Limit (per minute)">
-              <input type="number" min={1} className={inputClass} value={createForm.rate_limit_per_minute} onChange={(e) => setCreateForm((prev) => ({ ...prev, rate_limit_per_minute: e.target.value }))} />
+            <AdminField helpKey="admin.api_keys.rate_limit_per_minute" htmlFor="fh-api-keys-rate-limit-per-minute" label="Rate Limit (per minute)">
+              <input id="fh-api-keys-rate-limit-per-minute" type="number" min={1} className={inputClass} value={createForm.rate_limit_per_minute} onChange={(e) => setCreateForm((prev) => ({ ...prev, rate_limit_per_minute: e.target.value }))} />
             </AdminField>
           </div>
-          <AdminField label="Expires At">
-            <AdminDateInput eventStyle withTime className={inputClass} value={createForm.expires_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
+          <AdminField helpKey="admin.api_keys.expires_at" htmlFor="fh-api-keys-expires-at" label="Expires At">
+            <AdminDateInput id="fh-api-keys-expires-at" eventStyle withTime className={inputClass} value={createForm.expires_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
             <p className="mt-1 text-xs text-gray-500">Leave blank for no expiry</p>
           </AdminField>
           <div className="flex justify-end gap-2">
@@ -297,19 +297,19 @@ export default function APIKeyListPage() {
 
         {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
-          <AdminField label="Key Name" required>
-            <input className={inputClass} value={editForm.key_name} onChange={(e) => setEditForm((prev) => ({ ...prev, key_name: e.target.value }))} />
+          <AdminField helpKey="admin.api_keys.key_name" htmlFor="fh-api-keys-key-name" label="Key Name" required>
+            <input id="fh-api-keys-key-name" className={inputClass} value={editForm.key_name} onChange={(e) => setEditForm((prev) => ({ ...prev, key_name: e.target.value }))} />
           </AdminField>
-          <AdminField label="Permissions">
-            <textarea rows={3} className={inputClass} value={editForm.permissions} onChange={(e) => setEditForm((prev) => ({ ...prev, permissions: e.target.value }))} />
+          <AdminField helpKey="admin.api_keys.permissions" htmlFor="fh-api-keys-permissions" label="Permissions">
+            <textarea id="fh-api-keys-permissions" rows={3} className={inputClass} value={editForm.permissions} onChange={(e) => setEditForm((prev) => ({ ...prev, permissions: e.target.value }))} />
             <p className="mt-1 text-xs text-gray-500">Comma-separated scopes</p>
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Rate Limit (per minute)">
-              <input type="number" min={1} className={inputClass} value={editForm.rate_limit_per_minute} onChange={(e) => setEditForm((prev) => ({ ...prev, rate_limit_per_minute: e.target.value }))} />
+            <AdminField helpKey="admin.api_keys.rate_limit_per_minute" htmlFor="fh-api-keys-rate-limit-per-minute" label="Rate Limit (per minute)">
+              <input id="fh-api-keys-rate-limit-per-minute" type="number" min={1} className={inputClass} value={editForm.rate_limit_per_minute} onChange={(e) => setEditForm((prev) => ({ ...prev, rate_limit_per_minute: e.target.value }))} />
             </AdminField>
-            <AdminField label="Expires At">
-              <AdminDateInput eventStyle withTime className={inputClass} value={editForm.expires_at} onChange={(e) => setEditForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
+            <AdminField helpKey="admin.api_keys.expires_at" htmlFor="fh-api-keys-expires-at" label="Expires At">
+              <AdminDateInput id="fh-api-keys-expires-at" eventStyle withTime className={inputClass} value={editForm.expires_at} onChange={(e) => setEditForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
             </AdminField>
           </div>
           <p className="text-xs text-gray-500">Prefix: <span className="font-mono text-gray-400">{editingKey?.key_prefix}…</span></p>
@@ -326,7 +326,7 @@ export default function APIKeyListPage() {
           <div className="rounded border border-amber-700 bg-amber-900/20 p-3 text-sm text-amber-200">
             Copy this key now. It will not be shown again.
           </div>
-          <AdminField label={`Key for ${createdKey?.key_name || 'integration'}`}>
+          <AdminField data-help="exempt" label={`Key for ${createdKey?.key_name || 'integration'}`}>
             <div className="flex gap-2">
               <input readOnly className={`${inputClass} font-mono text-xs`} value={createdKey?.plain_api_key || ''} />
               <button type="button" onClick={() => copyText(createdKey?.plain_api_key, showSuccess)} className="shrink-0 rounded border border-gray-600 px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-800">

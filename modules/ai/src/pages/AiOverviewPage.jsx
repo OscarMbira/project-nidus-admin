@@ -45,7 +45,7 @@ export default function AiOverviewPage() {
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">AI Centre</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">Ask Nidus and AI agent usage across Platform, Simulator and Planner.</p>
         </div>
-        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           Period
           <select className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1 text-sm" value={days} onChange={(e) => setDays(Number(e.target.value))}>
             {DAY_OPTIONS.map((d) => <option key={d} value={d}>Last {d} days</option>)}

@@ -293,7 +293,7 @@ export default function AnnouncementsPage() {
       </div>
 
       <div className="max-w-xs">
-        <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
+        <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
@@ -446,26 +446,26 @@ export default function AnnouncementsPage() {
             {viewTab === 'details' && (
             <>
             <fieldset disabled className="space-y-3 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
-              <AdminField label="Title">
-                <input value={viewTarget.title || ''} readOnly className={inputClass} />
+              <AdminField helpKey="admin.announcements.title" htmlFor="fh-announcements-title" label="Title">
+                <input id="fh-announcements-title" value={viewTarget.title || ''} readOnly className={inputClass} />
               </AdminField>
-              <AdminField label="Body">
-                <textarea rows={4} value={viewTarget.body || ''} readOnly className={inputClass} />
+              <AdminField helpKey="admin.announcements.body" htmlFor="fh-announcements-body" label="Body">
+                <textarea id="fh-announcements-body" rows={4} value={viewTarget.body || ''} readOnly className={inputClass} />
               </AdminField>
               <div className="grid gap-3 sm:grid-cols-2">
-                <AdminField label="Type">
-                  <input value={viewTarget.announcement_type || ''} readOnly className={inputClass} />
+                <AdminField helpKey="admin.announcements.announcement_type" htmlFor="fh-announcements-announcement-type" label="Type">
+                  <input id="fh-announcements-announcement-type" value={viewTarget.announcement_type || ''} readOnly className={inputClass} />
                 </AdminField>
-                <AdminField label="Audience">
-                  <input value={viewTarget.target_audience || ''} readOnly className={inputClass} />
+                <AdminField helpKey="admin.announcements.target_audience" htmlFor="fh-announcements-target-audience" label="Audience">
+                  <input id="fh-announcements-target-audience" value={viewTarget.target_audience || ''} readOnly className={inputClass} />
                 </AdminField>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <AdminField label="Publish At">
-                  <input value={toDatetimeLocal(viewTarget.publish_at)} readOnly className={inputClass} />
+                <AdminField helpKey="admin.announcements.publish_at" htmlFor="fh-announcements-publish-at" label="Publish At">
+                  <input id="fh-announcements-publish-at" value={toDatetimeLocal(viewTarget.publish_at)} readOnly className={inputClass} />
                 </AdminField>
-                <AdminField label="Expires At">
-                  <input value={toDatetimeLocal(viewTarget.expires_at)} readOnly className={inputClass} />
+                <AdminField helpKey="admin.announcements.expires_at" htmlFor="fh-announcements-expires-at" label="Expires At">
+                  <input id="fh-announcements-expires-at" value={toDatetimeLocal(viewTarget.expires_at)} readOnly className={inputClass} />
                 </AdminField>
               </div>
             </fieldset>
@@ -493,16 +493,16 @@ export default function AnnouncementsPage() {
         onClose={resetModal}
       >
         <form onSubmit={submitForm} className="space-y-3">
-          <AdminField label="Title" required>
-            <input
+          <AdminField helpKey="admin.announcements.title" htmlFor="fh-announcements-title" label="Title" required>
+            <input id="fh-announcements-title"
               value={form.title}
               onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
               className={inputClass}
               placeholder="System maintenance notice..."
             />
           </AdminField>
-          <AdminField label="Body" required>
-            <textarea
+          <AdminField helpKey="admin.announcements.body" htmlFor="fh-announcements-body" label="Body" required>
+            <textarea id="fh-announcements-body"
               rows={4}
               value={form.body}
               onChange={(event) => setForm((prev) => ({ ...prev, body: event.target.value }))}
@@ -511,8 +511,8 @@ export default function AnnouncementsPage() {
             />
           </AdminField>
           <div className="grid gap-3 sm:grid-cols-2">
-            <AdminField label="Type">
-              <select
+            <AdminField helpKey="admin.announcements.announcement_type" htmlFor="fh-announcements-announcement-type" label="Type">
+              <select id="fh-announcements-announcement-type"
                 value={form.announcement_type}
                 onChange={(event) => setForm((prev) => ({ ...prev, announcement_type: event.target.value }))}
                 className={inputClass}
@@ -522,8 +522,8 @@ export default function AnnouncementsPage() {
                 ))}
               </select>
             </AdminField>
-            <AdminField label="Audience">
-              <select
+            <AdminField helpKey="admin.announcements.target_audience" htmlFor="fh-announcements-target-audience" label="Audience">
+              <select id="fh-announcements-target-audience"
                 value={form.target_audience}
                 onChange={(event) => setForm((prev) => ({ ...prev, target_audience: event.target.value }))}
                 className={inputClass}
@@ -535,15 +535,15 @@ export default function AnnouncementsPage() {
             </AdminField>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <AdminField label="Publish At">
-              <AdminDateInput eventStyle withTime
+            <AdminField helpKey="admin.announcements.publish_at" htmlFor="fh-announcements-publish-at" label="Publish At">
+              <AdminDateInput id="fh-announcements-publish-at" eventStyle withTime
                 value={form.publish_at}
                 onChange={(event) => setForm((prev) => ({ ...prev, publish_at: event.target.value }))}
                 className={inputClass}
               />
             </AdminField>
-            <AdminField label="Expires At">
-              <AdminDateInput eventStyle withTime
+            <AdminField helpKey="admin.announcements.expires_at" htmlFor="fh-announcements-expires-at" label="Expires At">
+              <AdminDateInput id="fh-announcements-expires-at" eventStyle withTime
                 value={form.expires_at}
                 onChange={(event) => setForm((prev) => ({ ...prev, expires_at: event.target.value }))}
                 className={inputClass}

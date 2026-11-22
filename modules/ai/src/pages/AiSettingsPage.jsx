@@ -77,7 +77,7 @@ export default function AiSettingsPage() {
   if (loading) return <LoadingState message="Loading AI settings..." />
 
   const num = (k, label, help, props = {}) => (
-    <AdminField label={label} error={errors[k]}>
+    <AdminField helpKey={`admin.ai_platform_settings.${k}`} label={label} error={errors[k]}>
       <input className={inputClass} type="number" value={form[k]} onChange={set(k)} {...props} />
       {help && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{help}</p>}
     </AdminField>
@@ -120,14 +120,14 @@ export default function AiSettingsPage() {
         <fieldset disabled={!canEdit} className="space-y-4">
           <section className={`rounded-lg border p-4 ${form.kill_switch ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'}`}>
             <h2 className="font-semibold text-gray-900 dark:text-gray-100">Kill switch</h2>
-            <label className="mt-2 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label data-help="exempt" className="mt-2 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input type="checkbox" checked={form.kill_switch} onChange={set('kill_switch')} />
               Switch AI off for every organisation and app
             </label>
             {form.kill_switch && (
               <div className="mt-3">
-                <AdminField label="Reason (shown in the AI Centre)" required error={errors.kill_switch_reason}>
-                  <input className={inputClass} value={form.kill_switch_reason} onChange={set('kill_switch_reason')} />
+                <AdminField helpKey="admin.ai_platform_settings.kill_switch_reason" htmlFor="fh-ai-platform-settings-kill-switch-reason" label="Reason (shown in the AI Centre)" required error={errors.kill_switch_reason}>
+                  <input id="fh-ai-platform-settings-kill-switch-reason" className={inputClass} value={form.kill_switch_reason} onChange={set('kill_switch_reason')} />
                 </AdminField>
               </div>
             )}

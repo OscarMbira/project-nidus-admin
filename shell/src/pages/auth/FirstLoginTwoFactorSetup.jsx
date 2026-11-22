@@ -55,8 +55,8 @@ export default function FirstLoginTwoFactorSetup() {
           <AdminForm onSubmit={handleVerify}>
             {qrUrl && <img src={qrUrl} alt="2FA QR" className="mx-auto rounded border border-gray-700" />}
             <p className="break-all text-center text-xs text-gray-500">{secret}</p>
-            <AdminField label="Verification code" required>
-              <input className={inputClass} value={code} onChange={(e) => setCode(e.target.value)} maxLength={6} />
+            <AdminField helpKey="admin.totp_secrets.verification_code" htmlFor="fh-totp-secrets-verification-code" label="Verification code" required>
+              <input id="fh-totp-secrets-verification-code" className={inputClass} value={code} onChange={(e) => setCode(e.target.value)} maxLength={6} />
             </AdminField>
             {error && <p className="text-sm text-red-400">{error}</p>}
             <button type="submit" className="w-full rounded bg-gray-700 py-2 text-sm text-white">Verify</button>
@@ -66,7 +66,7 @@ export default function FirstLoginTwoFactorSetup() {
             <div className="rounded border border-gray-700 bg-gray-900 p-4 font-mono text-sm">
               {backupCodes.map((c) => <div key={c}>{c}</div>)}
             </div>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
               <input type="checkbox" checked={savedCodes} onChange={(e) => setSavedCodes(e.target.checked)} />
               I have saved my recovery codes
             </label>

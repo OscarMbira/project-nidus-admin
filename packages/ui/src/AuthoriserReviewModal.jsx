@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { buildReviewFieldRows, fetchLifecycleRecordForReview } from '@nidus-admin/shared'
 import { AdminModal } from './AdminModal.jsx'
 import { LoadingState } from './LoadingState.jsx'
+import { AdminFieldLabelWithHelp } from './fieldHelp/AdminFieldLabelWithHelp.jsx'
 
 export function AuthoriserReviewModal({
   open,
@@ -178,10 +179,10 @@ export function AuthoriserReviewModal({
         )}
 
         <div>
-          <label htmlFor="authoriser-justification" className="mb-1 block text-sm font-medium text-gray-200">
+          <AdminFieldLabelWithHelp helpKey="admin.record_authorisations.justification" htmlFor="authoriser-justification" className="mb-1 block text-sm font-medium text-gray-200">
             Authoriser justification
             <span className="text-red-400"> *</span>
-          </label>
+          </AdminFieldLabelWithHelp>
           <textarea
             id="authoriser-justification"
             className="w-full rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100"

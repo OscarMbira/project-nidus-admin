@@ -41,19 +41,19 @@ export default function AdminLogin() {
       <div className="w-full max-w-sm">
         {pending2FA ? (
           <AdminForm onSubmit={handle2FA}>
-            <AdminField label="Authentication code" required>
-              <input className={inputClass} value={code} onChange={(e) => setCode(e.target.value)} autoComplete="one-time-code" />
+            <AdminField helpKey="admin.admin_sign_in.authentication_code" htmlFor="fh-admin-sign-in-authentication-code" label="Authentication code" required>
+              <input id="fh-admin-sign-in-authentication-code" className={inputClass} value={code} onChange={(e) => setCode(e.target.value)} autoComplete="one-time-code" />
             </AdminField>
             {error && <p className="text-sm text-red-400">{error}</p>}
             <button type="submit" className="w-full rounded bg-gray-700 py-2 text-sm text-white hover:bg-gray-600">Verify</button>
           </AdminForm>
         ) : (
           <AdminForm onSubmit={handleLogin}>
-            <AdminField label="Email" required>
-              <input type="email" className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
+            <AdminField helpKey="admin.admin_sign_in.email" htmlFor="fh-admin-sign-in-email" label="Email" required>
+              <input id="fh-admin-sign-in-email" type="email" className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
             </AdminField>
-            <AdminField label="Password" required>
-              <input type="password" className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
+            <AdminField helpKey="admin.admin_sign_in.password" htmlFor="fh-admin-sign-in-password" label="Password" required>
+              <input id="fh-admin-sign-in-password" type="password" className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
             </AdminField>
             {error && <p className="text-sm text-red-400">{error}</p>}
             {attempts > 0 && <p className="text-xs text-gray-500">Attempt {attempts} of 5</p>}

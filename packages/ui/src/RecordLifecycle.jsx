@@ -12,6 +12,7 @@ import {
   notifyEmailEvent,
   transitionRecordStatus,
 } from '@nidus-admin/shared'
+import { AdminFieldLabelWithHelp } from './fieldHelp/AdminFieldLabelWithHelp.jsx'
 
 const LIFECYCLE_OPERATION_LABELS = {
   submit: 'Submitted for authorisation',
@@ -141,10 +142,10 @@ export function RecordLifecycleToolbar({
       {requireAuthoriserJustification && (approveAction || rejectAction) && (
         <PermissionGate permission={authoriserPermission}>
           <div className="rounded-lg border border-violet-700/50 bg-violet-950/20 p-3">
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-violet-200">
+            <AdminFieldLabelWithHelp helpKey="admin.record_authorisations.justification" htmlFor="fh-record-authorisations-justification" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-violet-200">
               {authoriserJustificationLabel}
-            </label>
-            <textarea
+            </AdminFieldLabelWithHelp>
+            <textarea id="fh-record-authorisations-justification"
               className="w-full rounded-lg border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-gray-100 placeholder:text-gray-500"
               rows={3}
               value={authoriserJustification}

@@ -98,7 +98,7 @@ export function AdminProfilePictureSection({ initials }) {
       <div className="flex flex-wrap items-center gap-4">
         <AdminAvatarBadge avatarPath={avatarPath} initials={initials} sizeClassName="h-20 w-20" zoomable refreshNonce={refreshNonce} />
         <div className="flex flex-1 flex-wrap items-center gap-2">
-          <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-gray-800/60 px-3 py-1.5 text-xs font-medium text-gray-200 hover:bg-gray-800 ${busy ? 'pointer-events-none opacity-50' : ''}`}>
+          <label data-help="exempt" className={`inline-flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-gray-800/60 px-3 py-1.5 text-xs font-medium text-gray-200 hover:bg-gray-800 ${busy ? 'pointer-events-none opacity-50' : ''}`}>
             <Upload className="h-3.5 w-3.5" />
             {busy ? 'Saving…' : 'Upload'}
             <input

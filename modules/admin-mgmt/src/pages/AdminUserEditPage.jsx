@@ -258,8 +258,8 @@ export default function AdminUserEditPage() {
         <div className="space-y-5 rounded-lg border border-gray-700 bg-gray-900 p-5">
           <AdminForm onSubmit={isViewOnly ? (event) => event.preventDefault() : handleSave} className="space-y-4">
             <fieldset disabled={isViewOnly} className="space-y-4 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
-            <AdminField label="Full Name">
-              <input
+            <AdminField helpKey="admin.admin_users.full_name" htmlFor="fh-admin-users-full-name" label="Full Name">
+              <input id="fh-admin-users-full-name"
                 className={inputClass}
                 value={formValues.full_name}
                 onChange={(event) => setFormValues((prev) => ({ ...prev, full_name: event.target.value }))}
@@ -267,8 +267,8 @@ export default function AdminUserEditPage() {
               />
             </AdminField>
 
-            <AdminField label="Role">
-              <select
+            <AdminField helpKey="admin.admin_users.role" htmlFor="fh-admin-users-role" label="Role">
+              <select id="fh-admin-users-role"
                 className={inputClass}
                 value={formValues.role}
                 onChange={(event) => setFormValues((prev) => ({ ...prev, role: event.target.value }))}
@@ -280,7 +280,7 @@ export default function AdminUserEditPage() {
             </AdminField>
 
             <div className="rounded border border-gray-700 bg-gray-950 px-3 py-2">
-              <label className="inline-flex items-center gap-2 text-sm text-gray-200">
+              <label data-help="exempt" className="inline-flex items-center gap-2 text-sm text-gray-200">
                 <input
                   type="checkbox"
                   checked={formValues.requires_2fa}

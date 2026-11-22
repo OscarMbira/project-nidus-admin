@@ -270,48 +270,48 @@ export default function ErrorAlertRulesPage() {
 
         {ruleTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2">
-          <AdminField label="Rule Name" required>
-            <input value={form.rule_name} onChange={(e) => setForm((prev) => ({ ...prev, rule_name: e.target.value }))} className={inputClass} />
+          <AdminField helpKey="admin.error_alert_rules.rule_name" htmlFor="fh-error-alert-rules-rule-name" label="Rule Name" required>
+            <input id="fh-error-alert-rules-rule-name" value={form.rule_name} onChange={(e) => setForm((prev) => ({ ...prev, rule_name: e.target.value }))} className={inputClass} />
           </AdminField>
           <div className="grid gap-3 sm:grid-cols-2">
-            <AdminField label="Error Type">
-              <select value={form.error_type} onChange={(e) => setForm((prev) => ({ ...prev, error_type: e.target.value }))} className={inputClass}>
+            <AdminField helpKey="admin.error_alert_rules.error_type" htmlFor="fh-error-alert-rules-error-type" label="Error Type">
+              <select id="fh-error-alert-rules-error-type" value={form.error_type} onChange={(e) => setForm((prev) => ({ ...prev, error_type: e.target.value }))} className={inputClass}>
                 {ERROR_TYPES.map((value) => <option key={value || 'any'} value={value}>{value || 'Any'}</option>)}
               </select>
             </AdminField>
-            <AdminField label="System">
-              <select value={form.system} onChange={(e) => setForm((prev) => ({ ...prev, system: e.target.value }))} className={inputClass}>
+            <AdminField helpKey="admin.error_alert_rules.system" htmlFor="fh-error-alert-rules-system" label="System">
+              <select id="fh-error-alert-rules-system" value={form.system} onChange={(e) => setForm((prev) => ({ ...prev, system: e.target.value }))} className={inputClass}>
                 {SYSTEMS.map((value) => <option key={value || 'all'} value={value}>{value || 'All systems'}</option>)}
               </select>
             </AdminField>
           </div>
-          <AdminField label="Route Pattern">
-            <input value={form.page_route_pattern} onChange={(e) => setForm((prev) => ({ ...prev, page_route_pattern: e.target.value }))} className={inputClass} />
+          <AdminField helpKey="admin.error_alert_rules.page_route_pattern" htmlFor="fh-error-alert-rules-page-route-pattern" label="Route Pattern">
+            <input id="fh-error-alert-rules-page-route-pattern" value={form.page_route_pattern} onChange={(e) => setForm((prev) => ({ ...prev, page_route_pattern: e.target.value }))} className={inputClass} />
           </AdminField>
           <div className="grid gap-3 sm:grid-cols-3">
-            <AdminField label="Threshold Users">
-              <input type="number" min="1" value={form.threshold_users} onChange={(e) => setForm((prev) => ({ ...prev, threshold_users: e.target.value }))} className={inputClass} />
+            <AdminField helpKey="admin.error_alert_rules.threshold_users" htmlFor="fh-error-alert-rules-threshold-users" label="Threshold Users">
+              <input id="fh-error-alert-rules-threshold-users" type="number" min="1" value={form.threshold_users} onChange={(e) => setForm((prev) => ({ ...prev, threshold_users: e.target.value }))} className={inputClass} />
             </AdminField>
-            <AdminField label="Threshold Occurrences">
-              <input type="number" min="1" value={form.threshold_occurrences} onChange={(e) => setForm((prev) => ({ ...prev, threshold_occurrences: e.target.value }))} className={inputClass} />
+            <AdminField helpKey="admin.error_alert_rules.threshold_occurrences" htmlFor="fh-error-alert-rules-threshold-occurrences" label="Threshold Occurrences">
+              <input id="fh-error-alert-rules-threshold-occurrences" type="number" min="1" value={form.threshold_occurrences} onChange={(e) => setForm((prev) => ({ ...prev, threshold_occurrences: e.target.value }))} className={inputClass} />
             </AdminField>
-            <AdminField label="Window Minutes">
-              <input type="number" min="1" value={form.time_window_minutes} onChange={(e) => setForm((prev) => ({ ...prev, time_window_minutes: e.target.value }))} className={inputClass} />
+            <AdminField helpKey="admin.error_alert_rules.time_window_minutes" htmlFor="fh-error-alert-rules-time-window-minutes" label="Window Minutes">
+              <input id="fh-error-alert-rules-time-window-minutes" type="number" min="1" value={form.time_window_minutes} onChange={(e) => setForm((prev) => ({ ...prev, time_window_minutes: e.target.value }))} className={inputClass} />
             </AdminField>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <AdminField label="Auto Ticket Priority">
-              <select value={form.auto_ticket_priority} onChange={(e) => setForm((prev) => ({ ...prev, auto_ticket_priority: e.target.value }))} className={inputClass}>
+            <AdminField helpKey="admin.error_alert_rules.auto_ticket_priority" htmlFor="fh-error-alert-rules-auto-ticket-priority" label="Auto Ticket Priority">
+              <select id="fh-error-alert-rules-auto-ticket-priority" value={form.auto_ticket_priority} onChange={(e) => setForm((prev) => ({ ...prev, auto_ticket_priority: e.target.value }))} className={inputClass}>
                 {PRIORITIES.map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </AdminField>
-            <AdminField label="Notify Role">
-              <select value={form.notify_role} onChange={(e) => setForm((prev) => ({ ...prev, notify_role: e.target.value }))} className={inputClass}>
+            <AdminField helpKey="admin.error_alert_rules.notify_role" htmlFor="fh-error-alert-rules-notify-role" label="Notify Role">
+              <select id="fh-error-alert-rules-notify-role" value={form.notify_role} onChange={(e) => setForm((prev) => ({ ...prev, notify_role: e.target.value }))} className={inputClass}>
                 {ROLES.map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </AdminField>
           </div>
-          <label className="inline-flex items-center gap-2 text-sm text-gray-300">
+          <label data-help="exempt" className="inline-flex items-center gap-2 text-sm text-gray-300">
             <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))} className="h-4 w-4 accent-blue-500" />
             Rule is active
           </label>

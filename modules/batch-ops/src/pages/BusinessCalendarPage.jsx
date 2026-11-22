@@ -238,8 +238,8 @@ export default function BusinessCalendarPage() {
 
         {entryTab === 'details' && (
         <AdminForm onSubmit={handleSave} className="mt-2 space-y-3">
-          <AdminField label="Day Type" required>
-            <select
+          <AdminField helpKey="admin.business_calendar.day_type" htmlFor="fh-business-calendar-day-type" label="Day Type" required>
+            <select id="fh-business-calendar-day-type"
               className={inputClass}
               value={form.day_type}
               onChange={(e) => setForm((prev) => ({ ...prev, day_type: e.target.value }))}
@@ -250,8 +250,8 @@ export default function BusinessCalendarPage() {
             </select>
           </AdminField>
           {form.day_type === 'holiday' && (
-            <AdminField label="Holiday Name">
-              <input
+            <AdminField helpKey="admin.business_calendar.holiday_name" htmlFor="fh-business-calendar-holiday-name" label="Holiday Name">
+              <input id="fh-business-calendar-holiday-name"
                 className={inputClass}
                 value={form.holiday_name}
                 onChange={(e) => setForm((prev) => ({ ...prev, holiday_name: e.target.value }))}
@@ -259,8 +259,8 @@ export default function BusinessCalendarPage() {
               />
             </AdminField>
           )}
-          <AdminField label="Country Code">
-            <input
+          <AdminField helpKey="admin.business_calendar.country_code" htmlFor="fh-business-calendar-country-code" label="Country Code">
+            <input id="fh-business-calendar-country-code"
               className={inputClass}
               value={form.country_code}
               maxLength={2}

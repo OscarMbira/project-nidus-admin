@@ -160,7 +160,7 @@ export default function AuditTrailPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <label className="text-sm">
+        <label data-help="exempt" className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date From</span>
           <AdminDateInput eventStyle
             value={dateFrom}
@@ -168,7 +168,7 @@ export default function AuditTrailPage() {
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
           />
         </label>
-        <label className="text-sm">
+        <label data-help="exempt" className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date To</span>
           <AdminDateInput eventStyle
             value={dateTo}
@@ -176,7 +176,7 @@ export default function AuditTrailPage() {
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
           />
         </label>
-        <label className="text-sm">
+        <label data-help="exempt" className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Action Type</span>
           <select
             value={actionFilter}
@@ -189,7 +189,7 @@ export default function AuditTrailPage() {
             ))}
           </select>
         </label>
-        <label className="text-sm">
+        <label data-help="exempt" className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Admin User</span>
           <select
             value={adminUserFilter}
@@ -202,7 +202,7 @@ export default function AuditTrailPage() {
             ))}
           </select>
         </label>
-        <label className="text-sm">
+        <label data-help="exempt" className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Target Type</span>
           <select
             value={targetFilter}

@@ -68,8 +68,8 @@ export default function AdminUserInvitePage() {
       {detailTab === 'details' && (
       <div className="rounded-lg border border-gray-700 bg-gray-900 p-5">
         <AdminForm onSubmit={handleSubmit} className="space-y-5">
-          <AdminField label="Email" required error={errors.email}>
-            <input
+          <AdminField helpKey="admin.admin_invitations.email" htmlFor="fh-admin-invitations-email" label="Email" required error={errors.email}>
+            <input id="fh-admin-invitations-email"
               type="email"
               className={inputClass}
               value={email}
@@ -79,8 +79,8 @@ export default function AdminUserInvitePage() {
             />
           </AdminField>
 
-          <AdminField label="Target Role" required error={errors.targetRole}>
-            <select
+          <AdminField helpKey="admin.admin_invitations.target_role" htmlFor="fh-admin-invitations-target-role" label="Target Role" required error={errors.targetRole}>
+            <select id="fh-admin-invitations-target-role"
               className={inputClass}
               value={targetRole}
               onChange={(event) => setTargetRole(event.target.value)}
@@ -91,8 +91,8 @@ export default function AdminUserInvitePage() {
             </select>
           </AdminField>
 
-          <AdminField label="Custom Message">
-            <textarea
+          <AdminField helpKey="admin.admin_invitations.custom_message" htmlFor="fh-admin-invitations-custom-message" label="Custom Message">
+            <textarea id="fh-admin-invitations-custom-message"
               className={inputClass}
               rows={4}
               value={customMessage}
@@ -101,8 +101,8 @@ export default function AdminUserInvitePage() {
             />
           </AdminField>
 
-          <AdminField label="Expiry (hours)" required error={errors.expiryHours}>
-            <input
+          <AdminField helpKey="admin.admin_invitations.expiry_hours" htmlFor="fh-admin-invitations-expiry-hours" label="Expiry (hours)" required error={errors.expiryHours}>
+            <input id="fh-admin-invitations-expiry-hours"
               type="number"
               min={1}
               max={720}

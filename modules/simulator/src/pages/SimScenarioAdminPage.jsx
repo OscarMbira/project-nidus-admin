@@ -218,7 +218,7 @@ export default function SimScenarioAdminPage() {
       </div>
 
       <div className="max-w-xs">
-        <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Difficulty</label>
+        <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Difficulty</label>
         <select
           value={difficultyFilter}
           onChange={(event) => setDifficultyFilter(event.target.value)}

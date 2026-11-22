@@ -153,27 +153,27 @@ export default function TesterSandboxesPage() {
 
         {createTab === 'details' && (
         <AdminForm onSubmit={handleCreate}>
-          <AdminField label="Organisation">
-            <select className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value })} required>
+          <AdminField helpKey="admin.tester_sandboxes.account_id" listOptions={false} htmlFor="fh-tester-sandboxes-account-id" label="Organisation">
+            <select id="fh-tester-sandboxes-account-id" className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value })} required>
               <option value="">Select account</option>
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.account_name}</option>)}
             </select>
           </AdminField>
-          <AdminField label="Sandbox name">
-            <input className={inputClass} value={form.sandbox_name} onChange={(e) => setForm({ ...form, sandbox_name: e.target.value })} />
+          <AdminField helpKey="admin.tester_sandboxes.sandbox_name" htmlFor="fh-tester-sandboxes-sandbox-name" label="Sandbox name">
+            <input id="fh-tester-sandboxes-sandbox-name" className={inputClass} value={form.sandbox_name} onChange={(e) => setForm({ ...form, sandbox_name: e.target.value })} />
           </AdminField>
-          <AdminField label="Target system">
-            <select className={inputClass} value={form.target_system} onChange={(e) => setForm({ ...form, target_system: e.target.value })}>
+          <AdminField helpKey="admin.tester_sandboxes.target_system" htmlFor="fh-tester-sandboxes-target-system" label="Target system">
+            <select id="fh-tester-sandboxes-target-system" className={inputClass} value={form.target_system} onChange={(e) => setForm({ ...form, target_system: e.target.value })}>
               <option value="platform">platform</option>
               <option value="simulator">simulator</option>
               <option value="both">both</option>
             </select>
           </AdminField>
-          <AdminField label="Moratorium months">
-            <input type="number" min={1} max={120} className={inputClass} value={form.moratorium_months} onChange={(e) => setForm({ ...form, moratorium_months: e.target.value })} />
+          <AdminField helpKey="admin.tester_sandboxes.moratorium_months" htmlFor="fh-tester-sandboxes-moratorium-months" label="Moratorium months">
+            <input id="fh-tester-sandboxes-moratorium-months" type="number" min={1} max={120} className={inputClass} value={form.moratorium_months} onChange={(e) => setForm({ ...form, moratorium_months: e.target.value })} />
           </AdminField>
-          <AdminField label="Notes">
-            <textarea className={inputClass} rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+          <AdminField helpKey="admin.tester_sandboxes.notes" htmlFor="fh-tester-sandboxes-notes" label="Notes">
+            <textarea id="fh-tester-sandboxes-notes" className={inputClass} rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
           </AdminField>
           <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-sm text-white">Create</button>
         </AdminForm>

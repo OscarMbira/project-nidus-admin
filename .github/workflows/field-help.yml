@@ -1,0 +1,35 @@
+name: Admin Field Help Check
+
+# Admin rule 23 (monorepo v1345 slices 5–6): every Admin field label has contextual help, or is marked
+# data-help="exempt" (rule-23 exclusions). Fails on any key used without a seeded admin.field_help row.
+# Raw labels without help are reported; --enforce fails on them once the last open pages are done.
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'shell/**'
+      - 'modules/**'
+      - 'packages/**'
+      - 'SQL/**'
+      - 'scripts/check-field-help.mjs'
+  pull_request:
+    paths:
+      - 'shell/**'
+      - 'modules/**'
+      - 'packages/**'
+      - 'SQL/**'
+      - 'scripts/check-field-help.mjs'
+
+jobs:
+  field-help:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Every help key used has help seeded
+        run: |
+          node scripts/check-field-help.mjs | tee field-help.txt
+          if grep -q "no help seeded" field-help.txt; then exit 1; fi

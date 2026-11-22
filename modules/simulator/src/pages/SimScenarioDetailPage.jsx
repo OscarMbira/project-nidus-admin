@@ -212,7 +212,7 @@ export default function SimScenarioDetailPage() {
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-gray-400">Scenario metadata</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {EDITABLE_FIELDS.map((field) => (
-            <label key={field} className="text-sm">
+            <label data-help="exempt" key={field} className="text-sm">
               <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">{field.replaceAll('_', ' ')}</span>
               {isEditing ? (
                 field === 'description' ? (
@@ -239,7 +239,7 @@ export default function SimScenarioDetailPage() {
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {['is_active', 'is_featured', 'is_published'].map((flag) => (
-            <label key={flag} className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" key={flag} className="flex items-center gap-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={Boolean(isEditing ? form[flag] : scenario[flag])}

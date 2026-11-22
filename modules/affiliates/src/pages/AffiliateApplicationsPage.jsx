@@ -206,9 +206,9 @@ export default function AffiliateApplicationsPage() {
 
         {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
-          <AdminField label="Name" required><input className={inputClass} value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} required /></AdminField>
-          <AdminField label="Email" required><input type="email" className={inputClass} value={editForm.email} onChange={(e) => setEditForm((p) => ({ ...p, email: e.target.value }))} required /></AdminField>
-          <AdminField label="Notes"><textarea rows={3} className={inputClass} value={editForm.application_notes} onChange={(e) => setEditForm((p) => ({ ...p, application_notes: e.target.value }))} /></AdminField>
+          <AdminField helpKey="admin.affiliates.name" htmlFor="fh-affiliates-name" label="Name" required><input id="fh-affiliates-name" className={inputClass} value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} required /></AdminField>
+          <AdminField helpKey="admin.affiliates.email" htmlFor="fh-affiliates-email" label="Email" required><input id="fh-affiliates-email" type="email" className={inputClass} value={editForm.email} onChange={(e) => setEditForm((p) => ({ ...p, email: e.target.value }))} required /></AdminField>
+          <AdminField helpKey="admin.affiliates.application_notes" htmlFor="fh-affiliates-application-notes" label="Notes"><textarea id="fh-affiliates-application-notes" rows={3} className={inputClass} value={editForm.application_notes} onChange={(e) => setEditForm((p) => ({ ...p, application_notes: e.target.value }))} /></AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setEditing(null)} className="text-sm text-gray-400">Cancel</button>
             <button type="submit" disabled={busyId === editing?.id} className="rounded bg-blue-700 px-3 py-1.5 text-sm text-white">Save</button>

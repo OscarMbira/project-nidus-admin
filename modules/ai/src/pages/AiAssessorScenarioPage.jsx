@@ -189,17 +189,17 @@ export default function AiAssessorScenarioPage() {
           {canEdit && !edit && <AdminActionButton onClick={() => setEdit(blankCriterion())}>Add a criterion</AdminActionButton>}
           {edit && (
             <div className="grid gap-3 rounded-lg border border-blue-300 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20 md:grid-cols-3">
-              <AdminField label="Key" required>
-                <input className={`${inputClass} font-mono`} value={edit.criterion_key} disabled={!edit.isNew}
+              <AdminField helpKey="admin.sim_scenario_rubrics.criterion_key" htmlFor="fh-sim-scenario-rubrics-criterion-key" label="Key" required>
+                <input id="fh-sim-scenario-rubrics-criterion-key" className={`${inputClass} font-mono`} value={edit.criterion_key} disabled={!edit.isNew}
                   onChange={(e) => setEdit((c) => ({ ...c, criterion_key: e.target.value }))} placeholder="stakeholder_engagement" />
               </AdminField>
-              <AdminField label="Title" required><input className={inputClass} value={edit.title} onChange={(e) => setEdit((c) => ({ ...c, title: e.target.value }))} /></AdminField>
-              <AdminField label="Weight" required><input className={inputClass} type="number" min="0.1" step="0.1" value={edit.weight} onChange={(e) => setEdit((c) => ({ ...c, weight: e.target.value }))} /></AdminField>
+              <AdminField helpKey="admin.sim_scenario_rubrics.title" htmlFor="fh-sim-scenario-rubrics-title" label="Title" required><input id="fh-sim-scenario-rubrics-title" className={inputClass} value={edit.title} onChange={(e) => setEdit((c) => ({ ...c, title: e.target.value }))} /></AdminField>
+              <AdminField helpKey="admin.sim_scenario_rubrics.weight" htmlFor="fh-sim-scenario-rubrics-weight" label="Weight" required><input id="fh-sim-scenario-rubrics-weight" className={inputClass} type="number" min="0.1" step="0.1" value={edit.weight} onChange={(e) => setEdit((c) => ({ ...c, weight: e.target.value }))} /></AdminField>
               <div className="md:col-span-2">
-                <AdminField label="What it assesses"><input className={inputClass} value={edit.description || ''} onChange={(e) => setEdit((c) => ({ ...c, description: e.target.value }))} /></AdminField>
+                <AdminField helpKey="admin.sim_scenario_rubrics.description" htmlFor="fh-sim-scenario-rubrics-description" label="What it assesses"><input id="fh-sim-scenario-rubrics-description" className={inputClass} value={edit.description || ''} onChange={(e) => setEdit((c) => ({ ...c, description: e.target.value }))} /></AdminField>
               </div>
-              <AdminField label="Used for">
-                <select className={inputClass} value={edit.applies_to} onChange={(e) => setEdit((c) => ({ ...c, applies_to: e.target.value }))}>
+              <AdminField helpKey="admin.sim_scenario_rubrics.applies_to" htmlFor="fh-sim-scenario-rubrics-applies-to" label="Used for">
+                <select id="fh-sim-scenario-rubrics-applies-to" className={inputClass} value={edit.applies_to} onChange={(e) => setEdit((c) => ({ ...c, applies_to: e.target.value }))}>
                   <option value="both">Decisions and the whole run</option>
                   <option value="decision">Individual decisions</option>
                   <option value="run_end">The whole run</option>
@@ -207,13 +207,13 @@ export default function AiAssessorScenarioPage() {
               </AdminField>
               {edit.levels.map((l, i) => (
                 <div key={l.level} className="md:col-span-3">
-                  <AdminField label={`Level ${l.level}${l.level === 1 ? ' (lowest)' : l.level === 4 ? ' (highest)' : ''}`} required>
+                  <AdminField helpKey="admin.sim_scenario_rubrics.level_descriptor" label={`Level ${l.level}${l.level === 1 ? ' (lowest)' : l.level === 4 ? ' (highest)' : ''}`} required>
                     <input className={inputClass} value={l.descriptor}
                       onChange={(e) => setEdit((c) => ({ ...c, levels: c.levels.map((x, j) => (j === i ? { ...x, descriptor: e.target.value } : x)) }))} />
                   </AdminField>
                 </div>
               ))}
-              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input type="checkbox" checked={edit.is_active} onChange={(e) => setEdit((c) => ({ ...c, is_active: e.target.checked }))} /> In use
               </label>
               <div className="flex gap-2 md:col-span-3">
@@ -248,13 +248,13 @@ export default function AiAssessorScenarioPage() {
         <fieldset disabled={!canEdit} className="grid gap-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900 md:grid-cols-2">
           <div className="space-y-3">
             <h2 className="font-semibold text-gray-900 dark:text-gray-100">Adaptive difficulty</h2>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input type="checkbox" checked={scoring.adaptive_enabled} onChange={(e) => setScoring((f) => ({ ...f, adaptive_enabled: e.target.checked }))} />
               Adjust event difficulty to the learner's performance
             </label>
             <div className="grid grid-cols-2 gap-3">
               {['min_difficulty', 'max_difficulty'].map((k) => (
-                <AdminField key={k} label={k === 'min_difficulty' ? 'Easiest level' : 'Hardest level'}>
+                <AdminField helpKey={`admin.sim_scenarios.${k}`} key={k} label={k === 'min_difficulty' ? 'Easiest level' : 'Hardest level'}>
                   <select className={inputClass} value={scoring[k]} onChange={(e) => setScoring((f) => ({ ...f, [k]: Number(e.target.value) }))}>
                     {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}</option>)}
                   </select>
@@ -265,7 +265,7 @@ export default function AiAssessorScenarioPage() {
           </div>
           <div className="space-y-3">
             <h2 className="font-semibold text-gray-900 dark:text-gray-100">AI Assessor in the score</h2>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input type="checkbox" checked={scoring.assessor_counts} disabled={!cal.is_calibrated && !scoringBase.assessor_counts}
                 onChange={(e) => setScoring((f) => ({ ...f, assessor_counts: e.target.checked }))} />
               Count the Assessor's run score toward the learner's score and certificates
@@ -273,8 +273,8 @@ export default function AiAssessorScenarioPage() {
             {!cal.is_calibrated && !scoringBase.assessor_counts && (
               <p className="text-xs text-amber-700 dark:text-amber-300">Calibrate first: {cal.calibrated_assessments || 0} of 30 assessments scored by an author{cal.agreement != null ? `, ${cal.agreement}% agreement (needs 80%)` : ''}.</p>
             )}
-            <AdminField label="Weight of the Assessor (%)">
-              <input className={inputClass} type="number" min="0" max="100" value={scoring.assessor_weight} disabled={!scoring.assessor_counts}
+            <AdminField helpKey="admin.sim_scenarios.assessor_weight" htmlFor="fh-sim-scenarios-assessor-weight" label="Weight of the Assessor (%)">
+              <input id="fh-sim-scenarios-assessor-weight" className={inputClass} type="number" min="0" max="100" value={scoring.assessor_weight} disabled={!scoring.assessor_counts}
                 onChange={(e) => setScoring((f) => ({ ...f, assessor_weight: e.target.value === '' ? '' : Number(e.target.value) }))} />
             </AdminField>
           </div>
@@ -312,7 +312,7 @@ export default function AiAssessorScenarioPage() {
                         <p className="font-medium text-gray-900 dark:text-gray-100">{c.title || rubricByKey[c.criterion_key]?.title || c.criterion_key}</p>
                         {(c.evidence || []).map((e, i) => e.quote && <p key={i} className="text-xs italic text-gray-500 dark:text-gray-400">“{e.quote}”</p>)}
                         <div className="mt-1 flex flex-wrap items-center gap-2">
-                          <label className="text-xs text-gray-700 dark:text-gray-300">
+                          <label data-help="exempt" className="text-xs text-gray-700 dark:text-gray-300">
                             Your level{' '}
                             <select className="rounded border border-gray-300 bg-white px-1 py-0.5 dark:border-gray-600 dark:bg-gray-900" disabled={!canEdit}
                               value={levels[a.id]?.[c.criterion_key] ?? mine?.author_levels?.[c.criterion_key] ?? ''}

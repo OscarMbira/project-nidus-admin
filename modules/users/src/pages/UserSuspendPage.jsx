@@ -220,10 +220,10 @@ export default function UserSuspendPage() {
         )}
 
         <AdminForm onSubmit={handleSubmit} className="space-y-5">
-          <AdminField label="Suspension type" required>
+          <AdminField helpKey="admin.user_suspensions.suspension_type" label="Suspension type" required>
             <div className="space-y-2">
               {SUSPENSION_TYPES.map((type) => (
-                <label
+                <label data-help="exempt"
                   key={type.key}
                   className={`flex cursor-pointer gap-3 rounded border px-3 py-3 transition ${
                     form.suspensionType === type.key
@@ -256,31 +256,31 @@ export default function UserSuspendPage() {
             <div className="space-y-4 rounded border border-gray-800 bg-gray-900/40 p-4">
               <p className="text-sm font-medium text-gray-200">Investigation period</p>
               <div className="grid gap-4 sm:grid-cols-2">
-                <AdminField label="Start date" required>
-                  <AdminDateInput eventStyle
+                <AdminField helpKey="admin.user_suspensions.start_date" htmlFor="fh-user-suspensions-start-date" label="Start date" required>
+                  <AdminDateInput id="fh-user-suspensions-start-date" eventStyle
                     className={inputClass}
                     value={form.startDate}
                     onChange={(event) => setForm((prev) => ({ ...prev, startDate: event.target.value }))}
                   />
                 </AdminField>
-                <AdminField label="Start time" required>
-                  <input
+                <AdminField helpKey="admin.user_suspensions.start_time" htmlFor="fh-user-suspensions-start-time" label="Start time" required>
+                  <input id="fh-user-suspensions-start-time"
                     type="time"
                     className={inputClass}
                     value={form.startTime}
                     onChange={(event) => setForm((prev) => ({ ...prev, startTime: event.target.value }))}
                   />
                 </AdminField>
-                <AdminField label="End date">
-                  <AdminDateInput eventStyle
+                <AdminField helpKey="admin.user_suspensions.end_date" htmlFor="fh-user-suspensions-end-date" label="End date">
+                  <AdminDateInput id="fh-user-suspensions-end-date" eventStyle
                     className={inputClass}
                     min={form.startDate || undefined}
                     value={form.endDate}
                     onChange={(event) => setForm((prev) => ({ ...prev, endDate: event.target.value }))}
                   />
                 </AdminField>
-                <AdminField label="End time">
-                  <input
+                <AdminField helpKey="admin.user_suspensions.end_time" htmlFor="fh-user-suspensions-end-time" label="End time">
+                  <input id="fh-user-suspensions-end-time"
                     type="time"
                     className={inputClass}
                     value={form.endTime}
@@ -293,8 +293,8 @@ export default function UserSuspendPage() {
             </div>
           )}
 
-          <AdminField label="Reason" required>
-            <textarea
+          <AdminField helpKey="admin.user_suspensions.reason" htmlFor="fh-user-suspensions-reason" label="Reason" required>
+            <textarea id="fh-user-suspensions-reason"
               rows={4}
               className={inputClass}
               placeholder="Describe why this user is being suspended..."
@@ -303,12 +303,12 @@ export default function UserSuspendPage() {
             />
           </AdminField>
 
-          <AdminField label="Supporting documents or images">
+          <AdminField helpKey="admin.user_suspensions.supporting_documents" htmlFor="fh-user-suspensions-supporting-documents" label="Supporting documents or images">
             <div className="space-y-3">
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded border border-dashed border-gray-600 bg-gray-900/60 px-4 py-6 text-center hover:border-gray-500">
+              <label data-help="exempt" className="flex cursor-pointer flex-col items-center justify-center rounded border border-dashed border-gray-600 bg-gray-900/60 px-4 py-6 text-center hover:border-gray-500">
                 <span className="text-sm text-gray-300">Click to attach files</span>
                 <span className="mt-1 text-xs text-gray-500">Images, PDF, or Word documents · up to 5 files · 10 MB each</span>
-                <input
+                <input id="fh-user-suspensions-supporting-documents"
                   type="file"
                   multiple
                   accept={ACCEPTED_FILE_TYPES}

@@ -188,11 +188,11 @@ export default function ReportBuilderPage() {
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
       <div className="grid gap-4 lg:grid-cols-2">
-        <AdminField label="Report Name" required>
-          <input className={inputClass} value={form.report_name} onChange={(e) => setForm((prev) => ({ ...prev, report_name: e.target.value }))} />
+        <AdminField helpKey="admin.report_definitions.report_name" htmlFor="fh-report-definitions-report-name" label="Report Name" required>
+          <input id="fh-report-definitions-report-name" className={inputClass} value={form.report_name} onChange={(e) => setForm((prev) => ({ ...prev, report_name: e.target.value }))} />
         </AdminField>
-        <AdminField label="Report Key" required>
-          <input
+        <AdminField helpKey="admin.report_definitions.report_key" htmlFor="fh-report-definitions-report-key" label="Report Key" required>
+          <input id="fh-report-definitions-report-key"
             className={inputClass}
             value={form.report_key}
             readOnly={isEdit}
@@ -201,28 +201,28 @@ export default function ReportBuilderPage() {
           />
         </AdminField>
       </div>
-      <AdminField label="Description">
-        <input className={inputClass} value={form.description} onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))} />
+      <AdminField helpKey="admin.report_definitions.description" htmlFor="fh-report-definitions-description" label="Description">
+        <input id="fh-report-definitions-description" className={inputClass} value={form.description} onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))} />
       </AdminField>
       <div className="grid gap-4 sm:grid-cols-3">
-        <AdminField label="Report Type">
-          <select className={inputClass} value={form.report_type} onChange={(e) => setForm((prev) => ({ ...prev, report_type: e.target.value }))}>
+        <AdminField helpKey="admin.report_definitions.report_type" htmlFor="fh-report-definitions-report-type" label="Report Type">
+          <select id="fh-report-definitions-report-type" className={inputClass} value={form.report_type} onChange={(e) => setForm((prev) => ({ ...prev, report_type: e.target.value }))}>
             {REPORT_TYPES.map((type) => <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>)}
           </select>
         </AdminField>
-        <AdminField label="Chart Type">
-          <select className={inputClass} value={form.chart_type} onChange={(e) => setForm((prev) => ({ ...prev, chart_type: e.target.value }))}>
+        <AdminField helpKey="admin.report_definitions.chart_type" htmlFor="fh-report-definitions-chart-type" label="Chart Type">
+          <select id="fh-report-definitions-chart-type" className={inputClass} value={form.chart_type} onChange={(e) => setForm((prev) => ({ ...prev, chart_type: e.target.value }))}>
             {CHART_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
         </AdminField>
-        <AdminField label="Target System">
-          <select className={inputClass} value={form.target_system} onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}>
+        <AdminField helpKey="admin.report_definitions.target_system" htmlFor="fh-report-definitions-target-system" label="Target System">
+          <select id="fh-report-definitions-target-system" className={inputClass} value={form.target_system} onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}>
             {TARGET_SYSTEMS.map((system) => <option key={system} value={system}>{system}</option>)}
           </select>
         </AdminField>
       </div>
-      <AdminField label="Query Config (JSON)">
-        <textarea
+      <AdminField helpKey="admin.report_definitions.query_config" htmlFor="fh-report-definitions-query-config" label="Query Config (JSON)">
+        <textarea id="fh-report-definitions-query-config"
           rows={16}
           className={`${inputClass} min-h-[40vh] font-mono text-xs`}
           value={form.query_config}

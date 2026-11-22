@@ -22,8 +22,7 @@ import {
   EmptyState,
   ProgressIndicator,
   inputClass,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const STEPS = ['Select Table', 'Upload CSV', 'Validate', 'Commit', 'Results']
 
@@ -247,7 +246,7 @@ export default function BatchImportPage() {
 
       {step === 0 && (
         <div className="max-w-xl space-y-4 rounded-lg border border-gray-700 bg-gray-900 p-6">
-          <label className="block text-sm text-gray-300">
+          <AdminFieldLabelWithHelp helpKey="admin.batch_jobs.schema_key" className="block text-sm text-gray-300">
             <span className="mb-2 block text-xs uppercase tracking-wide text-gray-400">Target table</span>
             <select
               className={inputClass}
@@ -259,7 +258,7 @@ export default function BatchImportPage() {
                 <option key={option.key} value={option.key}>{option.label}</option>
               ))}
             </select>
-          </label>
+          </AdminFieldLabelWithHelp>
           {schema && (
             <div className="rounded border border-gray-800 bg-gray-950 p-3 text-sm text-gray-400">
               <p className="font-medium text-gray-200">{schema.label}</p>
@@ -335,7 +334,7 @@ export default function BatchImportPage() {
             <div className="text-sm text-gray-400">
               {validation.valid.length} valid · {validation.invalid.length} invalid · {previewRows.length} total
             </div>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
               <input type="checkbox" checked={dryRun} onChange={(e) => setDryRun(e.target.checked)} />
               Dry run (validate only, no writes on commit)
             </label>

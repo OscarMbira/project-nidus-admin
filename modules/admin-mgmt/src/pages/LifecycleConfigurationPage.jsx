@@ -147,30 +147,30 @@ export default function LifecycleConfigurationPage() {
 
             {configTab === 'details' && (
             <AdminForm onSubmit={save}>
-              <AdminField label="Table">
-                <select className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
+              <AdminField helpKey="admin.lifecycle_configs.table_name" htmlFor="fh-lifecycle-configs-table-name" label="Table">
+                <select id="fh-lifecycle-configs-table-name" className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
                   {LIFECYCLE_PILOT_TABLES.map((t) => (
                     <option key={t.key} value={t.key}>{t.label}</option>
                   ))}
                 </select>
               </AdminField>
-              <AdminField label="Approval enabled">
-                <input type="checkbox" checked={form.approval_enabled} onChange={(e) => setForm((f) => ({ ...f, approval_enabled: e.target.checked }))} />
+              <AdminField helpKey="admin.lifecycle_configs.approval_enabled" htmlFor="fh-lifecycle-configs-approval-enabled" label="Approval enabled">
+                <input id="fh-lifecycle-configs-approval-enabled" type="checkbox" checked={form.approval_enabled} onChange={(e) => setForm((f) => ({ ...f, approval_enabled: e.target.checked }))} />
               </AdminField>
-              <AdminField label="Level mode">
-                <select className={inputClass} value={form.level_approval_mode} onChange={(e) => setForm((f) => ({ ...f, level_approval_mode: e.target.value }))}>
+              <AdminField helpKey="admin.lifecycle_configs.level_approval_mode" htmlFor="fh-lifecycle-configs-level-approval-mode" label="Level mode">
+                <select id="fh-lifecycle-configs-level-approval-mode" className={inputClass} value={form.level_approval_mode} onChange={(e) => setForm((f) => ({ ...f, level_approval_mode: e.target.value }))}>
                   <option value="any">Any authoriser per level</option>
                   <option value="all">All authorisers per level</option>
                 </select>
               </AdminField>
-              <AdminField label="History retention (days)">
-                <input className={inputClass} value={form.history_retention_days} onChange={(e) => setForm((f) => ({ ...f, history_retention_days: e.target.value }))} />
+              <AdminField helpKey="admin.lifecycle_configs.history_retention_days" htmlFor="fh-lifecycle-configs-history-retention-days" label="History retention (days)">
+                <input id="fh-lifecycle-configs-history-retention-days" className={inputClass} value={form.history_retention_days} onChange={(e) => setForm((f) => ({ ...f, history_retention_days: e.target.value }))} />
               </AdminField>
-              <AdminField label="Auto-archive enabled">
-                <input type="checkbox" checked={form.auto_archive_enabled} onChange={(e) => setForm((f) => ({ ...f, auto_archive_enabled: e.target.checked }))} />
+              <AdminField helpKey="admin.lifecycle_configs.auto_archive_enabled" htmlFor="fh-lifecycle-configs-auto-archive-enabled" label="Auto-archive enabled">
+                <input id="fh-lifecycle-configs-auto-archive-enabled" type="checkbox" checked={form.auto_archive_enabled} onChange={(e) => setForm((f) => ({ ...f, auto_archive_enabled: e.target.checked }))} />
               </AdminField>
-              <AdminField label="Archive retention (years)">
-                <input className={inputClass} value={form.archive_retention_years} onChange={(e) => setForm((f) => ({ ...f, archive_retention_years: e.target.value }))} />
+              <AdminField helpKey="admin.lifecycle_configs.archive_retention_years" htmlFor="fh-lifecycle-configs-archive-retention-years" label="Archive retention (years)">
+                <input id="fh-lifecycle-configs-archive-retention-years" className={inputClass} value={form.archive_retention_years} onChange={(e) => setForm((f) => ({ ...f, archive_retention_years: e.target.value }))} />
               </AdminField>
               <button type="submit" disabled={saving} className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
                 {saving ? 'Saving…' : 'Save configuration'}

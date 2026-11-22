@@ -30,7 +30,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-semibold text-gray-100">Testing Centre Settings</h1>
       <AdminForm onSubmit={(e) => e.preventDefault()}>
         {settings.map((s) => (
-          <AdminField key={s.setting_key} label={s.setting_key}>
+          <AdminField data-help="exempt" key={s.setting_key} label={s.setting_key}>
             <div className="flex gap-2">
               <input
                 className={inputClass}

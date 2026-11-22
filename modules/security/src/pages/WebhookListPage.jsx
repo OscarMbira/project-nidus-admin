@@ -237,10 +237,10 @@ export default function WebhookListPage() {
 
   const renderEventFields = (form, setForm) => (
     <>
-      <AdminField label="Events">
+      <AdminField helpKey="admin.webhooks.events" label="Events">
         <div className="grid gap-2 sm:grid-cols-2">
           {COMMON_EVENTS.map((event) => (
-            <label key={event} className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" key={event} className="flex items-center gap-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={form.selected_events.includes(event)}
@@ -251,8 +251,8 @@ export default function WebhookListPage() {
           ))}
         </div>
       </AdminField>
-      <AdminField label="Custom Events">
-        <input className={inputClass} value={form.custom_events} onChange={(e) => setForm((prev) => ({ ...prev, custom_events: e.target.value }))} placeholder="invoice.paid, custom.event" />
+      <AdminField helpKey="admin.webhooks.custom_events" htmlFor="fh-webhooks-custom-events" label="Custom Events">
+        <input id="fh-webhooks-custom-events" className={inputClass} value={form.custom_events} onChange={(e) => setForm((prev) => ({ ...prev, custom_events: e.target.value }))} placeholder="invoice.paid, custom.event" />
         <p className="mt-1 text-xs text-gray-500">Additional comma-separated event types</p>
       </AdminField>
     </>
@@ -260,27 +260,27 @@ export default function WebhookListPage() {
 
   const renderFormFields = (form, setForm) => (
     <>
-      <AdminField label="Webhook Name" required>
-        <input className={inputClass} value={form.webhook_name} onChange={(e) => setForm((prev) => ({ ...prev, webhook_name: e.target.value }))} placeholder="Production Notifications" />
+      <AdminField helpKey="admin.webhooks.webhook_name" htmlFor="fh-webhooks-webhook-name" label="Webhook Name" required>
+        <input id="fh-webhooks-webhook-name" className={inputClass} value={form.webhook_name} onChange={(e) => setForm((prev) => ({ ...prev, webhook_name: e.target.value }))} placeholder="Production Notifications" />
       </AdminField>
-      <AdminField label="Endpoint URL" required>
-        <input className={inputClass} value={form.endpoint_url} onChange={(e) => setForm((prev) => ({ ...prev, endpoint_url: e.target.value }))} placeholder="https://example.com/webhooks/nidus" />
+      <AdminField helpKey="admin.webhooks.endpoint_url" htmlFor="fh-webhooks-endpoint-url" label="Endpoint URL" required>
+        <input id="fh-webhooks-endpoint-url" className={inputClass} value={form.endpoint_url} onChange={(e) => setForm((prev) => ({ ...prev, endpoint_url: e.target.value }))} placeholder="https://example.com/webhooks/nidus" />
         <p className="mt-1 text-xs text-gray-500">Must be HTTPS</p>
       </AdminField>
       {renderEventFields(form, setForm)}
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Target System">
-          <select className={inputClass} value={form.target_system} onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}>
+        <AdminField helpKey="admin.webhooks.target_system" htmlFor="fh-webhooks-target-system" label="Target System">
+          <select id="fh-webhooks-target-system" className={inputClass} value={form.target_system} onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}>
             <option value="all">All</option>
             <option value="platform">Platform</option>
             <option value="simulator">Simulator</option>
           </select>
         </AdminField>
-        <AdminField label="Retry Count">
-          <input type="number" min={0} className={inputClass} value={form.retry_count} onChange={(e) => setForm((prev) => ({ ...prev, retry_count: e.target.value }))} />
+        <AdminField helpKey="admin.webhooks.retry_count" htmlFor="fh-webhooks-retry-count" label="Retry Count">
+          <input id="fh-webhooks-retry-count" type="number" min={0} className={inputClass} value={form.retry_count} onChange={(e) => setForm((prev) => ({ ...prev, retry_count: e.target.value }))} />
         </AdminField>
       </div>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))} />
         Active
       </label>

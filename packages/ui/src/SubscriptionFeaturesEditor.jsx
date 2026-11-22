@@ -1,5 +1,6 @@
 import { inputClass } from './AdminForm.jsx'
 import { SearchableSelect } from './SearchableSelect.jsx'
+import { AdminFieldLabelWithHelp } from './fieldHelp/AdminFieldLabelWithHelp.jsx'
 
 function TrashIcon() {
   return (
@@ -48,9 +49,9 @@ export function SubscriptionFeaturesEditor({
         {hint && <p className="text-xs text-gray-500">{hint}</p>}
         {rows.map((feature, index) => (
           <div key={`feature-${index}`} className="space-y-1">
-            <label className="text-xs font-medium text-gray-400">Feature {index + 1}</label>
+            <AdminFieldLabelWithHelp helpKey="admin.subscription_plans.feature_line" htmlFor="fh-subscription-plans-feature-line" className="text-xs font-medium text-gray-400">Feature {index + 1}</AdminFieldLabelWithHelp>
             <div className="flex items-center gap-2">
-              <input
+              <input id="fh-subscription-plans-feature-line"
                 type="text"
                 className={inputClass}
                 value={feature}
@@ -90,9 +91,9 @@ export function SubscriptionFeaturesEditor({
       <div className="grid gap-3 sm:grid-cols-2">
         {rows.map((feature, index) => (
           <div key={`feature-${index}`} className="space-y-1">
-            <label className="text-xs font-medium text-gray-400">Feature {index + 1}</label>
+            <AdminFieldLabelWithHelp helpKey="admin.subscription_plans.feature_line" htmlFor="fh-subscription-plans-feature-line" className="text-xs font-medium text-gray-400">Feature {index + 1}</AdminFieldLabelWithHelp>
             <div className="flex items-start gap-2">
-              <SearchableSelect
+              <SearchableSelect id="fh-subscription-plans-feature-line"
                 value={feature}
                 onChange={(nextValue) => updateRow(index, nextValue)}
                 options={options}

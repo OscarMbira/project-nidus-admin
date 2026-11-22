@@ -75,7 +75,7 @@ export default function AiRunsPage() {
   ]
 
   const select = (key, label, options) => (
-    <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+    <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
       {label}
       <select className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1 text-sm"
         value={filter[key]} onChange={(e) => setFilter(key, e.target.value)}>
@@ -101,7 +101,7 @@ export default function AiRunsPage() {
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
         {select('status', 'Status', ['succeeded', 'failed', 'blocked', 'running'])}
         {select('app', 'App', ['platform', 'simulator', 'planner'])}
-        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           Period
           <select className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1 text-sm"
             value={filter.days || '30'} onChange={(e) => setFilter('days', e.target.value)}>

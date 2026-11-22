@@ -111,7 +111,7 @@ export default function ImprovementBacklogPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:max-w-2xl">
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={inputClass}>
             {STATUS_FILTERS.map((status) => (
               <option key={status} value={status}>{status === 'all' ? 'All statuses' : status.replace('_', ' ')}</option>
@@ -119,7 +119,7 @@ export default function ImprovementBacklogPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Type</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Type</label>
           <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={inputClass}>
             {TYPE_FILTERS.map((type) => (
               <option key={type} value={type}>{type === 'all' ? 'All types' : type.replace('_', ' ')}</option>

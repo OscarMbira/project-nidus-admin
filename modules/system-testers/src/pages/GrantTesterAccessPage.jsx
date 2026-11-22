@@ -135,8 +135,8 @@ export default function GrantTesterAccessPage() {
 
       {detailTab === 'details' && (
       <AdminForm onSubmit={handleSubmit} className="max-w-2xl space-y-4 rounded-lg border border-gray-700 bg-gray-900 p-6">
-        <AdminField label="Search user (email or name)">
-          <input className={inputClass} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." />
+        <AdminField helpKey="admin.tester_grants.user_id" listOptions={false} htmlFor="fh-tester-grants-user-id" label="Search user (email or name)">
+          <input id="fh-tester-grants-user-id" className={inputClass} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." />
         </AdminField>
         {users.length > 0 && !selectedUser && (
           <ul className="rounded border border-gray-700 bg-gray-800">
@@ -156,9 +156,9 @@ export default function GrantTesterAccessPage() {
           </p>
         )}
 
-        <AdminField label="Target systems">
+        <AdminField helpKey="admin.tester_grants.target_systems" label="Target systems">
           {['platform', 'simulator'].map((sys) => (
-            <label key={sys} className="mr-4 inline-flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" key={sys} className="mr-4 inline-flex items-center gap-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={form.systems.includes(sys)}
@@ -174,44 +174,44 @@ export default function GrantTesterAccessPage() {
           ))}
         </AdminField>
 
-        <AdminField label="Moratorium months">
-          <input type="number" min={1} max={120} className={inputClass} value={form.moratorium_months} onChange={(e) => setForm({ ...form, moratorium_months: e.target.value })} />
+        <AdminField helpKey="admin.tester_grants.moratorium_months" htmlFor="fh-tester-grants-moratorium-months" label="Moratorium months">
+          <input id="fh-tester-grants-moratorium-months" type="number" min={1} max={120} className={inputClass} value={form.moratorium_months} onChange={(e) => setForm({ ...form, moratorium_months: e.target.value })} />
         </AdminField>
 
-        <AdminField label="Grant note">
-          <textarea className={inputClass} rows={2} value={form.grant_note} onChange={(e) => setForm({ ...form, grant_note: e.target.value })} />
+        <AdminField helpKey="admin.tester_grants.grant_note" htmlFor="fh-tester-grants-grant-note" label="Grant note">
+          <textarea id="fh-tester-grants-grant-note" className={inputClass} rows={2} value={form.grant_note} onChange={(e) => setForm({ ...form, grant_note: e.target.value })} />
         </AdminField>
 
-        <label className="flex items-center gap-2 text-sm text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
           <input type="checkbox" checked={form.assign_now} onChange={(e) => setForm({ ...form, assign_now: e.target.checked })} />
           Assign to org/project immediately
         </label>
 
         {form.assign_now && (
           <>
-            <AdminField label="Organisation">
-              <select className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value, project_id: '' })}>
+            <AdminField helpKey="admin.tester_assignments.account_id" listOptions={false} htmlFor="fh-tester-assignments-account-id" label="Organisation">
+              <select id="fh-tester-assignments-account-id" className={inputClass} value={form.account_id} onChange={(e) => setForm({ ...form, account_id: e.target.value, project_id: '' })}>
                 <option value="">Select account</option>
                 {accounts.map((a) => (
                   <option key={a.id} value={a.id}>{a.account_name}</option>
                 ))}
               </select>
             </AdminField>
-            <AdminField label="Project (optional)">
-              <select className={inputClass} value={form.project_id} onChange={(e) => setForm({ ...form, project_id: e.target.value })}>
+            <AdminField helpKey="admin.tester_assignments.project_id" listOptions={false} htmlFor="fh-tester-assignments-project-id" label="Project (optional)">
+              <select id="fh-tester-assignments-project-id" className={inputClass} value={form.project_id} onChange={(e) => setForm({ ...form, project_id: e.target.value })}>
                 <option value="">Org-level only</option>
                 {accountProjects.map((p) => (
                   <option key={p.id} value={p.id}>{p.project_name}</option>
                 ))}
               </select>
             </AdminField>
-            <AdminField label="Org role">
-              <select className={inputClass} value={form.org_role} onChange={(e) => setForm({ ...form, org_role: e.target.value })}>
+            <AdminField helpKey="admin.tester_assignments.org_role" htmlFor="fh-tester-assignments-org-role" label="Org role">
+              <select id="fh-tester-assignments-org-role" className={inputClass} value={form.org_role} onChange={(e) => setForm({ ...form, org_role: e.target.value })}>
                 {ORG_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </AdminField>
-            <AdminField label="Project role">
-              <select className={inputClass} value={form.project_role} onChange={(e) => setForm({ ...form, project_role: e.target.value })}>
+            <AdminField helpKey="admin.tester_assignments.project_role" htmlFor="fh-tester-assignments-project-role" label="Project role">
+              <select id="fh-tester-assignments-project-role" className={inputClass} value={form.project_role} onChange={(e) => setForm({ ...form, project_role: e.target.value })}>
                 {PROJECT_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </AdminField>

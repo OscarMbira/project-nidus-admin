@@ -48,7 +48,7 @@ export default function EvidencePage() {
           <option value="">All runs</option>
           {runs.map((r) => <option key={r.id} value={r.id}>{r.run_name}</option>)}
         </select>
-        <label className="cursor-pointer rounded bg-blue-600 px-3 py-2 text-sm text-white">
+        <label data-help="exempt" className="cursor-pointer rounded bg-blue-600 px-3 py-2 text-sm text-white">
           Upload file
           <input type="file" className="hidden" accept="image/*,.txt,.zip" onChange={onUpload} />
         </label>

@@ -87,26 +87,26 @@ export default function AuthorisersPage() {
           {detailTab === 'details' && (
           <AdminForm onSubmit={save}>
             <div className="grid gap-4 md:grid-cols-2">
-              <AdminField label="Table">
-                <select className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
+              <AdminField helpKey="admin.record_authorisers.table_name" htmlFor="fh-record-authorisers-table-name" label="Table">
+                <select id="fh-record-authorisers-table-name" className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
                   {LIFECYCLE_PILOT_TABLES.map((t) => (
                     <option key={t.key} value={t.key}>{t.label}</option>
                   ))}
                 </select>
               </AdminField>
-              <AdminField label="Authoriser">
-                <SearchableSelect
+              <AdminField helpKey="admin.record_authorisers.authoriser_admin_user_id" listOptions={false} htmlFor="fh-record-authorisers-authoriser-admin-user-id" label="Authoriser">
+                <SearchableSelect id="fh-record-authorisers-authoriser-admin-user-id"
                   options={adminOptions}
                   value={form.authoriser_admin_user_id}
                   onChange={(value) => setForm((f) => ({ ...f, authoriser_admin_user_id: value }))}
                   placeholder="Select admin user"
                 />
               </AdminField>
-              <AdminField label="Approval level">
-                <input type="number" min={1} className={inputClass} value={form.approval_level} onChange={(e) => setForm((f) => ({ ...f, approval_level: Number(e.target.value) }))} />
+              <AdminField helpKey="admin.record_authorisers.approval_level" htmlFor="fh-record-authorisers-approval-level" label="Approval level">
+                <input id="fh-record-authorisers-approval-level" type="number" min={1} className={inputClass} value={form.approval_level} onChange={(e) => setForm((f) => ({ ...f, approval_level: Number(e.target.value) }))} />
               </AdminField>
-              <AdminField label="Role label">
-                <input className={inputClass} value={form.role_label} onChange={(e) => setForm((f) => ({ ...f, role_label: e.target.value }))} />
+              <AdminField helpKey="admin.record_authorisers.role_label" htmlFor="fh-record-authorisers-role-label" label="Role label">
+                <input id="fh-record-authorisers-role-label" className={inputClass} value={form.role_label} onChange={(e) => setForm((f) => ({ ...f, role_label: e.target.value }))} />
               </AdminField>
             </div>
             <button type="submit" disabled={saving} className="mt-4 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">

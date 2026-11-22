@@ -134,27 +134,27 @@ export default function ArchiveRetentionRulesPage() {
           {ruleTab === 'details' && (
           <AdminForm onSubmit={save}>
             <div className="grid gap-4 md:grid-cols-2">
-              <AdminField label="Table">
-                <select className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
+              <AdminField helpKey="admin.archive_configs.table_name" htmlFor="fh-archive-configs-table-name" label="Table">
+                <select id="fh-archive-configs-table-name" className={inputClass} value={form.table_name} onChange={(e) => setForm((f) => ({ ...f, table_name: e.target.value }))}>
                   {LIFECYCLE_PILOT_TABLES.map((t) => (
                     <option key={t.key} value={t.key}>{t.label}</option>
                   ))}
                 </select>
               </AdminField>
-              <AdminField label="Override reason">
-                <input className={inputClass} value={form.override_reason} onChange={(e) => setForm((f) => ({ ...f, override_reason: e.target.value }))} required />
+              <AdminField helpKey="admin.archive_configs.override_reason" htmlFor="fh-archive-configs-override-reason" label="Override reason">
+                <input id="fh-archive-configs-override-reason" className={inputClass} value={form.override_reason} onChange={(e) => setForm((f) => ({ ...f, override_reason: e.target.value }))} required />
               </AdminField>
-              <AdminField label="History retention (days)">
-                <input className={inputClass} value={form.history_retention_days} onChange={(e) => setForm((f) => ({ ...f, history_retention_days: e.target.value }))} />
+              <AdminField helpKey="admin.archive_configs.history_retention_days" htmlFor="fh-archive-configs-history-retention-days" label="History retention (days)">
+                <input id="fh-archive-configs-history-retention-days" className={inputClass} value={form.history_retention_days} onChange={(e) => setForm((f) => ({ ...f, history_retention_days: e.target.value }))} />
               </AdminField>
-              <AdminField label="Archive retention (years)">
-                <input className={inputClass} value={form.archive_retention_years} onChange={(e) => setForm((f) => ({ ...f, archive_retention_years: e.target.value }))} />
+              <AdminField helpKey="admin.archive_configs.archive_retention_years" htmlFor="fh-archive-configs-archive-retention-years" label="Archive retention (years)">
+                <input id="fh-archive-configs-archive-retention-years" className={inputClass} value={form.archive_retention_years} onChange={(e) => setForm((f) => ({ ...f, archive_retention_years: e.target.value }))} />
               </AdminField>
-              <AdminField label="Regulatory reference">
-                <input className={inputClass} value={form.regulatory_reference} onChange={(e) => setForm((f) => ({ ...f, regulatory_reference: e.target.value }))} />
+              <AdminField helpKey="admin.archive_configs.regulatory_reference" htmlFor="fh-archive-configs-regulatory-reference" label="Regulatory reference">
+                <input id="fh-archive-configs-regulatory-reference" className={inputClass} value={form.regulatory_reference} onChange={(e) => setForm((f) => ({ ...f, regulatory_reference: e.target.value }))} />
               </AdminField>
-              <AdminField label="Auto-archive">
-                <input type="checkbox" checked={form.auto_archive_enabled} onChange={(e) => setForm((f) => ({ ...f, auto_archive_enabled: e.target.checked }))} />
+              <AdminField helpKey="admin.archive_configs.auto_archive_enabled" htmlFor="fh-archive-configs-auto-archive-enabled" label="Auto-archive">
+                <input id="fh-archive-configs-auto-archive-enabled" type="checkbox" checked={form.auto_archive_enabled} onChange={(e) => setForm((f) => ({ ...f, auto_archive_enabled: e.target.checked }))} />
               </AdminField>
             </div>
             <button type="submit" disabled={saving} className="mt-4 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">

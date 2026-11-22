@@ -84,7 +84,7 @@ export default function WebhookDeliveryLogPage() {
         </div>
         <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
           <div className="min-w-[200px]">
-            <AdminField label="Webhook">
+            <AdminField data-help="exempt" label="Webhook">
               <select
                 className={inputClass}
                 value={webhookFilter}

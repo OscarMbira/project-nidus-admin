@@ -244,8 +244,8 @@ export default function ActiveTestersPage() {
 
       <AdminModal open={!!extendRow} onClose={() => setExtendRow(null)} title="Extend moratorium">
         <AdminForm onSubmit={handleExtend}>
-          <AdminField label="Additional months">
-            <input type="number" min={1} max={120} className={inputClass} value={extendMonths} onChange={(e) => setExtendMonths(e.target.value)} />
+          <AdminField helpKey="admin.tester_extensions.extend_months" htmlFor="fh-tester-extensions-extend-months" label="Additional months">
+            <input id="fh-tester-extensions-extend-months" type="number" min={1} max={120} className={inputClass} value={extendMonths} onChange={(e) => setExtendMonths(e.target.value)} />
           </AdminField>
           <button type="submit" className="rounded bg-amber-600 px-4 py-2 text-sm text-white">Extend</button>
         </AdminForm>

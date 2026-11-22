@@ -297,7 +297,7 @@ export default function BugTrackingPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:max-w-2xl">
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
@@ -309,7 +309,7 @@ export default function BugTrackingPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Priority</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Priority</label>
           <select
             value={priorityFilter}
             onChange={(event) => setPriorityFilter(event.target.value)}
@@ -482,8 +482,8 @@ export default function BugTrackingPage() {
         onClose={() => { setAssignTarget(null); setAssigneeId('') }}
       >
         <form onSubmit={handleAssignSubmit} className="space-y-3">
-          <AdminField label="Assignee" required>
-            <select
+          <AdminField helpKey="admin.bug_reports.assignee_id" listOptions={false} htmlFor="fh-bug-reports-assignee-id" label="Assignee" required>
+            <select id="fh-bug-reports-assignee-id"
               value={assigneeId}
               onChange={(event) => setAssigneeId(event.target.value)}
               className={inputClass}

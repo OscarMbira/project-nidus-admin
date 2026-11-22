@@ -148,11 +148,11 @@ export default function DocsEditorPage() {
             {detailTab === 'details' && (
             <>
             <AdminForm onSubmit={handleSave} className="grid gap-3 sm:grid-cols-2">
-              <AdminField label="Title"><input className={inputClass} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></AdminField>
-              <AdminField label="Module"><input className={inputClass} value={form.module} onChange={(e) => setForm({ ...form, module: e.target.value })} required /></AdminField>
-              <AdminField label="Category"><input className={inputClass} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} /></AdminField>
-              <AdminField label="File name"><input className={inputClass} value={form.file_name} onChange={(e) => setForm({ ...form, file_name: e.target.value })} placeholder="Guide_Name.md" /></AdminField>
-              <AdminField label="Description" className="sm:col-span-2"><input className={inputClass} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></AdminField>
+              <AdminField helpKey="admin.documentation_files.title" htmlFor="fh-documentation-files-title" label="Title"><input id="fh-documentation-files-title" className={inputClass} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></AdminField>
+              <AdminField helpKey="admin.documentation_files.module" htmlFor="fh-documentation-files-module" label="Module"><input id="fh-documentation-files-module" className={inputClass} value={form.module} onChange={(e) => setForm({ ...form, module: e.target.value })} required /></AdminField>
+              <AdminField helpKey="admin.documentation_files.category" htmlFor="fh-documentation-files-category" label="Category"><input id="fh-documentation-files-category" className={inputClass} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} /></AdminField>
+              <AdminField helpKey="admin.documentation_files.file_name" htmlFor="fh-documentation-files-file-name" label="File name"><input id="fh-documentation-files-file-name" className={inputClass} value={form.file_name} onChange={(e) => setForm({ ...form, file_name: e.target.value })} placeholder="Guide_Name.md" /></AdminField>
+              <AdminField helpKey="admin.documentation_files.description" htmlFor="fh-documentation-files-description" label="Description" className="sm:col-span-2"><input id="fh-documentation-files-description" className={inputClass} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></AdminField>
               <div className="sm:col-span-2 flex gap-2">
                 <button type="submit" disabled={busy} className="rounded bg-blue-600 px-4 py-2 text-sm text-white">Save</button>
                 {form.guide_id && <button type="button" disabled={busy} onClick={handleDelete} className="rounded border border-red-700 px-4 py-2 text-sm text-red-400">Deactivate</button>}

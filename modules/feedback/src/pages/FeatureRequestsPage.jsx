@@ -291,7 +291,7 @@ export default function FeatureRequestsPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:max-w-2xl">
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={inputClass}>
             {STATUS_FILTERS.map((status) => (
               <option key={status} value={status}>{status === 'all' ? 'All statuses' : status.replace('_', ' ')}</option>
@@ -299,7 +299,7 @@ export default function FeatureRequestsPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Priority</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Priority</label>
           <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)} className={inputClass}>
             {PRIORITY_FILTERS.map((priority) => (
               <option key={priority} value={priority}>{priority === 'all' ? 'All priorities' : priority}</option>
@@ -433,8 +433,8 @@ export default function FeatureRequestsPage() {
         onClose={() => { setAssignTarget(null); setAssigneeId('') }}
       >
         <form onSubmit={handleAssignSubmit} className="space-y-3">
-          <AdminField label="Assignee" required>
-            <select value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)} className={inputClass} required>
+          <AdminField helpKey="admin.feature_requests.assignee_id" listOptions={false} htmlFor="fh-feature-requests-assignee-id" label="Assignee" required>
+            <select id="fh-feature-requests-assignee-id" value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)} className={inputClass} required>
               <option value="">Select admin...</option>
               {admins.map((admin) => (
                 <option key={admin.id} value={admin.id}>

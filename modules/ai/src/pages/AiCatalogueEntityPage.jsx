@@ -197,20 +197,20 @@ export default function AiCatalogueEntityPage() {
         <>
           <AdminForm id="ai-entity-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : saveEntity}>
             <fieldset disabled={isViewOnly} className="grid gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 md:grid-cols-2">
-              <AdminField label="Register name" required><input className={inputClass} value={form.label} onChange={set('label')} /></AdminField>
-              <AdminField label="One record is called"><input className={inputClass} value={form.label_singular} onChange={set('label_singular')} placeholder="e.g. risk" /></AdminField>
+              <AdminField helpKey="admin.ai_catalogue_entities.label" htmlFor="fh-ai-catalogue-entities-label" label="Register name" required><input id="fh-ai-catalogue-entities-label" className={inputClass} value={form.label} onChange={set('label')} /></AdminField>
+              <AdminField helpKey="admin.ai_catalogue_entities.label_singular" htmlFor="fh-ai-catalogue-entities-label-singular" label="One record is called"><input id="fh-ai-catalogue-entities-label-singular" className={inputClass} value={form.label_singular} onChange={set('label_singular')} placeholder="e.g. risk" /></AdminField>
               <div className="md:col-span-2">
-                <AdminField label="Description (the model reads this to decide when to use the register)">
-                  <textarea className={inputClass} rows={3} value={form.description} onChange={set('description')} />
+                <AdminField helpKey="admin.ai_catalogue_entities.description" htmlFor="fh-ai-catalogue-entities-description" label="Description (the model reads this to decide when to use the register)">
+                  <textarea id="fh-ai-catalogue-entities-description" className={inputClass} rows={3} value={form.description} onChange={set('description')} />
                 </AdminField>
               </div>
-              <AdminField label="Record link (route template)"><input className={`${inputClass} font-mono`} value={form.route_template} onChange={set('route_template')} placeholder="/risks/{id}" /></AdminField>
-              <AdminField label="Order"><input className={inputClass} type="number" value={form.sort_order} onChange={set('sort_order')} /></AdminField>
-              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <AdminField helpKey="admin.ai_catalogue_entities.route_template" htmlFor="fh-ai-catalogue-entities-route-template" label="Record link (route template)"><input id="fh-ai-catalogue-entities-route-template" className={`${inputClass} font-mono`} value={form.route_template} onChange={set('route_template')} placeholder="/risks/{id}" /></AdminField>
+              <AdminField helpKey="admin.ai_catalogue_entities.sort_order" htmlFor="fh-ai-catalogue-entities-sort-order" label="Order"><input id="fh-ai-catalogue-entities-sort-order" className={inputClass} type="number" value={form.sort_order} onChange={set('sort_order')} /></AdminField>
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input type="checkbox" checked={form.is_active} onChange={set('is_active')} /> Ask Nidus and Report Builder may use this register
               </label>
               {schema === 'public' && (
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <input type="checkbox" checked={form.planner} onChange={set('planner')} /> Also available in the Project Planner edition
                 </label>
               )}
@@ -231,39 +231,39 @@ export default function AiCatalogueEntityPage() {
 
             {editField && (
               <div className="grid gap-3 rounded-lg border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 p-4 md:grid-cols-3">
-                <AdminField label="Column" required>
+                <AdminField helpKey="admin.ai_catalogue_fields.field_key" htmlFor="fh-ai-catalogue-fields-field-key" label="Column" required>
                   {editField.isNew ? (
-                    <select className={inputClass} value={editField.field_key} onChange={(e) => setEditField((f) => ({ ...f, field_key: e.target.value }))}>
+                    <select id="fh-ai-catalogue-fields-field-key" className={inputClass} value={editField.field_key} onChange={(e) => setEditField((f) => ({ ...f, field_key: e.target.value }))}>
                       <option value="">Choose a column…</option>
                       {unusedColumns.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
                   ) : <input className={`${inputClass} font-mono`} value={editField.field_key} disabled />}
                 </AdminField>
-                <AdminField label="Label" required><input className={inputClass} value={editField.label} onChange={(e) => setEditField((f) => ({ ...f, label: e.target.value }))} /></AdminField>
-                <AdminField label="Data type">
-                  <select className={inputClass} value={editField.data_type} onChange={(e) => setEditField((f) => ({ ...f, data_type: e.target.value }))}>
+                <AdminField helpKey="admin.ai_catalogue_fields.label" htmlFor="fh-ai-catalogue-fields-label" label="Label" required><input id="fh-ai-catalogue-fields-label" className={inputClass} value={editField.label} onChange={(e) => setEditField((f) => ({ ...f, label: e.target.value }))} /></AdminField>
+                <AdminField helpKey="admin.ai_catalogue_fields.data_type" htmlFor="fh-ai-catalogue-fields-data-type" label="Data type">
+                  <select id="fh-ai-catalogue-fields-data-type" className={inputClass} value={editField.data_type} onChange={(e) => setEditField((f) => ({ ...f, data_type: e.target.value }))}>
                     {DATA_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </AdminField>
                 <div className="md:col-span-2">
-                  <AdminField label="Description"><input className={inputClass} value={editField.description || ''} onChange={(e) => setEditField((f) => ({ ...f, description: e.target.value }))} /></AdminField>
+                  <AdminField helpKey="admin.ai_catalogue_fields.description" htmlFor="fh-ai-catalogue-fields-description" label="Description"><input id="fh-ai-catalogue-fields-description" className={inputClass} value={editField.description || ''} onChange={(e) => setEditField((f) => ({ ...f, description: e.target.value }))} /></AdminField>
                 </div>
-                <AdminField label="Links to register">
-                  <select className={inputClass} value={editField.link_entity_key || ''} onChange={(e) => setEditField((f) => ({ ...f, link_entity_key: e.target.value }))}>
+                <AdminField helpKey="admin.ai_catalogue_fields.link_entity_key" htmlFor="fh-ai-catalogue-fields-link-entity-key" label="Links to register">
+                  <select id="fh-ai-catalogue-fields-link-entity-key" className={inputClass} value={editField.link_entity_key || ''} onChange={(e) => setEditField((f) => ({ ...f, link_entity_key: e.target.value }))}>
                     <option value="">None</option>
                     {allKeys.filter((k) => k !== key).map((k) => <option key={k} value={k}>{k}</option>)}
                   </select>
                 </AdminField>
                 <div className="md:col-span-2">
-                  <AdminField label="Allowed values (comma-separated, optional)">
-                    <input className={inputClass} value={editField.allowed_values_text ?? (editField.allowed_values || []).join(', ')}
+                  <AdminField helpKey="admin.ai_catalogue_fields.allowed_values" htmlFor="fh-ai-catalogue-fields-allowed-values" label="Allowed values (comma-separated, optional)">
+                    <input id="fh-ai-catalogue-fields-allowed-values" className={inputClass} value={editField.allowed_values_text ?? (editField.allowed_values || []).join(', ')}
                       onChange={(e) => setEditField((f) => ({ ...f, allowed_values_text: e.target.value }))} />
                   </AdminField>
                 </div>
-                <AdminField label="Order"><input className={inputClass} type="number" value={editField.sort_order ?? 100} onChange={(e) => setEditField((f) => ({ ...f, sort_order: e.target.value }))} /></AdminField>
+                <AdminField helpKey="admin.ai_catalogue_fields.sort_order" htmlFor="fh-ai-catalogue-fields-sort-order" label="Order"><input id="fh-ai-catalogue-fields-sort-order" className={inputClass} type="number" value={editField.sort_order ?? 100} onChange={(e) => setEditField((f) => ({ ...f, sort_order: e.target.value }))} /></AdminField>
                 <div className="flex flex-wrap gap-4 md:col-span-3">
                   {FLAGS.map(([k, label]) => (
-                    <label key={k} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                    <label data-help="exempt" key={k} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                       <input type="checkbox" checked={editField[k] !== undefined ? Boolean(editField[k]) : k === 'is_active'}
                         disabled={k === 'is_summable' && editField.data_type !== 'number'}
                         onChange={(e) => setEditField((f) => ({ ...f, [k]: e.target.checked }))} /> {label}

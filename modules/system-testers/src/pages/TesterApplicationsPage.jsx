@@ -207,8 +207,8 @@ export default function TesterApplicationsPage() {
 
       <AdminModal open={!!approveRow} onClose={() => setApproveRow(null)} title="Approve application">
         <AdminForm onSubmit={handleApprove}>
-          <AdminField label="Moratorium (months)">
-            <input
+          <AdminField helpKey="admin.tester_grants.moratorium_months" htmlFor="fh-tester-grants-moratorium-months" label="Moratorium (months)">
+            <input id="fh-tester-grants-moratorium-months"
               type="number"
               min={1}
               max={120}
@@ -217,9 +217,9 @@ export default function TesterApplicationsPage() {
               onChange={(e) => setApproveForm({ ...approveForm, moratorium_months: e.target.value })}
             />
           </AdminField>
-          <AdminField label="Systems">
+          <AdminField helpKey="admin.tester_grants.target_systems" label="Systems">
             {['platform', 'simulator'].map((sys) => (
-              <label key={sys} className="mr-4 inline-flex items-center gap-2 text-sm text-gray-300">
+              <label data-help="exempt" key={sys} className="mr-4 inline-flex items-center gap-2 text-sm text-gray-300">
                 <input
                   type="checkbox"
                   checked={approveForm.systems.includes(sys)}
@@ -234,8 +234,8 @@ export default function TesterApplicationsPage() {
               </label>
             ))}
           </AdminField>
-          <AdminField label="Grant note (internal)">
-            <textarea className={inputClass} rows={3} value={approveForm.grant_note} onChange={(e) => setApproveForm({ ...approveForm, grant_note: e.target.value })} />
+          <AdminField helpKey="admin.tester_grants.grant_note" htmlFor="fh-tester-grants-grant-note" label="Grant note (internal)">
+            <textarea id="fh-tester-grants-grant-note" className={inputClass} rows={3} value={approveForm.grant_note} onChange={(e) => setApproveForm({ ...approveForm, grant_note: e.target.value })} />
           </AdminField>
           <button type="submit" disabled={!!busyId} className="rounded bg-emerald-600 px-4 py-2 text-sm text-white">Approve</button>
         </AdminForm>
@@ -243,8 +243,8 @@ export default function TesterApplicationsPage() {
 
       <AdminModal open={!!rejectRow} onClose={() => setRejectRow(null)} title="Reject application">
         <AdminForm onSubmit={handleReject}>
-          <AdminField label="Rejection reason">
-            <textarea className={inputClass} rows={3} required value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
+          <AdminField helpKey="admin.tester_applications.reject_reason" htmlFor="fh-tester-applications-reject-reason" label="Rejection reason">
+            <textarea id="fh-tester-applications-reject-reason" className={inputClass} rows={3} required value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
           </AdminField>
           <button type="submit" disabled={!!busyId} className="rounded bg-red-700 px-4 py-2 text-sm text-white">Reject</button>
         </AdminForm>

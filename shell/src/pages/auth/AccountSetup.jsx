@@ -64,17 +64,17 @@ export default function AccountSetup() {
     <div className="flex min-h-screen items-center justify-center bg-gray-950 p-4">
       <div className="w-full max-w-md">
         <AdminForm onSubmit={handleSubmit}>
-          <AdminField label="Email">
-            <input className={inputClass} value={invite.email} readOnly />
+          <AdminField helpKey="admin.admin_invitations.email" htmlFor="fh-admin-invitations-email" label="Email">
+            <input id="fh-admin-invitations-email" className={inputClass} value={invite.email} readOnly />
           </AdminField>
-          <AdminField label="Full name" required>
-            <input className={inputClass} value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <AdminField helpKey="admin.admin_users.full_name" htmlFor="fh-admin-users-full-name" label="Full name" required>
+            <input id="fh-admin-users-full-name" className={inputClass} value={fullName} onChange={(e) => setFullName(e.target.value)} />
           </AdminField>
-          <AdminField label="Password" required>
-            <input type="password" className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <AdminField helpKey="admin.admin_users.password" htmlFor="fh-admin-users-password" label="Password" required>
+            <input id="fh-admin-users-password" type="password" className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} />
           </AdminField>
-          <AdminField label="Confirm password" required>
-            <input type="password" className={inputClass} value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+          <AdminField helpKey="admin.admin_users.confirm_password" htmlFor="fh-admin-users-confirm-password" label="Confirm password" required>
+            <input id="fh-admin-users-confirm-password" type="password" className={inputClass} value={confirm} onChange={(e) => setConfirm(e.target.value)} />
           </AdminField>
           {error && <p className="text-sm text-red-400">{error}</p>}
           <button type="submit" className="w-full rounded bg-gray-700 py-2 text-sm text-white">Continue to 2FA setup</button>

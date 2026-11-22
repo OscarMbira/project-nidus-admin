@@ -264,7 +264,7 @@ export default function AdminUserListPage() {
       </div>
 
       <div className="max-w-xs">
-        <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Role Filter</label>
+        <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Role Filter</label>
         <select
           value={roleFilter}
           onChange={(event) => setRoleFilter(event.target.value)}

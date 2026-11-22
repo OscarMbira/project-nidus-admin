@@ -101,7 +101,7 @@ export default function AiModelsPage() {
       <fieldset disabled={!canEdit} className="space-y-6">
         <section className="grid gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 md:grid-cols-3">
           {TIERS.map(([key, label, help]) => (
-            <AdminField key={key} label={label} required error={errors[key]}>
+            <AdminField helpKey={`admin.ai_platform_settings.${key}`} key={key} label={label} required error={errors[key]}>
               <select className={inputClass} value={form[key]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}>
                 <option value="">Choose…</option>
                 {form.approved_models.map((m) => <option key={m} value={m}>{m}</option>)}

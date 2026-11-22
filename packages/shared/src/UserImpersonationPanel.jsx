@@ -3,6 +3,7 @@ import { PermissionGate } from './PermissionGate.jsx'
 import { fetchAdminUsers, fetchImpersonationLog, fetchUsers } from './dataServices.js'
 import { formatDate } from './formatters.js'
 import { endImpersonation, startImpersonation } from './mutationServices.js'
+import { AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const TARGET_SYSTEMS = ['platform', 'simulator']
 const PLATFORM_URL = import.meta.env.VITE_PLATFORM_APP_URL || 'http://localhost:5173'
@@ -298,13 +299,13 @@ export function UserImpersonationPanel({
 
           <div className="mt-3 grid gap-3 lg:grid-cols-3">
             <div className={fixedTargetSystem ? 'lg:col-span-3' : 'lg:col-span-2'}>
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Search User</label>
+              <AdminFieldLabelWithHelp helpKey="admin.impersonation_sessions.user_search" htmlFor="fh-impersonation-sessions-target-system" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Search User</AdminFieldLabelWithHelp>
               <SearchBar value={search} onChange={setSearch} placeholder="Search by name, email, user id..." />
             </div>
             {!fixedTargetSystem && (
               <div>
-                <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Target System</label>
-                <select
+                <AdminFieldLabelWithHelp helpKey="admin.impersonation_sessions.target_system" htmlFor="fh-impersonation-sessions-target-system" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Target System</AdminFieldLabelWithHelp>
+                <select id="fh-impersonation-sessions-target-system"
                   value={targetSystem}
                   onChange={(event) => setTargetSystem(event.target.value)}
                   className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -318,7 +319,7 @@ export function UserImpersonationPanel({
           </div>
 
           <div className="mt-3">
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Target User</label>
+            <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Target User</label>
             {search.trim() && filteredUsers.length > 0 ? (
               <ul className="max-h-48 space-y-1 overflow-y-auto rounded border border-gray-700 bg-gray-950 p-2">
                 {filteredUsers.map((user) => {
@@ -380,8 +381,8 @@ export function UserImpersonationPanel({
           </div>
 
           <div className="mt-3">
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Reason</label>
-            <textarea
+            <AdminFieldLabelWithHelp helpKey="admin.impersonation_sessions.reason" htmlFor="fh-impersonation-sessions-reason" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Reason</AdminFieldLabelWithHelp>
+            <textarea id="fh-impersonation-sessions-reason"
               rows={3}
               value={reason}
               onChange={(event) => {
@@ -395,8 +396,8 @@ export function UserImpersonationPanel({
 
           {initialPageRoute && (
             <div className="mt-3">
-              <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Landing route</label>
-              <input
+              <AdminFieldLabelWithHelp helpKey="admin.impersonation_sessions.page_route" htmlFor="fh-impersonation-sessions-page-route" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Landing route</AdminFieldLabelWithHelp>
+              <input id="fh-impersonation-sessions-page-route"
                 type="text"
                 value={pageRoute}
                 onChange={(event) => setPageRoute(event.target.value)}

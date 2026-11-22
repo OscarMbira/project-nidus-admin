@@ -309,7 +309,7 @@ export default function SupportTicketListPage() {
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
@@ -321,7 +321,7 @@ export default function SupportTicketListPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Priority</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Priority</label>
           <select
             value={priorityFilter}
             onChange={(event) => setPriorityFilter(event.target.value)}
@@ -333,7 +333,7 @@ export default function SupportTicketListPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Category</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Category</label>
           <select
             value={categoryFilter}
             onChange={(event) => setCategoryFilter(event.target.value)}
@@ -345,7 +345,7 @@ export default function SupportTicketListPage() {
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Assigned To</label>
+          <label data-help="exempt" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Assigned To</label>
           <select
             value={assigneeFilter}
             onChange={(event) => setAssigneeFilter(event.target.value)}

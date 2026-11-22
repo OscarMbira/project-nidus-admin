@@ -26,8 +26,7 @@ import {
   AuditCard,
   AuditTimestampPair,
   AuditDetailsPanel,
-  DetailAuditTabList,
-} from '@nidus-admin/ui'
+  DetailAuditTabList, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'waiting_user', 'resolved', 'closed']
 const PRIORITY_OPTIONS = ['low', 'medium', 'high', 'urgent']
@@ -359,9 +358,9 @@ export default function SupportTicketDetailPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <PermissionGate permission="support.tickets.manage">
           <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Update Status</label>
+            <AdminFieldLabelWithHelp helpKey="admin.support_tickets.status" htmlFor="fh-support-tickets-status" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Update Status</AdminFieldLabelWithHelp>
             <div className="flex gap-2">
-              <select
+              <select id="fh-support-tickets-status"
                 value={statusDraft}
                 onChange={(event) => setStatusDraft(event.target.value)}
                 className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -383,9 +382,9 @@ export default function SupportTicketDetailPage() {
 
         <PermissionGate permission="support.tickets.manage">
           <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Update Priority</label>
+            <AdminFieldLabelWithHelp helpKey="admin.support_tickets.priority" htmlFor="fh-support-tickets-priority" className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Update Priority</AdminFieldLabelWithHelp>
             <div className="flex gap-2">
-              <select
+              <select id="fh-support-tickets-priority"
                 value={priorityDraft}
                 onChange={(event) => setPriorityDraft(event.target.value)}
                 className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -407,9 +406,9 @@ export default function SupportTicketDetailPage() {
 
         <PermissionGate permission="support.tickets.assign">
           <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-            <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Assign To Admin</label>
+            <AdminFieldLabelWithHelp helpKey="admin.support_tickets.assignee_id" htmlFor="fh-support-tickets-assignee-id" className="mb-1 block text-xs uppercase tracking-wide text-gray-400" listOptions={false}>Assign To Admin</AdminFieldLabelWithHelp>
             <div className="flex gap-2">
-              <select
+              <select id="fh-support-tickets-assignee-id"
                 value={assigneeDraft}
                 onChange={(event) => setAssigneeDraft(event.target.value)}
                 className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -434,7 +433,7 @@ export default function SupportTicketDetailPage() {
       <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-200">Message Thread</h2>
-          <label className="flex items-center gap-2 text-xs text-gray-400">
+          <label data-help="exempt" className="flex items-center gap-2 text-xs text-gray-400">
             <input
               type="checkbox"
               checked={showInternalNotes}
@@ -473,7 +472,7 @@ export default function SupportTicketDetailPage() {
             placeholder="Write your response..."
           />
           <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <label className="flex items-center gap-2 text-sm text-gray-400">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-400">
               <input
                 type="checkbox"
                 checked={isInternal}
