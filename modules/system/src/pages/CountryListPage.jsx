@@ -235,23 +235,23 @@ export default function CountryListPage() {
 
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
-      <AdminField label="Country Code" required>
-        <input className={inputClass} value={form.country_code} readOnly={isEdit} maxLength={2} onChange={(e) => setForm((p) => ({ ...p, country_code: e.target.value.toUpperCase() }))} />
+      <AdminField helpKey="admin.countries.country_code" htmlFor="fh-countries-country-code" label="Country Code" required>
+        <input id="fh-countries-country-code" className={inputClass} value={form.country_code} readOnly={isEdit} maxLength={2} onChange={(e) => setForm((p) => ({ ...p, country_code: e.target.value.toUpperCase() }))} />
       </AdminField>
-      <AdminField label="Country Name" required>
-        <input className={inputClass} value={form.country_name} onChange={(e) => setForm((p) => ({ ...p, country_name: e.target.value }))} />
+      <AdminField helpKey="admin.countries.country_name" htmlFor="fh-countries-country-name" label="Country Name" required>
+        <input id="fh-countries-country-name" className={inputClass} value={form.country_name} onChange={(e) => setForm((p) => ({ ...p, country_name: e.target.value }))} />
       </AdminField>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="ISO3 Code">
-          <input className={inputClass} value={form.iso3_code} maxLength={3} onChange={(e) => setForm((p) => ({ ...p, iso3_code: e.target.value.toUpperCase() }))} />
+        <AdminField helpKey="admin.countries.iso3_code" htmlFor="fh-countries-iso3-code" label="ISO3 Code">
+          <input id="fh-countries-iso3-code" className={inputClass} value={form.iso3_code} maxLength={3} onChange={(e) => setForm((p) => ({ ...p, iso3_code: e.target.value.toUpperCase() }))} />
         </AdminField>
-        <AdminField label="Phone Code">
-          <input className={inputClass} value={form.phone_code} onChange={(e) => setForm((p) => ({ ...p, phone_code: e.target.value }))} placeholder="+27" />
+        <AdminField helpKey="admin.countries.phone_code" htmlFor="fh-countries-phone-code" label="Phone Code">
+          <input id="fh-countries-phone-code" className={inputClass} value={form.phone_code} onChange={(e) => setForm((p) => ({ ...p, phone_code: e.target.value }))} placeholder="+27" />
         </AdminField>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Default Currency">
-          <SelectField
+        <AdminField helpKey="admin.countries.default_currency" htmlFor="fh-countries-default-currency" label="Default Currency">
+          <SelectField id="fh-countries-default-currency"
             value={form.default_currency}
             onChange={(v) => setForm((p) => ({ ...p, default_currency: v }))}
             placeholder="None"
@@ -263,32 +263,32 @@ export default function CountryListPage() {
             ]}
           />
         </AdminField>
-        <AdminField label="Region">
-          <select className={inputClass} value={form.region} onChange={(e) => setForm((p) => ({ ...p, region: e.target.value }))}>
+        <AdminField helpKey="admin.countries.region" htmlFor="fh-countries-region" label="Region">
+          <select id="fh-countries-region" className={inputClass} value={form.region} onChange={(e) => setForm((p) => ({ ...p, region: e.target.value }))}>
             {REGIONS.map((region) => <option key={region} value={region}>{region}</option>)}
           </select>
         </AdminField>
       </div>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.checked }))} />
         Active (master toggle)
       </label>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.platform_allowed} onChange={(e) => setForm((p) => ({ ...p, platform_allowed: e.target.checked }))} />
         Platform allowed
       </label>
       {!form.platform_allowed && (
-        <AdminField label="Platform restriction reason">
-          <input className={inputClass} value={form.platform_reason} onChange={(e) => setForm((p) => ({ ...p, platform_reason: e.target.value }))} />
+        <AdminField helpKey="admin.countries.platform_reason" htmlFor="fh-countries-platform-reason" label="Platform restriction reason">
+          <input id="fh-countries-platform-reason" className={inputClass} value={form.platform_reason} onChange={(e) => setForm((p) => ({ ...p, platform_reason: e.target.value }))} />
         </AdminField>
       )}
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.simulator_allowed} onChange={(e) => setForm((p) => ({ ...p, simulator_allowed: e.target.checked }))} />
         Simulator allowed
       </label>
       {!form.simulator_allowed && (
-        <AdminField label="Simulator restriction reason">
-          <input className={inputClass} value={form.simulator_reason} onChange={(e) => setForm((p) => ({ ...p, simulator_reason: e.target.value }))} />
+        <AdminField helpKey="admin.countries.simulator_reason" htmlFor="fh-countries-simulator-reason" label="Simulator restriction reason">
+          <input id="fh-countries-simulator-reason" className={inputClass} value={form.simulator_reason} onChange={(e) => setForm((p) => ({ ...p, simulator_reason: e.target.value }))} />
         </AdminField>
       )}
     </>

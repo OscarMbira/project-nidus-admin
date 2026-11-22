@@ -25,8 +25,7 @@ import {
   LoadingState,
   SearchBar,
   useConfirmAction,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const INPUT_CLASS =
   'w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100'
@@ -81,7 +80,7 @@ function OverrideModal({ open, initial, onClose, onSaved }) {
       <div className="space-y-4">
         {!isEdit && (
           <div className="space-y-2">
-            <label htmlFor="cf-limit-org-search" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Organisation *</label>
+            <AdminFieldLabelWithHelp helpKey="admin.register_custom_field_limits.account_id" htmlFor="cf-limit-org-search" className="block text-sm font-medium text-gray-700 dark:text-gray-300" listOptions={false}>Organisation *</AdminFieldLabelWithHelp>
             <input
               id="cf-limit-org-search"
               type="text"
@@ -110,13 +109,13 @@ function OverrideModal({ open, initial, onClose, onSaved }) {
           </div>
         )}
         <div>
-          <label htmlFor="cf-limit-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Custom fields per register *</label>
+          <AdminFieldLabelWithHelp helpKey="admin.register_custom_field_limits.value_limit" htmlFor="cf-limit-value" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Custom fields per register *</AdminFieldLabelWithHelp>
           <input id="cf-limit-value" type="number" min={REGISTER_CUSTOM_FIELD_LIMIT_MIN} max={REGISTER_CUSTOM_FIELD_LIMIT_MAX}
             value={valueLimit} onChange={(e) => setLimit(e.target.value)} className={INPUT_CLASS} />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{RANGE_HINT}</p>
         </div>
         <div>
-          <label htmlFor="cf-limit-reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Reason (required)</label>
+          <AdminFieldLabelWithHelp helpKey="admin.audit_reasons.reason" htmlFor="cf-limit-reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Reason (required)</AdminFieldLabelWithHelp>
           <textarea id="cf-limit-reason" rows={2} value={reason} onChange={(e) => setReason(e.target.value)} className={INPUT_CLASS} />
         </div>
         {!canSave && !saving && (
@@ -206,7 +205,7 @@ export default function RegisterCustomFieldLimitsPage() {
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-        <label htmlFor="cf-default-limit" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Default custom fields per register</label>
+        <AdminFieldLabelWithHelp helpKey="admin.register_custom_field_limits.default_limit" htmlFor="cf-default-limit" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Default custom fields per register</AdminFieldLabelWithHelp>
         <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
           <input id="cf-default-limit" type="number" min={REGISTER_CUSTOM_FIELD_LIMIT_MIN} max={REGISTER_CUSTOM_FIELD_LIMIT_MAX}
             value={defaultInput} onChange={(e) => setDefaultInput(e.target.value)} className={`${INPUT_CLASS} sm:w-40`} />

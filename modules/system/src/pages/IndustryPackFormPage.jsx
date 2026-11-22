@@ -254,8 +254,8 @@ export default function IndustryPackFormPage() {
           <AdminForm id="industry-pack-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : handleSubmit} className="space-y-0">
             <fieldset disabled={isViewOnly} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 md:p-4 flex flex-col gap-3 disabled:opacity-95">
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-                <AdminField label="Industry" required>
-                  <select
+                <AdminField helpKey="admin.industry_packs.industry_category_id" htmlFor="fh-industry-packs-industry-category-id" label="Industry" required>
+                  <select id="fh-industry-packs-industry-category-id"
                     className={`${inputClass} ${isEdit ? 'opacity-70' : ''}`}
                     value={form.industry_category_id}
                     disabled={isEdit}
@@ -267,8 +267,8 @@ export default function IndustryPackFormPage() {
                     ))}
                   </select>
                 </AdminField>
-                <AdminField label="Pack code" required>
-                  <input
+                <AdminField helpKey="admin.industry_packs.pack_code" htmlFor="fh-industry-packs-pack-code" label="Pack code" required>
+                  <input id="fh-industry-packs-pack-code"
                     className={`${inputClass} ${isEdit ? 'opacity-70' : ''}`}
                     value={form.pack_code}
                     readOnly={isEdit}
@@ -276,8 +276,8 @@ export default function IndustryPackFormPage() {
                     placeholder="healthcare"
                   />
                 </AdminField>
-                <AdminField label="Pack name" required>
-                  <input
+                <AdminField helpKey="admin.industry_packs.pack_name" htmlFor="fh-industry-packs-pack-name" label="Pack name" required>
+                  <input id="fh-industry-packs-pack-name"
                     className={inputClass}
                     value={form.pack_name}
                     onChange={(e) => setForm((prev) => ({ ...prev, pack_name: e.target.value }))}
@@ -285,17 +285,17 @@ export default function IndustryPackFormPage() {
                   />
                 </AdminField>
               </div>
-              <AdminField label="Description">
-                <textarea
+              <AdminField helpKey="admin.industry_packs.description" htmlFor="fh-industry-packs-description" label="Description">
+                <textarea id="fh-industry-packs-description"
                   className={inputClass}
                   rows={2}
                   value={form.description}
                   onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
                 />
               </AdminField>
-              <AdminField label="Active">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input
+              <AdminField helpKey="admin.industry_packs.is_active" htmlFor="fh-industry-packs-is-active" label="Active">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-industry-packs-is-active"
                     type="checkbox"
                     checked={form.is_active}
                     onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))}
@@ -322,7 +322,7 @@ export default function IndustryPackFormPage() {
                 <SearchBar value={itemSearch} onChange={setItemSearch} placeholder="Search menu items..." />
                 <div className="max-h-96 overflow-y-auto rounded border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-800">
                   {filteredMenuItems.map((item) => (
-                    <label key={item.id} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                    <label data-help="exempt" key={item.id} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedItemIds.has(item.id)}

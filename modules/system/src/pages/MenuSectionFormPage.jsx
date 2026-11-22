@@ -16,8 +16,7 @@ import {
   LoadingState,
   inputClass,
   useConfirmAction,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 export default function MenuSectionFormPage() {
   const [params] = useSearchParams()
@@ -116,35 +115,35 @@ export default function MenuSectionFormPage() {
         <div className="space-y-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 md:p-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="ms-label" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Label</label>
+              <AdminFieldLabelWithHelp helpKey="admin.menu_sections.label" htmlFor="ms-label" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Label</AdminFieldLabelWithHelp>
               <input id="ms-label" className={inputClass} value={form.label} onChange={(e) => set('label', e.target.value)} />
             </div>
             <div>
-              <label htmlFor="ms-order" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order</label>
+              <AdminFieldLabelWithHelp helpKey="admin.menu_sections.sort_order" htmlFor="ms-order" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order</AdminFieldLabelWithHelp>
               <input id="ms-order" type="number" className={inputClass} value={form.sortOrder} onChange={(e) => set('sortOrder', e.target.value)} />
             </div>
             {type === 'section' ? (
               <>
                 <div>
-                  <label htmlFor="ms-icon" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon name</label>
+                  <AdminFieldLabelWithHelp helpKey="admin.menu_sections.icon" htmlFor="ms-icon" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon name</AdminFieldLabelWithHelp>
                   <input id="ms-icon" className={inputClass} value={form.icon} onChange={(e) => set('icon', e.target.value)} />
                 </div>
                 <div>
-                  <label htmlFor="ms-overflow" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Industry group label</label>
+                  <AdminFieldLabelWithHelp helpKey="admin.menu_sections.overflow_label" htmlFor="ms-overflow" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Industry group label</AdminFieldLabelWithHelp>
                   <input id="ms-overflow" className={inputClass} value={form.overflowLabel} onChange={(e) => set('overflowLabel', e.target.value)} />
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Used when the section has more than 12 entries and its industry pages are grouped.</p>
                 </div>
               </>
             ) : (
               <div>
-                <label htmlFor="ms-section" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Section</label>
+                <AdminFieldLabelWithHelp helpKey="admin.menu_sections.section_code" htmlFor="ms-section" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Section</AdminFieldLabelWithHelp>
                 <select id="ms-section" className={inputClass} value={form.sectionCode} onChange={(e) => set('sectionCode', e.target.value)}>
                   {sections.map((s) => <option key={s.section_code} value={s.section_code}>{s.label}</option>)}
                 </select>
               </div>
             )}
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <input type="checkbox" checked={form.isActive} onChange={(e) => set('isActive', e.target.checked)} />
             Active
           </label>

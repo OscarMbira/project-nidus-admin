@@ -178,16 +178,16 @@ export default function ProfessionalRoleFormPage() {
         <AdminForm id="professional-role-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : handleSubmit} className="space-y-0">
           <fieldset disabled={isViewOnly} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 md:p-4 flex flex-col gap-3 disabled:opacity-95">
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              <AdminField label="Role code" required>
-                <input
+              <AdminField helpKey="admin.professional_roles.role_code" htmlFor="fh-professional-roles-role-code" label="Role code" required>
+                <input id="fh-professional-roles-role-code"
                   className={inputClass}
                   value={form.role_code}
                   onChange={(e) => setForm((prev) => ({ ...prev, role_code: e.target.value }))}
                   placeholder="project_manager"
                 />
               </AdminField>
-              <AdminField label="Role label" required>
-                <input
+              <AdminField helpKey="admin.professional_roles.role_label" htmlFor="fh-professional-roles-role-label" label="Role label" required>
+                <input id="fh-professional-roles-role-label"
                   className={inputClass}
                   value={form.role_label}
                   onChange={(e) => setForm((prev) => ({ ...prev, role_label: e.target.value }))}
@@ -195,8 +195,8 @@ export default function ProfessionalRoleFormPage() {
                 />
               </AdminField>
             </div>
-            <AdminField label="Description">
-              <textarea
+            <AdminField helpKey="admin.professional_roles.description" htmlFor="fh-professional-roles-description" label="Description">
+              <textarea id="fh-professional-roles-description"
                 className={inputClass}
                 rows={2}
                 value={form.description}
@@ -204,17 +204,17 @@ export default function ProfessionalRoleFormPage() {
               />
             </AdminField>
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              <AdminField label="Display order">
-                <input
+              <AdminField helpKey="admin.professional_roles.display_order" htmlFor="fh-professional-roles-display-order" label="Display order">
+                <input id="fh-professional-roles-display-order"
                   type="number"
                   className={inputClass}
                   value={form.display_order}
                   onChange={(e) => setForm((prev) => ({ ...prev, display_order: Number(e.target.value) }))}
                 />
               </AdminField>
-              <AdminField label="Active">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input
+              <AdminField helpKey="admin.professional_roles.is_active" htmlFor="fh-professional-roles-is-active" label="Active">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-professional-roles-is-active"
                     type="checkbox"
                     checked={form.is_active}
                     onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))}

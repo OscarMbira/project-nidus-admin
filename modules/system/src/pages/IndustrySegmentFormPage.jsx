@@ -193,8 +193,8 @@ export default function IndustrySegmentFormPage() {
         <AdminForm id="industry-segment-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : handleSubmit} className="space-y-0">
           <fieldset disabled={isViewOnly} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 md:p-4 flex flex-col gap-3 disabled:opacity-95">
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              <AdminField label="Industry" required>
-                <select
+              <AdminField helpKey="admin.industry_segments.industry_category_id" htmlFor="fh-industry-segments-industry-category-id" label="Industry" required>
+                <select id="fh-industry-segments-industry-category-id"
                   className={`${inputClass} ${isEdit ? 'opacity-70' : ''}`}
                   value={form.industry_category_id}
                   disabled={isEdit}
@@ -206,8 +206,8 @@ export default function IndustrySegmentFormPage() {
                   ))}
                 </select>
               </AdminField>
-              <AdminField label="Segment name" required>
-                <input
+              <AdminField helpKey="admin.industry_segments.name" htmlFor="fh-industry-segments-name" label="Segment name" required>
+                <input id="fh-industry-segments-name"
                   className={inputClass}
                   value={form.name}
                   onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
@@ -215,8 +215,8 @@ export default function IndustrySegmentFormPage() {
                 />
               </AdminField>
             </div>
-            <AdminField label="Description">
-              <textarea
+            <AdminField helpKey="admin.industry_segments.description" htmlFor="fh-industry-segments-description" label="Description">
+              <textarea id="fh-industry-segments-description"
                 className={inputClass}
                 rows={2}
                 value={form.description}
@@ -224,17 +224,17 @@ export default function IndustrySegmentFormPage() {
               />
             </AdminField>
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              <AdminField label="Display order">
-                <input
+              <AdminField helpKey="admin.industry_segments.display_order" htmlFor="fh-industry-segments-display-order" label="Display order">
+                <input id="fh-industry-segments-display-order"
                   type="number"
                   className={inputClass}
                   value={form.display_order}
                   onChange={(e) => setForm((prev) => ({ ...prev, display_order: Number(e.target.value) }))}
                 />
               </AdminField>
-              <AdminField label="Active">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input
+              <AdminField helpKey="admin.industry_segments.is_active" htmlFor="fh-industry-segments-is-active" label="Active">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-industry-segments-is-active"
                     type="checkbox"
                     checked={form.is_active}
                     onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))}

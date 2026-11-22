@@ -34,8 +34,8 @@ export default function AlertConditionParamsFields({ form, setForm }) {
     return (
       <div className="rounded border border-gray-700/80 bg-gray-800/30 p-3">
         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-400">Custom condition</p>
-        <AdminField label="Parameters (JSON)" required>
-          <textarea
+        <AdminField helpKey="admin.alert_rules.condition_params" htmlFor="fh-alert-rules-condition-params" label="Parameters (JSON)" required>
+          <textarea id="fh-alert-rules-condition-params"
             rows={3}
             spellCheck={false}
             className={`${compactInput} font-mono text-xs leading-snug`}
@@ -56,7 +56,7 @@ export default function AlertConditionParamsFields({ form, setForm }) {
       <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-400">Condition settings</p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {fields.map((field) => (
-          <AdminField key={field.key} label={field.label} required>
+          <AdminField data-help="exempt" key={field.key} label={field.label} required>
             <input
               type={field.type === 'number' ? 'number' : 'text'}
               min={field.min}

@@ -16,8 +16,8 @@ export default function NotificationTemplateFormFields({
     <div className="rounded-lg border border-gray-700 bg-gray-900 p-3 md:p-4">
       <fieldset disabled={readOnly} className="flex flex-col gap-3 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
         <div className={rowClass}>
-          <AdminField label="Template key" required>
-            <input
+          <AdminField helpKey="admin.notification_templates.template_key" htmlFor="fh-notification-templates-template-key" label="Template key" required>
+            <input id="fh-notification-templates-template-key"
               className={`${compactInput} ${isEdit ? 'opacity-70' : ''}`}
               value={form.template_key}
               readOnly={isEdit}
@@ -25,16 +25,16 @@ export default function NotificationTemplateFormFields({
               placeholder="subscription_expiry_warning"
             />
           </AdminField>
-          <AdminField label="Template name" required>
-            <input
+          <AdminField helpKey="admin.notification_templates.template_name" htmlFor="fh-notification-templates-template-name" label="Template name" required>
+            <input id="fh-notification-templates-template-name"
               className={compactInput}
               value={form.template_name}
               onChange={(e) => setForm((prev) => ({ ...prev, template_name: e.target.value }))}
               placeholder="Subscription Expiry Warning"
             />
           </AdminField>
-          <AdminField label="Category" required>
-            <select
+          <AdminField helpKey="admin.notification_templates.category" htmlFor="fh-notification-templates-category" label="Category" required>
+            <select id="fh-notification-templates-category"
               className={compactInput}
               value={form.category}
               onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
@@ -47,8 +47,8 @@ export default function NotificationTemplateFormFields({
         </div>
 
         <div className={rowClass}>
-          <AdminField label="Channel" required>
-            <select
+          <AdminField helpKey="admin.notification_templates.channel" htmlFor="fh-notification-templates-channel" label="Channel" required>
+            <select id="fh-notification-templates-channel"
               className={compactInput}
               value={form.channel}
               onChange={(e) => setForm((prev) => ({ ...prev, channel: e.target.value }))}
@@ -60,8 +60,8 @@ export default function NotificationTemplateFormFields({
           </AdminField>
           {showSubject ? (
             <div className="sm:col-span-2">
-              <AdminField label="Subject template">
-                <input
+              <AdminField helpKey="admin.notification_templates.subject_template" htmlFor="fh-notification-templates-subject-template" label="Subject template">
+                <input id="fh-notification-templates-subject-template"
                   className={compactInput}
                   value={form.subject_template}
                   onChange={(e) => setForm((prev) => ({ ...prev, subject_template: e.target.value }))}
@@ -74,8 +74,8 @@ export default function NotificationTemplateFormFields({
           )}
         </div>
 
-        <AdminField label="Body template" required>
-          <textarea
+        <AdminField helpKey="admin.notification_templates.body_template" htmlFor="fh-notification-templates-body-template" label="Body template" required>
+          <textarea id="fh-notification-templates-body-template"
             rows={4}
             className={compactInput}
             value={form.body_template}
@@ -84,7 +84,7 @@ export default function NotificationTemplateFormFields({
           />
         </AdminField>
 
-        <label className="flex items-center gap-2 text-xs text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-xs text-gray-300">
           <input
             type="checkbox"
             checked={form.is_active}

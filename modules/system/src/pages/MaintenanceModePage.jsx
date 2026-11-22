@@ -19,8 +19,7 @@ import {
   useConfirmAction,
   useToast,
   DetailAuditTabList,
-  AdminDateInput,
-} from '@nidus-admin/ui'
+  AdminDateInput, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const TARGET_OPTIONS = ['platform', 'simulator', 'both']
 const EMPTY_WINDOW_FORM = {
@@ -172,8 +171,8 @@ export default function MaintenanceModePage() {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Quick Toggle</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-[1fr_auto_auto_auto] md:items-end">
           <div>
-            <label className="mb-1 block text-sm text-gray-300">Message</label>
-            <input
+            <AdminFieldLabelWithHelp helpKey="admin.maintenance_windows.quick_message" htmlFor="fh-maintenance-windows-quick-message" className="mb-1 block text-sm text-gray-300">Message</AdminFieldLabelWithHelp>
+            <input id="fh-maintenance-windows-quick-message"
               value={quickMessage}
               onChange={(e) => setQuickMessage(e.target.value)}
               placeholder="Optional message shown to users"
@@ -220,8 +219,8 @@ export default function MaintenanceModePage() {
 
         {scheduleTab === 'details' && (
         <AdminForm onSubmit={handleSchedule} className="mt-3 grid gap-3 lg:grid-cols-4">
-          <AdminField label="Target">
-            <select
+          <AdminField helpKey="admin.maintenance_windows.target_system" htmlFor="fh-maintenance-windows-target-system" label="Target">
+            <select id="fh-maintenance-windows-target-system"
               value={windowForm.target_system}
               onChange={(e) => setWindowForm((prev) => ({ ...prev, target_system: e.target.value }))}
               className={inputClass}
@@ -231,22 +230,22 @@ export default function MaintenanceModePage() {
               ))}
             </select>
           </AdminField>
-          <AdminField label="Scheduled Start" required>
-            <AdminDateInput eventStyle withTime
+          <AdminField helpKey="admin.maintenance_windows.scheduled_start" htmlFor="fh-maintenance-windows-scheduled-start" label="Scheduled Start" required>
+            <AdminDateInput id="fh-maintenance-windows-scheduled-start" eventStyle withTime
               value={windowForm.scheduled_start}
               onChange={(e) => setWindowForm((prev) => ({ ...prev, scheduled_start: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
-          <AdminField label="Scheduled End">
-            <AdminDateInput eventStyle withTime
+          <AdminField helpKey="admin.maintenance_windows.scheduled_end" htmlFor="fh-maintenance-windows-scheduled-end" label="Scheduled End">
+            <AdminDateInput id="fh-maintenance-windows-scheduled-end" eventStyle withTime
               value={windowForm.scheduled_end}
               onChange={(e) => setWindowForm((prev) => ({ ...prev, scheduled_end: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
-          <AdminField label="Message" required>
-            <input
+          <AdminField helpKey="admin.maintenance_windows.message" htmlFor="fh-maintenance-windows-message" label="Message" required>
+            <input id="fh-maintenance-windows-message"
               value={windowForm.message}
               onChange={(e) => setWindowForm((prev) => ({ ...prev, message: e.target.value }))}
               className={inputClass}

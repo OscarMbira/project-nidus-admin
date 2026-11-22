@@ -26,8 +26,7 @@ import {
   LoadingState,
   inputClass,
   useConfirmAction,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const EMPTY = { menuItemId: '', menuLabel: '', sectionCode: '', parentMenuItemId: '', parentLabel: '', slotKey: '', sortOrder: 0, scope: 'project', isActive: true, defaultSection: '' }
 
@@ -45,7 +44,7 @@ function ItemPicker({ id, label, value, onPick, disabled, placeholder }) {
   }, [query, disabled])
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
+      <label data-help="exempt" htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
       {value && <p className="mb-1 text-sm text-gray-900 dark:text-gray-100">{value}</p>}
       {!disabled && (
         <>
@@ -182,25 +181,25 @@ export default function MenuPlacementFormPage() {
             onPick={(o) => setForm((f) => ({ ...f, menuItemId: o.id, menuLabel: `${o.menu_label} (${o.menu_code})`, defaultSection: o.default_section_code || '' }))} />
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="placement-section" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Section</label>
+              <AdminFieldLabelWithHelp helpKey="admin.menu_item_placements.section_code" htmlFor="placement-section" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Section</AdminFieldLabelWithHelp>
               <select id="placement-section" className={inputClass} value={form.sectionCode} onChange={(e) => set('sectionCode', e.target.value)}>
                 <option value="">Choose a section…</option>
                 {sections.map((s) => <option key={s.section_code} value={s.section_code}>{s.label}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="placement-slot" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Shared slot (optional)</label>
+              <AdminFieldLabelWithHelp helpKey="admin.menu_item_placements.slot_key" htmlFor="placement-slot" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Shared slot (optional)</AdminFieldLabelWithHelp>
               <select id="placement-slot" className={inputClass} value={form.slotKey} onChange={(e) => set('slotKey', e.target.value)}>
                 <option value="">None</option>
                 {slotOptions.map((s) => <option key={s.slot_key} value={s.slot_key}>{s.label}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="placement-order" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order in the section</label>
+              <AdminFieldLabelWithHelp helpKey="admin.menu_item_placements.sort_order" htmlFor="placement-order" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order in the section</AdminFieldLabelWithHelp>
               <input id="placement-order" type="number" className={inputClass} value={form.sortOrder} onChange={(e) => set('sortOrder', e.target.value)} />
             </div>
             <div>
-              <label htmlFor="placement-scope" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Scope</label>
+              <AdminFieldLabelWithHelp helpKey="admin.menu_item_placements.scope" htmlFor="placement-scope" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Scope</AdminFieldLabelWithHelp>
               <select id="placement-scope" className={inputClass} value={form.scope} onChange={(e) => set('scope', e.target.value)}>
                 <option value="project">Project pages (shown inside a project)</option>
                 <option value="organisation">Organisation pages (PMO Organisation zone)</option>
@@ -215,14 +214,14 @@ export default function MenuPlacementFormPage() {
             </button>
           )}
           <div>
-            <label htmlFor="placement-default" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Default section of this item (all roles)</label>
+            <AdminFieldLabelWithHelp helpKey="admin.menu_item_placements.default_section_code" htmlFor="placement-default" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Default section of this item (all roles)</AdminFieldLabelWithHelp>
             <select id="placement-default" className={inputClass} value={form.defaultSection} onChange={(e) => set('defaultSection', e.target.value)}>
               <option value="">None</option>
               {sections.map((s) => <option key={s.section_code} value={s.section_code}>{s.label}</option>)}
             </select>
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Used when a full-menu role has no placement for this item or its pages.</p>
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <input type="checkbox" checked={form.isActive} onChange={(e) => set('isActive', e.target.checked)} />
             Active
           </label>

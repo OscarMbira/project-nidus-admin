@@ -108,21 +108,21 @@ export default function TestFixPatternsPage() {
 
         {createTab === 'details' && (
         <AdminForm onSubmit={handleCreate}>
-          <AdminField label="Pattern Name" required>
-            <input className={inputClass} value={form.patternName} onChange={(e) => setForm({ ...form, patternName: e.target.value })} />
+          <AdminField helpKey="admin.test_fix_patterns.pattern_name" htmlFor="fh-test-fix-patterns-pattern-name" label="Pattern Name" required>
+            <input id="fh-test-fix-patterns-pattern-name" className={inputClass} value={form.patternName} onChange={(e) => setForm({ ...form, patternName: e.target.value })} />
           </AdminField>
-          <AdminField label="Error Regex" required>
-            <input className={inputClass} value={form.errorRegex} onChange={(e) => setForm({ ...form, errorRegex: e.target.value })} />
+          <AdminField helpKey="admin.test_fix_patterns.error_regex" htmlFor="fh-test-fix-patterns-error-regex" label="Error Regex" required>
+            <input id="fh-test-fix-patterns-error-regex" className={inputClass} value={form.errorRegex} onChange={(e) => setForm({ ...form, errorRegex: e.target.value })} />
           </AdminField>
-          <AdminField label="Error Category">
-            <select className={inputClass} value={form.errorCategory} onChange={(e) => setForm({ ...form, errorCategory: e.target.value })}>
+          <AdminField helpKey="admin.test_fix_patterns.error_category" htmlFor="fh-test-fix-patterns-error-category" label="Error Category">
+            <select id="fh-test-fix-patterns-error-category" className={inputClass} value={form.errorCategory} onChange={(e) => setForm({ ...form, errorCategory: e.target.value })}>
               {['missing_data', 'permission_denied', 'stale_state', 'validation_error', 'element_not_found', 'db_constraint', 'timeout', 'session_expired', 'unknown'].map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </AdminField>
-          <AdminField label="Fix Strategy">
-            <input className={inputClass} value={form.fixStrategy} onChange={(e) => setForm({ ...form, fixStrategy: e.target.value })} />
+          <AdminField helpKey="admin.test_fix_patterns.fix_strategy" htmlFor="fh-test-fix-patterns-fix-strategy" label="Fix Strategy">
+            <input id="fh-test-fix-patterns-fix-strategy" className={inputClass} value={form.fixStrategy} onChange={(e) => setForm({ ...form, fixStrategy: e.target.value })} />
           </AdminField>
           <button type="submit" disabled={saving} className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-500 disabled:opacity-50">
             {saving ? 'Saving...' : 'Create'}

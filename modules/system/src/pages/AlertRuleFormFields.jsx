@@ -20,16 +20,16 @@ export default function AlertRuleFormFields({
     <div className="rounded-lg border border-gray-700 bg-gray-900 p-3 md:p-4">
       <fieldset disabled={readOnly} className="flex flex-col gap-3 border-0 p-0 m-0 min-w-0 disabled:opacity-95">
         <div className={rowClass}>
-          <AdminField label="Rule name" required>
-            <input
+          <AdminField helpKey="admin.alert_rules.rule_name" htmlFor="fh-alert-rules-rule-name" label="Rule name" required>
+            <input id="fh-alert-rules-rule-name"
               className={compactInput}
               value={form.rule_name}
               onChange={(e) => setForm((prev) => ({ ...prev, rule_name: e.target.value }))}
               placeholder="Failed payment threshold"
             />
           </AdminField>
-          <AdminField label="Rule key" required>
-            <input
+          <AdminField helpKey="admin.alert_rules.rule_key" htmlFor="fh-alert-rules-rule-key" label="Rule key" required>
+            <input id="fh-alert-rules-rule-key"
               className={`${compactInput} ${isEdit ? 'opacity-70' : ''}`}
               value={form.rule_key}
               readOnly={isEdit}
@@ -37,8 +37,8 @@ export default function AlertRuleFormFields({
               placeholder="failed_payment_threshold"
             />
           </AdminField>
-          <AdminField label="Condition type" required>
-            <select
+          <AdminField helpKey="admin.alert_rules.condition_type" htmlFor="fh-alert-rules-condition-type" label="Condition type" required>
+            <select id="fh-alert-rules-condition-type"
               className={compactInput}
               value={form.condition_type}
               onChange={(e) => {
@@ -58,8 +58,8 @@ export default function AlertRuleFormFields({
         </div>
 
         <div className={rowClass}>
-          <AdminField label="Target system" required>
-            <select
+          <AdminField helpKey="admin.alert_rules.target_system" htmlFor="fh-alert-rules-target-system" label="Target system" required>
+            <select id="fh-alert-rules-target-system"
               className={compactInput}
               value={form.target_system}
               onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}
@@ -70,8 +70,8 @@ export default function AlertRuleFormFields({
             </select>
           </AdminField>
           <div className="sm:col-span-2">
-            <AdminField label="Description">
-              <input
+            <AdminField helpKey="admin.alert_rules.description" htmlFor="fh-alert-rules-description" label="Description">
+              <input id="fh-alert-rules-description"
                 className={compactInput}
                 value={form.description}
                 onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
@@ -82,8 +82,8 @@ export default function AlertRuleFormFields({
         </div>
 
         <div className={rowClass}>
-          <AdminField label="Check interval (min)" required>
-            <input
+          <AdminField helpKey="admin.alert_rules.check_interval_minutes" htmlFor="fh-alert-rules-check-interval-minutes" label="Check interval (min)" required>
+            <input id="fh-alert-rules-check-interval-minutes"
               type="number"
               min={1}
               className={compactInput}
@@ -91,8 +91,8 @@ export default function AlertRuleFormFields({
               onChange={(e) => setForm((prev) => ({ ...prev, check_interval_minutes: e.target.value }))}
             />
           </AdminField>
-          <AdminField label="Notification template">
-            <select
+          <AdminField helpKey="admin.alert_rules.notification_template_id" htmlFor="fh-alert-rules-notification-template-id" label="Notification template">
+            <select id="fh-alert-rules-notification-template-id"
               className={compactInput}
               value={form.notification_template_id}
               onChange={(e) => setForm((prev) => ({ ...prev, notification_template_id: e.target.value }))}
@@ -105,8 +105,8 @@ export default function AlertRuleFormFields({
               ))}
             </select>
           </AdminField>
-          <AdminField label="Target roles">
-            <input
+          <AdminField helpKey="admin.alert_rules.target_roles" htmlFor="fh-alert-rules-target-roles" label="Target roles">
+            <input id="fh-alert-rules-target-roles"
               className={compactInput}
               value={form.target_roles}
               onChange={(e) => setForm((prev) => ({ ...prev, target_roles: e.target.value }))}
@@ -117,7 +117,7 @@ export default function AlertRuleFormFields({
 
         <AlertConditionParamsFields form={form} setForm={setForm} />
 
-        <label className="flex items-center gap-2 text-xs text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-xs text-gray-300">
           <input
             type="checkbox"
             checked={form.is_active}

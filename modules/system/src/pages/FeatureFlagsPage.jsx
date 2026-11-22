@@ -251,32 +251,32 @@ export default function FeatureFlagsPage() {
 
       <AdminModal open={showCreate} title="Create Feature Flag" onClose={() => setShowCreate(false)}>
         <AdminForm onSubmit={handleCreate} className="mt-2">
-          <AdminField label="Flag Key" required>
-            <input
+          <AdminField helpKey="admin.feature_flags.flag_key" htmlFor="fh-feature-flags-flag-key" label="Flag Key" required>
+            <input id="fh-feature-flags-flag-key"
               value={createForm.flag_key}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, flag_key: e.target.value }))}
               className={inputClass}
               placeholder="new_feature_key"
             />
           </AdminField>
-          <AdminField label="Flag Name" required>
-            <input
+          <AdminField helpKey="admin.feature_flags.flag_name" htmlFor="fh-feature-flags-flag-name" label="Flag Name" required>
+            <input id="fh-feature-flags-flag-name"
               value={createForm.flag_name}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, flag_name: e.target.value }))}
               className={inputClass}
               placeholder="New Feature"
             />
           </AdminField>
-          <AdminField label="Description">
-            <textarea
+          <AdminField helpKey="admin.feature_flags.description" htmlFor="fh-feature-flags-description" label="Description">
+            <textarea id="fh-feature-flags-description"
               rows={3}
               value={createForm.description}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, description: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
-          <AdminField label="Applies To">
-            <select
+          <AdminField helpKey="admin.feature_flags.applies_to" htmlFor="fh-feature-flags-applies-to" label="Applies To">
+            <select id="fh-feature-flags-applies-to"
               value={createForm.applies_to}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, applies_to: e.target.value }))}
               className={inputClass}
@@ -321,30 +321,30 @@ export default function FeatureFlagsPage() {
 
         {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2">
-          <AdminField label="Flag Key" required>
-            <input
+          <AdminField helpKey="admin.feature_flags.flag_key" htmlFor="fh-feature-flags-flag-key" label="Flag Key" required>
+            <input id="fh-feature-flags-flag-key"
               value={editForm.flag_key}
               onChange={(e) => setEditForm((prev) => ({ ...prev, flag_key: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
-          <AdminField label="Flag Name" required>
-            <input
+          <AdminField helpKey="admin.feature_flags.flag_name" htmlFor="fh-feature-flags-flag-name" label="Flag Name" required>
+            <input id="fh-feature-flags-flag-name"
               value={editForm.flag_name}
               onChange={(e) => setEditForm((prev) => ({ ...prev, flag_name: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
-          <AdminField label="Description">
-            <textarea
+          <AdminField helpKey="admin.feature_flags.description" htmlFor="fh-feature-flags-description" label="Description">
+            <textarea id="fh-feature-flags-description"
               rows={3}
               value={editForm.description}
               onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
-          <AdminField label="Applies To">
-            <select
+          <AdminField helpKey="admin.feature_flags.applies_to" htmlFor="fh-feature-flags-applies-to" label="Applies To">
+            <select id="fh-feature-flags-applies-to"
               value={editForm.applies_to}
               onChange={(e) => setEditForm((prev) => ({ ...prev, applies_to: e.target.value }))}
               className={inputClass}

@@ -178,8 +178,8 @@ export default function CurrencyListPage() {
 
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
-      <AdminField label="Currency Code" required>
-        <input
+      <AdminField helpKey="admin.currencies.currency_code" htmlFor="fh-currencies-currency-code" label="Currency Code" required>
+        <input id="fh-currencies-currency-code"
           className={inputClass}
           value={form.currency_code}
           readOnly={isEdit}
@@ -188,33 +188,33 @@ export default function CurrencyListPage() {
           placeholder="USD"
         />
       </AdminField>
-      <AdminField label="Currency Name" required>
-        <input className={inputClass} value={form.currency_name} onChange={(e) => setForm((prev) => ({ ...prev, currency_name: e.target.value }))} />
+      <AdminField helpKey="admin.currencies.currency_name" htmlFor="fh-currencies-currency-name" label="Currency Name" required>
+        <input id="fh-currencies-currency-name" className={inputClass} value={form.currency_name} onChange={(e) => setForm((prev) => ({ ...prev, currency_name: e.target.value }))} />
       </AdminField>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Symbol" required>
-          <input className={inputClass} value={form.symbol} onChange={(e) => setForm((prev) => ({ ...prev, symbol: e.target.value }))} />
+        <AdminField helpKey="admin.currencies.symbol" htmlFor="fh-currencies-symbol" label="Symbol" required>
+          <input id="fh-currencies-symbol" className={inputClass} value={form.symbol} onChange={(e) => setForm((prev) => ({ ...prev, symbol: e.target.value }))} />
         </AdminField>
-        <AdminField label="Symbol Position">
-          <select className={inputClass} value={form.symbol_position} onChange={(e) => setForm((prev) => ({ ...prev, symbol_position: e.target.value }))}>
+        <AdminField helpKey="admin.currencies.symbol_position" htmlFor="fh-currencies-symbol-position" label="Symbol Position">
+          <select id="fh-currencies-symbol-position" className={inputClass} value={form.symbol_position} onChange={(e) => setForm((prev) => ({ ...prev, symbol_position: e.target.value }))}>
             <option value="prefix">Prefix</option>
             <option value="suffix">Suffix</option>
           </select>
         </AdminField>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <AdminField label="Decimal Places">
-          <input type="number" min={0} max={6} className={inputClass} value={form.decimal_places} onChange={(e) => setForm((prev) => ({ ...prev, decimal_places: e.target.value }))} />
+        <AdminField helpKey="admin.currencies.decimal_places" htmlFor="fh-currencies-decimal-places" label="Decimal Places">
+          <input id="fh-currencies-decimal-places" type="number" min={0} max={6} className={inputClass} value={form.decimal_places} onChange={(e) => setForm((prev) => ({ ...prev, decimal_places: e.target.value }))} />
         </AdminField>
-        <AdminField label="Sort Order">
-          <input type="number" className={inputClass} value={form.sort_order} onChange={(e) => setForm((prev) => ({ ...prev, sort_order: e.target.value }))} />
+        <AdminField helpKey="admin.currencies.sort_order" htmlFor="fh-currencies-sort-order" label="Sort Order">
+          <input id="fh-currencies-sort-order" type="number" className={inputClass} value={form.sort_order} onChange={(e) => setForm((prev) => ({ ...prev, sort_order: e.target.value }))} />
         </AdminField>
       </div>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))} />
         Active
       </label>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input type="checkbox" checked={form.is_base} onChange={(e) => setForm((prev) => ({ ...prev, is_base: e.target.checked }))} />
         Set as base currency
       </label>

@@ -166,17 +166,17 @@ export default function IndustryCategoryFormPage() {
       {detailTab === 'details' && (
         <AdminForm id="industry-category-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : handleSubmit} className="space-y-0">
           <fieldset disabled={isViewOnly} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 md:p-4 flex flex-col gap-3 disabled:opacity-95">
-            <AdminField label="Name" required>
-              <input
+            <AdminField helpKey="admin.industry_categories.name" htmlFor="fh-industry-categories-name" label="Name" required>
+              <input id="fh-industry-categories-name"
                 className={inputClass}
                 value={form.name}
                 onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="Healthcare"
               />
             </AdminField>
-            <AdminField label="Active">
-              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <input
+            <AdminField helpKey="admin.industry_categories.is_active" htmlFor="fh-industry-categories-is-active" label="Active">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <input id="fh-industry-categories-is-active"
                   type="checkbox"
                   checked={form.is_active}
                   onChange={(e) => setForm((prev) => ({ ...prev, is_active: e.target.checked }))}

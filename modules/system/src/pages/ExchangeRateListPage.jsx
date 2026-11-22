@@ -210,7 +210,7 @@ export default function ExchangeRateListPage() {
       {activeTab === 'history' && (
         <div className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 lg:max-w-xl">
-            <AdminField label="From Currency">
+            <AdminField data-help="exempt" label="From Currency">
               <SelectField
                 value={historyFrom}
                 onChange={setHistoryFrom}
@@ -220,7 +220,7 @@ export default function ExchangeRateListPage() {
                 options={currencyCodes.map((code) => ({ value: code, label: code }))}
               />
             </AdminField>
-            <AdminField label="To Currency">
+            <AdminField data-help="exempt" label="To Currency">
               <SelectField
                 value={historyTo}
                 onChange={setHistoryTo}
@@ -267,8 +267,8 @@ export default function ExchangeRateListPage() {
       <AdminModal open={showCreate} title="Create Exchange Rate" onClose={() => setShowCreate(false)}>
         <AdminForm onSubmit={handleCreate} className="mt-2 space-y-3">
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="From Currency" required>
-              <SelectField
+            <AdminField helpKey="admin.exchange_rates.from_currency" htmlFor="fh-exchange-rates-from-currency" label="From Currency" required>
+              <SelectField id="fh-exchange-rates-from-currency"
                 value={createForm.from_currency}
                 onChange={(v) => setCreateForm((p) => ({ ...p, from_currency: v }))}
                 placeholder="Select..."
@@ -277,8 +277,8 @@ export default function ExchangeRateListPage() {
                 options={currencyCodes.map((code) => ({ value: code, label: code }))}
               />
             </AdminField>
-            <AdminField label="To Currency" required>
-              <SelectField
+            <AdminField helpKey="admin.exchange_rates.to_currency" htmlFor="fh-exchange-rates-to-currency" label="To Currency" required>
+              <SelectField id="fh-exchange-rates-to-currency"
                 value={createForm.to_currency}
                 onChange={(v) => setCreateForm((p) => ({ ...p, to_currency: v }))}
                 placeholder="Select..."
@@ -290,21 +290,21 @@ export default function ExchangeRateListPage() {
               />
             </AdminField>
           </div>
-          <AdminField label="Rate" required>
-            <input type="number" step="0.0000000001" min="0" className={inputClass} value={createForm.rate} onChange={(e) => setCreateForm((p) => ({ ...p, rate: e.target.value }))} />
+          <AdminField helpKey="admin.exchange_rates.rate" htmlFor="fh-exchange-rates-rate" label="Rate" required>
+            <input id="fh-exchange-rates-rate" type="number" step="0.0000000001" min="0" className={inputClass} value={createForm.rate} onChange={(e) => setCreateForm((p) => ({ ...p, rate: e.target.value }))} />
           </AdminField>
-          <AdminField label="Effective From">
-            <AdminDateInput eventStyle withTime className={inputClass} value={createForm.effective_from} onChange={(e) => setCreateForm((p) => ({ ...p, effective_from: e.target.value }))} />
+          <AdminField helpKey="admin.exchange_rates.effective_from" htmlFor="fh-exchange-rates-effective-from" label="Effective From">
+            <AdminDateInput id="fh-exchange-rates-effective-from" eventStyle withTime className={inputClass} value={createForm.effective_from} onChange={(e) => setCreateForm((p) => ({ ...p, effective_from: e.target.value }))} />
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Source">
-              <select className={inputClass} value={createForm.source} onChange={(e) => setCreateForm((p) => ({ ...p, source: e.target.value }))}>
+            <AdminField helpKey="admin.exchange_rates.source" htmlFor="fh-exchange-rates-source" label="Source">
+              <select id="fh-exchange-rates-source" className={inputClass} value={createForm.source} onChange={(e) => setCreateForm((p) => ({ ...p, source: e.target.value }))}>
                 <option value="manual">manual</option>
                 <option value="api">api</option>
               </select>
             </AdminField>
-            <AdminField label="Source Detail">
-              <input className={inputClass} value={createForm.source_detail} onChange={(e) => setCreateForm((p) => ({ ...p, source_detail: e.target.value }))} />
+            <AdminField helpKey="admin.exchange_rates.source_detail" htmlFor="fh-exchange-rates-source-detail" label="Source Detail">
+              <input id="fh-exchange-rates-source-detail" className={inputClass} value={createForm.source_detail} onChange={(e) => setCreateForm((p) => ({ ...p, source_detail: e.target.value }))} />
             </AdminField>
           </div>
           <div className="flex justify-end gap-2">
@@ -339,17 +339,17 @@ export default function ExchangeRateListPage() {
         {editTab === 'details' && (
         <AdminForm onSubmit={handleEditSave} className="mt-2 space-y-3">
           <p className="text-xs text-gray-400">Pair: {editingRate?.from_currency} → {editingRate?.to_currency} (pair cannot be changed)</p>
-          <AdminField label="Rate" required>
-            <input type="number" step="0.0000000001" min="0" className={inputClass} value={editForm.rate} onChange={(e) => setEditForm((p) => ({ ...p, rate: e.target.value }))} />
+          <AdminField helpKey="admin.exchange_rates.rate" htmlFor="fh-exchange-rates-rate" label="Rate" required>
+            <input id="fh-exchange-rates-rate" type="number" step="0.0000000001" min="0" className={inputClass} value={editForm.rate} onChange={(e) => setEditForm((p) => ({ ...p, rate: e.target.value }))} />
           </AdminField>
-          <AdminField label="Source">
-            <select className={inputClass} value={editForm.source} onChange={(e) => setEditForm((p) => ({ ...p, source: e.target.value }))}>
+          <AdminField helpKey="admin.exchange_rates.source" htmlFor="fh-exchange-rates-source" label="Source">
+            <select id="fh-exchange-rates-source" className={inputClass} value={editForm.source} onChange={(e) => setEditForm((p) => ({ ...p, source: e.target.value }))}>
               <option value="manual">manual</option>
               <option value="api">api</option>
             </select>
           </AdminField>
-          <AdminField label="Source Detail">
-            <input className={inputClass} value={editForm.source_detail} onChange={(e) => setEditForm((p) => ({ ...p, source_detail: e.target.value }))} />
+          <AdminField helpKey="admin.exchange_rates.source_detail" htmlFor="fh-exchange-rates-source-detail" label="Source Detail">
+            <input id="fh-exchange-rates-source-detail" className={inputClass} value={editForm.source_detail} onChange={(e) => setEditForm((p) => ({ ...p, source_detail: e.target.value }))} />
           </AdminField>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setEditingRate(null)} className="rounded px-3 py-1.5 text-sm text-gray-400">Cancel</button>

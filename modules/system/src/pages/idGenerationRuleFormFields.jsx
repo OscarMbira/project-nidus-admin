@@ -350,8 +350,8 @@ export default function IdGenerationRuleFormFields({
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_20rem]">
       <div className="grid min-w-0 gap-3 md:grid-cols-2">
-      <AdminField label="Generation Mode" required>
-        <select
+      <AdminField helpKey="admin.id_generation_rules.generation_mode" htmlFor="fh-id-generation-rules-generation-mode" label="Generation Mode" required>
+        <select id="fh-id-generation-rules-generation-mode"
           value={form.generation_mode || 'random'}
           onChange={(e) => setForm((prev) => applyGenerationModeChange(prev, e.target.value))}
           className={compactInputClass}
@@ -374,8 +374,8 @@ export default function IdGenerationRuleFormFields({
         </p>
         <div className="mt-2 grid gap-3 md:grid-cols-2">
           {sequential ? (
-            <AdminField label="Scope To">
-              <select
+            <AdminField helpKey="admin.id_generation_rules.scope_column" htmlFor="fh-id-generation-rules-scope-column" label="Scope To">
+              <select id="fh-id-generation-rules-scope-column"
                 value={form.scope_column || ''}
                 onChange={(e) => setForm((prev) => ({ ...prev, scope_column: e.target.value }))}
                 className={compactInputClass}
@@ -395,7 +395,7 @@ export default function IdGenerationRuleFormFields({
             </AdminField>
           ) : (
             <div className="flex items-end pb-1">
-              <label className="flex items-center gap-2 text-sm text-gray-300">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
                 <input
                   type="checkbox"
                   checked={Boolean(form.include_date)}
@@ -410,8 +410,8 @@ export default function IdGenerationRuleFormFields({
               </label>
             </div>
           )}
-          <AdminField label="Date Format">
-            <select
+          <AdminField helpKey="admin.id_generation_rules.date_format" htmlFor="fh-id-generation-rules-date-format" label="Date Format">
+            <select id="fh-id-generation-rules-date-format"
               value={form.date_format || 'YYYY'}
               onChange={(e) => setForm((prev) => ({ ...prev, date_format: e.target.value }))}
               className={compactInputClass}
@@ -429,7 +429,7 @@ export default function IdGenerationRuleFormFields({
           </AdminField>
           {sequential && (
           <div className="flex items-end pb-1 md:col-span-2">
-            <label className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={Boolean(form.include_date)}
@@ -447,8 +447,8 @@ export default function IdGenerationRuleFormFields({
         </div>
       </div>
 
-      <AdminField label="Database Table" required>
-        <SearchableSelect
+      <AdminField helpKey="admin.id_generation_rules.target_table" htmlFor="fh-id-generation-rules-target-table" label="Database Table" required>
+        <SearchableSelect id="fh-id-generation-rules-target-table"
           value={form.target_table}
           onChange={(nextValue) => setForm((prev) => (
             autoFillFromTable
@@ -463,8 +463,8 @@ export default function IdGenerationRuleFormFields({
           groupByCategory
         />
       </AdminField>
-      <AdminField label="Table Abbreviation" required={!abbreviationOptional}>
-        <input
+      <AdminField helpKey="admin.id_generation_rules.table_abbreviation" htmlFor="fh-id-generation-rules-table-abbreviation" label="Table Abbreviation" required={!abbreviationOptional}>
+        <input id="fh-id-generation-rules-table-abbreviation"
           value={form.table_abbreviation}
           maxLength={4}
           disabled={abbreviationDisabled}
@@ -493,16 +493,16 @@ export default function IdGenerationRuleFormFields({
         )}
       </AdminField>
       <div className="md:col-span-2">
-        <AdminField label="Table Description">
-          <input
+        <AdminField helpKey="admin.id_generation_rules.table_description" htmlFor="fh-id-generation-rules-table-description" label="Table Description">
+          <input id="fh-id-generation-rules-table-description"
             value={form.table_description}
             onChange={(e) => setForm((prev) => ({ ...prev, table_description: e.target.value }))}
             className={compactInputClass}
           />
         </AdminField>
       </div>
-      <AdminField label="Separator">
-        <input
+      <AdminField helpKey="admin.id_generation_rules.separator" htmlFor="fh-id-generation-rules-separator" label="Separator">
+        <input id="fh-id-generation-rules-separator"
           value={form.separator}
           maxLength={2}
           onChange={(e) => setForm((prev) => ({ ...prev, separator: e.target.value }))}
@@ -510,16 +510,16 @@ export default function IdGenerationRuleFormFields({
           placeholder="-"
         />
       </AdminField>
-      <AdminField label="Suffix">
-        <input
+      <AdminField helpKey="admin.id_generation_rules.suffix" htmlFor="fh-id-generation-rules-suffix" label="Suffix">
+        <input id="fh-id-generation-rules-suffix"
           value={form.suffix}
           onChange={(e) => setForm((prev) => ({ ...prev, suffix: e.target.value }))}
           className={compactInputClass}
         />
       </AdminField>
       {showRandomFields && (
-        <AdminField label="ID Type" required>
-          <select
+        <AdminField helpKey="admin.id_generation_rules.id_type" htmlFor="fh-id-generation-rules-id-type" label="ID Type" required>
+          <select id="fh-id-generation-rules-id-type"
             value={segmentType}
             onChange={(e) => setForm((prev) => applySegmentTypeChange(prev, e.target.value))}
             className={compactInputClass}
@@ -531,8 +531,8 @@ export default function IdGenerationRuleFormFields({
         </AdminField>
       )}
       {showLetterCase && (
-        <AdminField label="Letter Case">
-          <select
+        <AdminField helpKey="admin.id_generation_rules.letter_case" htmlFor="fh-id-generation-rules-letter-case" label="Letter Case">
+          <select id="fh-id-generation-rules-letter-case"
             value={form.letter_case}
             onChange={(e) => setForm((prev) => ({ ...prev, letter_case: e.target.value }))}
             className={compactInputClass}
@@ -544,8 +544,8 @@ export default function IdGenerationRuleFormFields({
         </AdminField>
       )}
       {showRandomFields && (
-        <AdminField label="Excluded Characters">
-          <input
+        <AdminField helpKey="admin.id_generation_rules.excluded_chars" htmlFor="fh-id-generation-rules-excluded-chars" label="Excluded Characters">
+          <input id="fh-id-generation-rules-excluded-chars"
             value={form.excluded_chars}
             onChange={(e) => setForm((prev) => ({ ...prev, excluded_chars: e.target.value }))}
             className={compactInputClass}
@@ -554,8 +554,8 @@ export default function IdGenerationRuleFormFields({
         </AdminField>
       )}
       {showLetters && (
-        <AdminField label={segmentType === 'alpha' ? 'Length (letters)' : 'Number of Letters'}>
-          <input
+        <AdminField helpKey="admin.id_generation_rules.num_letters" htmlFor="fh-id-generation-rules-num-letters" label={segmentType === 'alpha' ? 'Length (letters)' : 'Number of Letters'}>
+          <input id="fh-id-generation-rules-num-letters"
             type="number"
             min={segmentType === 'alpha' ? 1 : 0}
             max={10}
@@ -566,8 +566,8 @@ export default function IdGenerationRuleFormFields({
         </AdminField>
       )}
       {showDigits && (
-        <AdminField label={sequential ? 'Sequence Width (digits)' : (segmentType === 'numeric' ? 'Length (digits)' : 'Number of Digits')}>
-          <input
+        <AdminField helpKey="admin.id_generation_rules.num_digits" htmlFor="fh-id-generation-rules-num-digits" label={sequential ? 'Sequence Width (digits)' : (segmentType === 'numeric' ? 'Length (digits)' : 'Number of Digits')}>
+          <input id="fh-id-generation-rules-num-digits"
             type="number"
             min={1}
             max={10}
@@ -577,8 +577,8 @@ export default function IdGenerationRuleFormFields({
           />
         </AdminField>
       )}
-      <AdminField label="Seed Value">
-        <input
+      <AdminField helpKey="admin.id_generation_rules.seed_value" htmlFor="fh-id-generation-rules-seed-value" label="Seed Value">
+        <input id="fh-id-generation-rules-seed-value"
           type="number"
           min={1}
           value={form.seed_value}
@@ -590,7 +590,7 @@ export default function IdGenerationRuleFormFields({
         )}
       </AdminField>
       <div className="flex items-end pb-2">
-        <label className="flex items-center gap-2 text-sm text-gray-300">
+        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
           <input
             type="checkbox"
             checked={form.is_active}
