@@ -24,6 +24,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const APPLIES_TO = ['all', 'platform', 'simulator']
@@ -226,10 +227,10 @@ export default function TaxRatesPage() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <AdminField label="Effective From" required>
-          <input type="date" className={inputClass} value={form.effective_from} onChange={(e) => setForm((prev) => ({ ...prev, effective_from: e.target.value }))} />
+          <AdminDateInput eventStyle className={inputClass} value={form.effective_from} onChange={(e) => setForm((prev) => ({ ...prev, effective_from: e.target.value }))} />
         </AdminField>
         <AdminField label="Effective To">
-          <input type="date" className={inputClass} value={form.effective_to} onChange={(e) => setForm((prev) => ({ ...prev, effective_to: e.target.value }))} />
+          <AdminDateInput eventStyle className={inputClass} value={form.effective_to} onChange={(e) => setForm((prev) => ({ ...prev, effective_to: e.target.value }))} />
         </AdminField>
       </div>
       <label className="flex items-center gap-2 text-sm text-gray-300">

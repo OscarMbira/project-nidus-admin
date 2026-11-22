@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { fetchUserById, formatDate, suspendPlatformUser, useDisplayId } from '@nidus-admin/shared'
-import { AdminBadge, AdminField, AdminForm, EmptyState, inputClass, LoadingState, useToast } from '@nidus-admin/ui'
+import { AdminBadge, AdminField, AdminForm, EmptyState, inputClass, LoadingState, useToast, AdminDateInput } from '@nidus-admin/ui'
 
 const SUSPENSION_TYPES = [
   { key: 'standard', label: 'Standard suspension', description: 'Immediate access removal until manually reactivated.' },
@@ -257,8 +257,7 @@ export default function UserSuspendPage() {
               <p className="text-sm font-medium text-gray-200">Investigation period</p>
               <div className="grid gap-4 sm:grid-cols-2">
                 <AdminField label="Start date" required>
-                  <input
-                    type="date"
+                  <AdminDateInput eventStyle
                     className={inputClass}
                     value={form.startDate}
                     onChange={(event) => setForm((prev) => ({ ...prev, startDate: event.target.value }))}
@@ -273,8 +272,7 @@ export default function UserSuspendPage() {
                   />
                 </AdminField>
                 <AdminField label="End date">
-                  <input
-                    type="date"
+                  <AdminDateInput eventStyle
                     className={inputClass}
                     min={form.startDate || undefined}
                     value={form.endDate}

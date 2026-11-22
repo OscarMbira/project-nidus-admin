@@ -15,6 +15,7 @@ import {
   AdminTable,
   EmptyState,
   LoadingState,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const toErrorMessage = (error, fallback) => {
@@ -116,8 +117,8 @@ export default function RevenueDashboardPage() {
           </div>
 
           <div className="grid gap-2 sm:grid-cols-3">
-            <input type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
-            <input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
+            <AdminDateInput eventStyle value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
+            <AdminDateInput eventStyle value={dateTo} onChange={(event) => setDateTo(event.target.value)} className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
             <button type="button" onClick={loadDashboard} className="rounded border border-blue-700 bg-blue-900/40 px-3 py-2 text-sm text-blue-200 hover:bg-blue-900/70">Apply Range</button>
           </div>
         </div>

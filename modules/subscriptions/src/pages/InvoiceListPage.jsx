@@ -34,6 +34,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 import InvoiceLineItemsEditor from '../components/InvoiceLineItemsEditor.jsx'
 import {
@@ -640,7 +641,7 @@ export default function InvoiceListPage() {
               </AdminField>
             </div>
             <AdminField label="Due Date">
-              <input type="datetime-local" className={inputClass} value={editForm.due_at} onChange={(e) => setEditForm((prev) => ({ ...prev, due_at: e.target.value }))} />
+              <AdminDateInput eventStyle withTime className={inputClass} value={editForm.due_at} onChange={(e) => setEditForm((prev) => ({ ...prev, due_at: e.target.value }))} />
             </AdminField>
             <AdminField label="Notes">
               <textarea rows={2} className={inputClass} value={editForm.notes} onChange={(e) => setEditForm((prev) => ({ ...prev, notes: e.target.value }))} />
@@ -738,7 +739,7 @@ export default function InvoiceListPage() {
             <input className={inputClass} value={createForm.subscription_id} onChange={(e) => setCreateForm((prev) => ({ ...prev, subscription_id: e.target.value }))} />
           </AdminField>
           <AdminField label="Due Date">
-            <input type="datetime-local" className={inputClass} value={createForm.due_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, due_at: e.target.value }))} />
+            <AdminDateInput eventStyle withTime className={inputClass} value={createForm.due_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, due_at: e.target.value }))} />
           </AdminField>
           <AdminField label="Notes">
             <textarea rows={2} className={inputClass} value={createForm.notes} onChange={(e) => setCreateForm((prev) => ({ ...prev, notes: e.target.value }))} />

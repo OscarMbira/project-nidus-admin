@@ -21,6 +21,7 @@ import {
   LoadingState,
   SearchBar,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const SEVERITY_OPTIONS = ['all', 'critical', 'high', 'medium', 'low']
@@ -152,8 +153,8 @@ export default function ErrorDashboardPage() {
           {SYSTEM_OPTIONS.map((option) => <option key={option} value={option}>{option === 'all' ? 'All systems' : option}</option>)}
         </select>
         <div className="grid grid-cols-2 gap-2 xl:col-span-2">
-          <input type="date" value={filters.dateFrom} onChange={(e) => setFilters((prev) => ({ ...prev, dateFrom: e.target.value }))} className="rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
-          <input type="date" value={filters.dateTo} onChange={(e) => setFilters((prev) => ({ ...prev, dateTo: e.target.value }))} className="rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
+          <AdminDateInput eventStyle value={filters.dateFrom} onChange={(e) => setFilters((prev) => ({ ...prev, dateFrom: e.target.value }))} className="rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
+          <AdminDateInput eventStyle value={filters.dateTo} onChange={(e) => setFilters((prev) => ({ ...prev, dateTo: e.target.value }))} className="rounded border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-gray-100" />
         </div>
       </div>
 

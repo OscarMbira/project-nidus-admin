@@ -19,6 +19,7 @@ import {
   useConfirmAction,
   useToast,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const TARGET_OPTIONS = ['platform', 'simulator', 'both']
@@ -231,16 +232,14 @@ export default function MaintenanceModePage() {
             </select>
           </AdminField>
           <AdminField label="Scheduled Start" required>
-            <input
-              type="datetime-local"
+            <AdminDateInput eventStyle withTime
               value={windowForm.scheduled_start}
               onChange={(e) => setWindowForm((prev) => ({ ...prev, scheduled_start: e.target.value }))}
               className={inputClass}
             />
           </AdminField>
           <AdminField label="Scheduled End">
-            <input
-              type="datetime-local"
+            <AdminDateInput eventStyle withTime
               value={windowForm.scheduled_end}
               onChange={(e) => setWindowForm((prev) => ({ ...prev, scheduled_end: e.target.value }))}
               className={inputClass}

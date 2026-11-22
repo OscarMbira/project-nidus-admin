@@ -1,0 +1,30 @@
+name: Admin Date Input Check
+
+# Admin rule 24 (monorepo v1351 parity): browser date pickers show dates in the computer's own language and
+# region. Every Admin date field uses AdminDateInput from @nidus-admin/ui (fixed D MMM YYYY / 24-hour).
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'shell/**'
+      - 'modules/**'
+      - 'packages/**'
+      - 'scripts/check-native-date-inputs.mjs'
+  pull_request:
+    paths:
+      - 'shell/**'
+      - 'modules/**'
+      - 'packages/**'
+      - 'scripts/check-native-date-inputs.mjs'
+
+jobs:
+  native-date-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: No browser date pickers (shell, modules, packages)
+        run: node scripts/check-native-date-inputs.mjs

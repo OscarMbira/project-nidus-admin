@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchAdminSessions, fetchAdminUsers, formatDate } from '@nidus-admin/shared'
-import { AdminCard, AdminTable, EmptyState, LoadingState } from '@nidus-admin/ui'
+import { AdminCard, AdminTable, EmptyState, LoadingState, AdminDateInput } from '@nidus-admin/ui'
 
 function formatDuration(startedAt, endedAt, isActive) {
   if (!startedAt) return '—'
@@ -93,8 +93,7 @@ export default function SessionHistoryPage() {
         </label>
         <label className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date From</span>
-          <input
-            type="date"
+          <AdminDateInput eventStyle
             value={dateFrom}
             onChange={(event) => setDateFrom(event.target.value)}
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -102,8 +101,7 @@ export default function SessionHistoryPage() {
         </label>
         <label className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date To</span>
-          <input
-            type="date"
+          <AdminDateInput eventStyle
             value={dateTo}
             onChange={(event) => setDateTo(event.target.value)}
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"

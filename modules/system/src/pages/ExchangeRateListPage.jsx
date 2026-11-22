@@ -22,6 +22,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const toLocalInput = (value) => {
@@ -293,7 +294,7 @@ export default function ExchangeRateListPage() {
             <input type="number" step="0.0000000001" min="0" className={inputClass} value={createForm.rate} onChange={(e) => setCreateForm((p) => ({ ...p, rate: e.target.value }))} />
           </AdminField>
           <AdminField label="Effective From">
-            <input type="datetime-local" className={inputClass} value={createForm.effective_from} onChange={(e) => setCreateForm((p) => ({ ...p, effective_from: e.target.value }))} />
+            <AdminDateInput eventStyle withTime className={inputClass} value={createForm.effective_from} onChange={(e) => setCreateForm((p) => ({ ...p, effective_from: e.target.value }))} />
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
             <AdminField label="Source">

@@ -19,6 +19,7 @@ import {
   EmptyState,
   LoadingState,
   inputClass,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 import { PaymentMethodDonutChart, StackedGatewayBarChart } from '../components/PaymentDashboardCharts.jsx'
 
@@ -154,8 +155,8 @@ export default function PaymentDashboardPage() {
             <p className="text-sm text-gray-500">Aggregated payment health and performance</p>
           </div>
           <div className="flex gap-2">
-            <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className={inputClass} />
-            <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className={inputClass} />
+            <AdminDateInput eventStyle value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className={inputClass} />
+            <AdminDateInput eventStyle value={dateTo} onChange={(e) => setDateTo(e.target.value)} className={inputClass} />
             <DetachButton label="Detach" />
           </div>
         </div>

@@ -13,6 +13,7 @@ import {
   EmptyState,
   inputClass,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const CACHE_TTL_MS = 5 * 60 * 1000
@@ -118,8 +119,8 @@ function ReportCard({ report, isActive, onGenerate }) {
       <p className="text-sm text-gray-500">{report.description}</p>
       <p className="mt-2 text-xs text-gray-600">Last generated: {relativeTime(lastGenerated)}</p>
       <div className="mt-4 flex flex-wrap gap-2">
-        <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className={inputClass} />
-        <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className={inputClass} />
+        <AdminDateInput eventStyle value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className={inputClass} />
+        <AdminDateInput eventStyle value={dateTo} onChange={(e) => setDateTo(e.target.value)} className={inputClass} />
         {report.supportsGranularity && (
           <select value={granularity} onChange={(e) => setGranularity(e.target.value)} className={inputClass}>
             <option value="daily">Daily</option>

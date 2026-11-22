@@ -33,6 +33,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const SYSTEM_FILTERS = ['all', 'platform', 'simulator']
@@ -285,8 +286,8 @@ export default function CancellationReasonsPage() {
                   <option key={c.id} value={c.id}>{c.label}</option>
                 ))}
               </select>
-              <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className={inputClass} />
-              <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className={inputClass} />
+              <AdminDateInput eventStyle value={fromDate} onChange={(e) => setFromDate(e.target.value)} className={inputClass} />
+              <AdminDateInput eventStyle value={toDate} onChange={(e) => setToDate(e.target.value)} className={inputClass} />
             </div>
 
             {submissions.length === 0 ? (

@@ -34,6 +34,7 @@ import {
   AuditDetailsPanel,
   DetailAuditTabList,
   humanizeAuditToken,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 import { statusVariant, toError } from '../utils/affiliateUi.js'
 
@@ -323,8 +324,8 @@ export default function AffiliateDetailPage() {
 
       <AdminModal open={showPayout} title="Create Payout" onClose={() => setShowPayout(false)}>
         <AdminForm onSubmit={handleCreatePayout} className="mt-2 space-y-3">
-          <AdminField label="Period Start" required><input type="date" className={inputClass} value={payoutForm.period_start} onChange={(e) => setPayoutForm((p) => ({ ...p, period_start: e.target.value }))} required /></AdminField>
-          <AdminField label="Period End" required><input type="date" className={inputClass} value={payoutForm.period_end} onChange={(e) => setPayoutForm((p) => ({ ...p, period_end: e.target.value }))} required /></AdminField>
+          <AdminField label="Period Start" required><AdminDateInput eventStyle className={inputClass} value={payoutForm.period_start} onChange={(e) => setPayoutForm((p) => ({ ...p, period_start: e.target.value }))} required /></AdminField>
+          <AdminField label="Period End" required><AdminDateInput eventStyle className={inputClass} value={payoutForm.period_end} onChange={(e) => setPayoutForm((p) => ({ ...p, period_end: e.target.value }))} required /></AdminField>
           <AdminField label="Commission Amount" required><input type="number" step="0.01" className={inputClass} value={payoutForm.commission_amount} onChange={(e) => setPayoutForm((p) => ({ ...p, commission_amount: e.target.value }))} required /></AdminField>
           <AdminField label="Gross Revenue"><input type="number" step="0.01" className={inputClass} value={payoutForm.gross_revenue} onChange={(e) => setPayoutForm((p) => ({ ...p, gross_revenue: e.target.value }))} /></AdminField>
           <AdminField label="Notes"><textarea rows={2} className={inputClass} value={payoutForm.notes} onChange={(e) => setPayoutForm((p) => ({ ...p, notes: e.target.value }))} /></AdminField>

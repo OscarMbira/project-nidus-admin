@@ -23,6 +23,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const EMPTY_CREATE_FORM = {
@@ -262,7 +263,7 @@ export default function APIKeyListPage() {
             </AdminField>
           </div>
           <AdminField label="Expires At">
-            <input type="datetime-local" className={inputClass} value={createForm.expires_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
+            <AdminDateInput eventStyle withTime className={inputClass} value={createForm.expires_at} onChange={(e) => setCreateForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
             <p className="mt-1 text-xs text-gray-500">Leave blank for no expiry</p>
           </AdminField>
           <div className="flex justify-end gap-2">
@@ -308,7 +309,7 @@ export default function APIKeyListPage() {
               <input type="number" min={1} className={inputClass} value={editForm.rate_limit_per_minute} onChange={(e) => setEditForm((prev) => ({ ...prev, rate_limit_per_minute: e.target.value }))} />
             </AdminField>
             <AdminField label="Expires At">
-              <input type="datetime-local" className={inputClass} value={editForm.expires_at} onChange={(e) => setEditForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
+              <AdminDateInput eventStyle withTime className={inputClass} value={editForm.expires_at} onChange={(e) => setEditForm((prev) => ({ ...prev, expires_at: e.target.value }))} />
             </AdminField>
           </div>
           <p className="text-xs text-gray-500">Prefix: <span className="font-mono text-gray-400">{editingKey?.key_prefix}…</span></p>

@@ -20,6 +20,7 @@ import {
   SearchBar,
   useConfirmAction,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 export default function SimLeaderboardAdminPage() {
@@ -167,8 +168,7 @@ export default function SimLeaderboardAdminPage() {
         </div>
         <div>
           <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date From</label>
-          <input
-            type="date"
+          <AdminDateInput eventStyle
             value={dateFrom}
             onChange={(event) => setDateFrom(event.target.value)}
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -176,8 +176,7 @@ export default function SimLeaderboardAdminPage() {
         </div>
         <div>
           <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date To</label>
-          <input
-            type="date"
+          <AdminDateInput eventStyle
             value={dateTo}
             onChange={(event) => setDateTo(event.target.value)}
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"

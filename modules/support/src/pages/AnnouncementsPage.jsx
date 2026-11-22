@@ -32,6 +32,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const PAGE_SIZE = 12
@@ -535,16 +536,14 @@ export default function AnnouncementsPage() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <AdminField label="Publish At">
-              <input
-                type="datetime-local"
+              <AdminDateInput eventStyle withTime
                 value={form.publish_at}
                 onChange={(event) => setForm((prev) => ({ ...prev, publish_at: event.target.value }))}
                 className={inputClass}
               />
             </AdminField>
             <AdminField label="Expires At">
-              <input
-                type="datetime-local"
+              <AdminDateInput eventStyle withTime
                 value={form.expires_at}
                 onChange={(event) => setForm((prev) => ({ ...prev, expires_at: event.target.value }))}
                 className={inputClass}

@@ -44,6 +44,7 @@ import {
   AuditCard,
   AuditTimestampPair,
   AuditDetailsPanel,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const SYSTEMS = ['platform', 'simulator']
@@ -524,18 +525,18 @@ export default function SubscriptionFormPage() {
                 <>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <AdminField label="Started at">
-                      <input type="datetime-local" className={inputClass} value={form.startedAt} onChange={(event) => setForm((prev) => ({ ...prev, startedAt: event.target.value }))} />
+                      <AdminDateInput eventStyle withTime className={inputClass} value={form.startedAt} onChange={(event) => setForm((prev) => ({ ...prev, startedAt: event.target.value }))} />
                     </AdminField>
                     <AdminField label="Expires at">
-                      <input type="datetime-local" className={inputClass} value={form.expiresAt} onChange={(event) => setForm((prev) => ({ ...prev, expiresAt: event.target.value }))} />
+                      <AdminDateInput eventStyle withTime className={inputClass} value={form.expiresAt} onChange={(event) => setForm((prev) => ({ ...prev, expiresAt: event.target.value }))} />
                     </AdminField>
                     {form.targetSystem === 'platform' && (
                       <AdminField label="Trial end">
-                        <input type="datetime-local" className={inputClass} value={form.trialEnd} onChange={(event) => setForm((prev) => ({ ...prev, trialEnd: event.target.value }))} />
+                        <AdminDateInput eventStyle withTime className={inputClass} value={form.trialEnd} onChange={(event) => setForm((prev) => ({ ...prev, trialEnd: event.target.value }))} />
                       </AdminField>
                     )}
                     <AdminField label="Next billing date">
-                      <input type="datetime-local" className={inputClass} value={form.nextBillingDate} onChange={(event) => setForm((prev) => ({ ...prev, nextBillingDate: event.target.value }))} />
+                      <AdminDateInput eventStyle withTime className={inputClass} value={form.nextBillingDate} onChange={(event) => setForm((prev) => ({ ...prev, nextBillingDate: event.target.value }))} />
                     </AdminField>
                   </div>
 

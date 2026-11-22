@@ -19,6 +19,7 @@ import {
   AuditTimestampPair,
   AuditDetailsPanel,
   DetailAuditTabList,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const toError = (error, fallback) => (typeof error === 'string' ? error : error?.message || fallback)
@@ -306,16 +307,14 @@ export default function PromoCodeFormPage() {
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <AdminField label="Valid From">
-                    <input
-                      type="date"
+                    <AdminDateInput eventStyle
                       className={inputClass}
                       value={form.valid_from}
                       onChange={(e) => setForm((p) => ({ ...p, valid_from: e.target.value }))}
                     />
                   </AdminField>
                   <AdminField label="Valid Until">
-                    <input
-                      type="date"
+                    <AdminDateInput eventStyle
                       className={inputClass}
                       value={form.valid_until}
                       onChange={(e) => setForm((p) => ({ ...p, valid_until: e.target.value }))}

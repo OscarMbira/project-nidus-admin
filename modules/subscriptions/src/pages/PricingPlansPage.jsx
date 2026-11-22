@@ -19,6 +19,7 @@ import {
   SearchBar,
   useConfirmAction,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const PAGE_SIZE = 12
@@ -340,8 +341,7 @@ export default function PricingPlansPage() {
             </div>
             <div>
               <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Effective Date</label>
-              <input
-                type="date"
+              <AdminDateInput eventStyle
                 value={editModal.effectiveDate}
                 onChange={(event) => setEditModal((prev) => ({ ...prev, effectiveDate: event.target.value }))}
                 className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"

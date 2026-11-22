@@ -115,7 +115,7 @@ still wins over speculative optimization). See monorepo `organisationCustomRoleS
    - **Use `AdminDateInput`** from `@nidus-admin/ui` (Admin's own copy of the monorepo `RegionalDateInput` — rule 34.4, no cross-repo import); add `withTime` for a date and time. Never add a new `type="date"` or `type="datetime-local"` input.
    - **Fixed format:** Admin has no organisation Regional & Format setting, so dates show as D MMM YYYY and times as 24-hour, everywhere in Admin. People type the date or pick it from a calendar.
    - **Same value as before:** `YYYY-MM-DD` for a date, the existing ISO value for a date and time; pass the same props the native input had; label it with Admin's field-help label (rule 23).
-   - **Until the control ships** (monorepo v1351, in progress), do not add new date fields with a browser picker. A check fails CI on browser date pickers once the existing 24 files are replaced. See monorepo `projectprd/v1351_regional_date_input_PRD.md`.
+   - **Check:** `node scripts/check-native-date-inputs.mjs` (CI `native-date-inputs.yml`) fails on any browser date picker in the shell, modules or packages. See monorepo `Documentation/Regional_Date_Input_v1351_Guide.md` and `projectprd/v1351_regional_date_input_PRD.md`.
 
 ## Architecture
 

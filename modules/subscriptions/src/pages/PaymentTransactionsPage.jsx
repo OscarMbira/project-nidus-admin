@@ -23,6 +23,7 @@ import {
   SearchBar,
   SelectField,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const PAGE_SIZE = 12
@@ -185,11 +186,11 @@ export default function PaymentTransactionsPage() {
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
           <div>
             <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">From Date</label>
-            <input type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
+            <AdminDateInput eventStyle value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
             <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">To Date</label>
-            <input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
+            <AdminDateInput eventStyle value={dateTo} onChange={(event) => setDateTo(event.target.value)} className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
             <label className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Status</label>

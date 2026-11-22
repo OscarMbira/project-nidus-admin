@@ -23,6 +23,7 @@ import {
   inputClass,
   SelectField,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 
 const toError = (e, fb) => (typeof e === 'string' ? e : e?.message || fb)
@@ -188,8 +189,8 @@ export default function PaymentMonitorPage() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className={inputClass} />
-          <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className={inputClass} />
+          <AdminDateInput eventStyle value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className={inputClass} />
+          <AdminDateInput eventStyle value={dateTo} onChange={(e) => setDateTo(e.target.value)} className={inputClass} />
           <select value={gatewayId} onChange={(e) => setGatewayId(e.target.value)} className={inputClass}>
             <option value="">All gateways</option>
             {gateways.map((g) => <option key={g.id} value={g.id}>{g.display_name}</option>)}

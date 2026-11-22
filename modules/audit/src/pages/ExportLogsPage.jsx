@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { exportAuditLog, fetchAdminActivity, fetchAuditLog, formatDate } from '@nidus-admin/shared'
-import { AdminCard, EmptyState, LoadingState, useToast } from '@nidus-admin/ui'
+import { AdminCard, EmptyState, LoadingState, useToast, AdminDateInput } from '@nidus-admin/ui'
 
 export default function ExportLogsPage() {
   const { showSuccess } = useToast()
@@ -81,8 +81,7 @@ export default function ExportLogsPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <label className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date From</span>
-          <input
-            type="date"
+          <AdminDateInput eventStyle
             value={dateFrom}
             onChange={(event) => setDateFrom(event.target.value)}
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
@@ -90,8 +89,7 @@ export default function ExportLogsPage() {
         </label>
         <label className="text-sm">
           <span className="mb-1 block text-xs uppercase tracking-wide text-gray-400">Date To</span>
-          <input
-            type="date"
+          <AdminDateInput eventStyle
             value={dateTo}
             onChange={(event) => setDateTo(event.target.value)}
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-blue-500 focus:outline-none"

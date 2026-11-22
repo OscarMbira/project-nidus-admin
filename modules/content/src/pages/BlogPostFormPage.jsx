@@ -57,6 +57,7 @@ import {
   inputClass,
   useConfirmAction,
   useToast,
+  AdminDateInput,
 } from '@nidus-admin/ui'
 import { BLOG_STATUS_BADGE } from './BlogPostsPage.jsx'
 import PasteImageButton from '../components/PasteImageButton.jsx'
@@ -548,7 +549,7 @@ export default function BlogPostFormPage() {
                 {status !== 'archived' ? (
                   <div className="flex flex-wrap items-end gap-2">
                     <label className="text-sm text-gray-700 dark:text-gray-300">Publish date (leave empty for now{live ? ' / keep the current date' : ''})
-                      <input type="datetime-local" className={`${inputClass} mt-1 w-60`} value={publishAt} onChange={(e) => setPublishAt(e.target.value)} />
+                      <AdminDateInput eventStyle withTime className={`${inputClass} mt-1 w-60`} value={publishAt} onChange={(e) => setPublishAt(e.target.value)} />
                     </label>
                     <button type="button" onClick={publish} disabled={isDirty || busy === 'publish'}
                       title={isDirty ? 'Save your changes first' : undefined}

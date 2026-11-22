@@ -62,3 +62,4 @@ export {
   getAdminSidebarNavTierClassName,
   getAdminSidebarNavTreeDotClassName,
 } from './sidebarNavUtils.js'
+export { AdminDateInput } from './AdminDateInput.jsx'
