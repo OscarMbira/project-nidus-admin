@@ -1,18 +1,18 @@
 /**
- * Admin plan v217 (monorepo v1341 D21, D20, D30) — where each menu item appears in the
- * consolidated sidebar of each role (placement key), plus the switch that turns the consolidated
- * sidebar on for every organisation (go-live) or off again (rollback). One organisation is
- * switched from the Organisations list. Writes go through SQL v249 RPCs (reason required, audited)
- * and bump the placement version, so every sidebar refreshes.
+ * Admin plan v217 (monorepo v1341 D21 / D30; monorepo v1528 system-wide switch) — where each
+ * menu item appears in the consolidated sidebar of each role (placement key), plus the
+ * system-wide switch that turns the consolidated sidebar on or off for every organisation.
+ * Per-organisation overrides are retired. Writes go through public.admin_* RPCs (reason
+ * required, audited) and bump the placement version so every sidebar refreshes.
  */
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   PLACEMENT_KEY_LABELS,
   deleteMenuPlacement,
-  fetchAccountMenuSettings,
   fetchMenuPlacements,
   fetchMenuSections,
+  fetchSystemConsolidatedMenu,
   getDisplayRowNumber,
   setConsolidatedMenuForAll,
   useCurrentAdmin,
@@ -47,7 +47,7 @@ export default function MenuPlacementsPage() {
   const canEdit = hasPermission('system.menu_placements.edit')
   const [rows, setRows] = useState([])
   const [sections, setSections] = useState([])
-  const [switchRows, setSwitchRows] = useState([])
+  const [systemEnabled, setSystemEnabled] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
@@ -57,11 +57,15 @@ export default function MenuPlacementsPage() {
 
   const load = async () => {
     setLoading(true)
-    const [p, s, sw] = await Promise.all([fetchMenuPlacements(placementKey), fetchMenuSections('platform'), fetchAccountMenuSettings()])
+    const [p, s, sw] = await Promise.all([
+      fetchMenuPlacements(placementKey),
+      fetchMenuSections('platform'),
+      fetchSystemConsolidatedMenu(),
+    ])
     setError(p.error || s.error || sw.error)
     setRows(p.data)
     setSections(s.data)
-    setSwitchRows(sw.data)
+    setSystemEnabled(!!sw.data?.enabled)
     setLoading(false)
   }
   useEffect(() => { load() }, [placementKey]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -82,21 +86,19 @@ export default function MenuPlacementsPage() {
     setParams(next, { replace: true })
   }
 
-  const onCount = switchRows.filter((r) => r.consolidated_menu_enabled).length
-
-  const switchAll = (enabled) => {
+  const switchSystem = (enabled) => {
     confirm({
-      title: enabled ? 'Turn the single sidebar per role on for every organisation?' : 'Turn the single sidebar per role off for every organisation?',
+      title: enabled ? 'Turn the single sidebar per role on system-wide?' : 'Turn the single sidebar per role off system-wide?',
       message: enabled
-        ? 'Every user moves to the consolidated sidebar at their next page load. Run the audit query (monorepo SQL v1452) first. You can turn it off for one organisation from the Organisations list.'
-        : 'Every user goes back to the previous sidebar. Placements are kept.',
-      confirmLabel: enabled ? 'Turn on for all' : 'Turn off for all',
+        ? 'Every user in every organisation moves to the consolidated sidebar at their next page load. Run the audit query (monorepo SQL v1452) first. There is no per-organisation override.'
+        : 'Every user goes back to the previous sidebar. Placements are kept. There is no per-organisation override.',
+      confirmLabel: enabled ? 'Turn on system-wide' : 'Turn off system-wide',
       danger: !enabled,
       requireReason: true,
       onConfirm: async (reason) => {
         const { data, error: e } = await setConsolidatedMenuForAll(enabled, reason)
         if (e) { showError(e); return }
-        showSuccess(`Single sidebar per role is now ${enabled ? 'on' : 'off'} for ${data?.organisations ?? 'all'} organisations.`)
+        showSuccess(`Single sidebar per role is now ${enabled ? 'on' : 'off'} system-wide${data?.organisations != null ? ` (${data.organisations} organisations)` : ''}.`)
         await load()
       },
     })
@@ -135,7 +137,7 @@ export default function MenuPlacementsPage() {
 
   return (
     <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Menu Placements</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400">Where each page appears in the single sidebar of each role, in Platform and Simulator.</p>
@@ -143,8 +145,8 @@ export default function MenuPlacementsPage() {
         {canEdit && (
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => navigate(editPath(null))} className="rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700">Add placement</button>
-            <button type="button" onClick={() => switchAll(true)} className="rounded border border-green-600 px-3 py-2 text-sm text-green-700 hover:bg-green-50 dark:text-green-300 dark:hover:bg-green-900/20">Turn on for all organisations</button>
-            <button type="button" onClick={() => switchAll(false)} className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">Turn off for all</button>
+            <button type="button" onClick={() => switchSystem(true)} className="rounded border border-green-600 px-3 py-2 text-sm text-green-700 hover:bg-green-50 dark:text-green-300 dark:hover:bg-green-900/20">Turn on system-wide</button>
+            <button type="button" onClick={() => switchSystem(false)} className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">Turn off system-wide</button>
           </div>
         )}
       </div>
@@ -154,17 +156,17 @@ export default function MenuPlacementsPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <AdminCard title={`Placements for ${PLACEMENT_KEY_LABELS[placementKey] || placementKey}`} value={rows.length} />
         <AdminCard title="Inactive placements" value={rows.filter((r) => !r.is_active).length} />
-        <AdminCard title="Organisations with the single sidebar on" value={onCount} />
+        <AdminCard title="Single sidebar (system-wide)" value={systemEnabled ? 'On' : 'Off'} />
       </div>
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <label className="text-sm text-gray-700 dark:text-gray-300">
+        <label data-help="exempt" className="text-sm text-gray-700 dark:text-gray-300">
           <span className="sr-only">Role</span>
           <select value={placementKey} onChange={(e) => setParam('key', e.target.value)} className={selectClass}>
             {Object.entries(PLACEMENT_KEY_LABELS).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
           </select>
         </label>
-        <label className="text-sm text-gray-700 dark:text-gray-300">
+        <label data-help="exempt" className="text-sm text-gray-700 dark:text-gray-300">
           <span className="sr-only">Section</span>
           <select value={sectionFilter} onChange={(e) => setParam('section', e.target.value)} className={selectClass}>
             <option value="">All sections</option>

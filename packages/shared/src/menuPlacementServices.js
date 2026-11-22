@@ -1,8 +1,9 @@
 /**
- * Admin plan v217 (monorepo v1341, D20 / D21 / D30) — consolidated role menu placements and the
- * per-organisation switch. Every call goes through the public.admin_* RPCs in SQL v249
- * (permissions system.menu_placements.view / .edit; writes need a reason and are audited).
- * The acting admin comes from the session — no admin id is sent from the client.
+ * Admin plan v217 (monorepo v1341, D21 / D30; monorepo v1528 system-wide switch) — consolidated
+ * role menu placements and the system-wide single-sidebar switch. Every call goes through the
+ * public.admin_* RPCs (permissions system.menu_placements.view / .edit; writes need a reason and
+ * are audited). The acting admin comes from the session — no admin id is sent from the client.
+ * Per-organisation activation (D20) is retired: setAccountConsolidatedMenu always errors after v1528.
  */
 import { getPublicDb } from './supabase.js'
 
@@ -55,9 +56,16 @@ export const searchMenuItemsForPlacement = async (search) => {
   return { data: data || [], error }
 }
 
+/** @deprecated Per-org list retired (v1528). Prefer fetchSystemConsolidatedMenu. */
 export const fetchAccountMenuSettings = async () => {
   const { data, error } = await rpc('admin_list_account_menu_settings')
   return { data: data || [], error }
+}
+
+/** System-wide consolidated sidebar flag (monorepo v1528). */
+export const fetchSystemConsolidatedMenu = async () => {
+  const { data, error } = await rpc('admin_get_system_consolidated_menu')
+  return { data: data || { enabled: false }, error }
 }
 
 export const upsertMenuSection = ({ app, sectionCode, label, icon, sortOrder, overflowLabel, isActive }, reason) =>
@@ -85,9 +93,11 @@ export const deleteMenuPlacement = (placementId, reason) =>
 export const setMenuItemDefaultSection = (menuItemId, sectionCode, reason) =>
   rpc('admin_set_menu_item_default_section', { p_menu_item_id: menuItemId, p_section_code: sectionCode || null, p_reason: reason })
 
+/** @deprecated Per-org switch retired (v1528); RPC raises — kept only so old callers fail clearly. */
 export const setAccountConsolidatedMenu = (accountId, enabled, reason) =>
   rpc('admin_set_account_consolidated_menu', { p_account_id: accountId, p_enabled: !!enabled, p_reason: reason })
 
+/** System-wide on/off (monorepo v1528). Same RPC name as the former “all orgs” go-live. */
 export const setConsolidatedMenuForAll = (enabled, reason) =>
   rpc('admin_set_consolidated_menu_all', { p_enabled: !!enabled, p_reason: reason })
 

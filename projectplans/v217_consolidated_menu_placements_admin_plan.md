@@ -17,7 +17,7 @@ Admin is the only place that writes the consolidated sidebar's placement data an
   - nav nodes: Menu Placements, Menu Sections & Slots
 - [x] `packages/shared/src/menuPlacementServices.js` (+ export) and tests
 - [x] `modules/system`: `MenuPlacementsPage` (list by role and section, search, card / table, export, add / edit / remove, turn on / off for all), `MenuPlacementFormPage` (routed, Audit tab), `MenuSectionsPage`, `MenuSectionFormPage` (routed, Audit tab); routes in `modules/system/src/index.jsx`; `defaultAdminNav.js` entries
-- [x] Organisations list: "Single sidebar" column and the per-organisation manage action
+- [x] Organisations list: "Single sidebar" column and the per-organisation manage action — **removed (monorepo v1528)**; system-wide control lives on Menu Placements only
 - [x] `CLAUDE.md` (both repos): narrow cross-schema write exception
 
 ## Review

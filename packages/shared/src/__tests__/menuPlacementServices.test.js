@@ -5,22 +5,24 @@ const rpc = vi.fn()
 vi.mock('../supabase.js', () => ({ getPublicDb: () => ({ rpc }) }))
 import {
   PLACEMENT_KEY_LABELS,
+  fetchSystemConsolidatedMenu,
   groupPlacementsBySection,
-  setAccountConsolidatedMenu,
   setConsolidatedMenuForAll,
   upsertMenuPlacement,
 } from '../menuPlacementServices.js'
 import { DEFAULT_NAV_SECTIONS } from '../defaultAdminNav.js'
 
-describe('menuPlacementServices (v217)', () => {
+describe('menuPlacementServices (v217 / v1528)', () => {
   beforeEach(() => rpc.mockReset().mockResolvedValue({ data: { ok: true }, error: null }))
 
-  it('turns the single sidebar on for one organisation with a reason (D20)', async () => {
-    await setAccountConsolidatedMenu('acc-1', true, 'Go-live')
-    expect(rpc).toHaveBeenCalledWith('admin_set_account_consolidated_menu', { p_account_id: 'acc-1', p_enabled: true, p_reason: 'Go-live' })
+  it('reads the system-wide single sidebar flag (v1528)', async () => {
+    rpc.mockResolvedValueOnce({ data: { enabled: true }, error: null })
+    const res = await fetchSystemConsolidatedMenu()
+    expect(rpc).toHaveBeenCalledWith('admin_get_system_consolidated_menu', {})
+    expect(res.data.enabled).toBe(true)
   })
 
-  it('turns it on for every organisation at once (D30)', async () => {
+  it('turns the single sidebar on system-wide with a reason (D30 / v1528)', async () => {
     await setConsolidatedMenuForAll(true, 'Release 1341')
     expect(rpc).toHaveBeenCalledWith('admin_set_consolidated_menu_all', { p_enabled: true, p_reason: 'Release 1341' })
   })
