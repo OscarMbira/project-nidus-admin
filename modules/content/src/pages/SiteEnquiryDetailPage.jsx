@@ -22,8 +22,7 @@ import {
   EmptyState,
   LoadingState,
   inputClass,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 import { ENQUIRY_BADGE, enquiryStatusLabel } from './SiteEnquiriesPage.jsx'
 
 export default function SiteEnquiryDetailPage() {
@@ -141,12 +140,12 @@ export default function SiteEnquiryDetailPage() {
           </div>
           <PermissionGate permission="system.public_site.edit">
             <div className="flex flex-wrap items-end gap-2">
-              <label className="text-sm text-gray-700 dark:text-gray-300">
+              <AdminFieldLabelWithHelp helpKey="admin.site_enquiries.status" className="text-sm text-gray-700 dark:text-gray-300">
                 Status
                 <select className={`${inputClass} mt-1 w-48`} value={status} onChange={(e) => setStatus(e.target.value)}>
                   {SITE_ENQUIRY_STATUSES.map((s) => <option key={s} value={s}>{enquiryStatusLabel(s)}</option>)}
                 </select>
-              </label>
+              </AdminFieldLabelWithHelp>
               <button
                 type="button"
                 onClick={saveStatus}

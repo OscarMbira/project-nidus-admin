@@ -27,9 +27,10 @@ export function extractUsedKeys(source) {
 
 export function extractSeededKeys(sql) {
   const keys = new Set()
-  for (const block of sql.matchAll(/INSERT INTO admin\.field_help\b[\s\S]*?;/g)) {
-    for (const m of block[0].matchAll(/\(\s*'(admin\.[a-z0-9_.]+)'/g)) keys.add(m[1])
-  }
+  // Help text may contain ';', so do not cut the INSERT at the first one — read every row tuple after it.
+  const at = sql.search(/INSERT INTO admin\.field_help\b/)
+  if (at < 0) return keys
+  for (const m of sql.slice(at).matchAll(/^\s*\(\s*'(admin\.[a-z0-9_.]+)'/gm)) keys.add(m[1])
   return keys
 }
 

@@ -131,7 +131,7 @@ export default function PublicSiteLinkFormPage() {
 
   const err = (name) => errors[name] && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors[name]}</p>
   const input = (name, label, props = {}) => (
-    <AdminField label={label} required={props.required} error={errors[name]}>
+    <AdminField helpKey={`admin.site_nav_links.${name}`} label={label} required={props.required} error={errors[name]}>
       <input className={inputClass} value={form[name]} onChange={set(name)} placeholder={props.placeholder} type={props.type || 'text'} />
       {err(name)}
     </AdminField>
@@ -205,26 +205,26 @@ export default function PublicSiteLinkFormPage() {
               {input('label', 'Label', { required: true, placeholder: 'About us' })}
               {input('link_key', 'Key', { required: true, placeholder: 'company.about' })}
             </div>
-            <AdminField label="Menu" required error={errors.nav_group}>
-              <SelectField value={form.nav_group} onChange={(v) => setValue('nav_group', v)} options={groupOptions} placeholder="Choose a menu" className={inputClass} />
+            <AdminField helpKey="admin.site_nav_links.nav_group" htmlFor="fh-site-nav-links-nav-group" label="Menu" required error={errors.nav_group}>
+              <SelectField id="fh-site-nav-links-nav-group" value={form.nav_group} onChange={(v) => setValue('nav_group', v)} options={groupOptions} placeholder="Choose a menu" className={inputClass} />
               {err('nav_group')}
             </AdminField>
             {input('description', 'Short description (shown under the label in header menus)')}
-            <AdminField label="Goes to">
+            <AdminField helpKey="admin.site_nav_links.target" htmlFor="fh-site-nav-links-target" label="Goes to">
               <div className="flex flex-wrap gap-4 text-sm text-gray-700 dark:text-gray-300">
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="target" checked={form.target === 'page'} onChange={() => setValue('target', 'page')} />
+                <label data-help="exempt" className="flex items-center gap-2">
+                  <input id="fh-site-nav-links-target" type="radio" name="target" checked={form.target === 'page'} onChange={() => setValue('target', 'page')} />
                   A page on the brand site
                 </label>
-                <label className="flex items-center gap-2">
+                <label data-help="exempt" className="flex items-center gap-2">
                   <input type="radio" name="target" checked={form.target === 'url'} onChange={() => setValue('target', 'url')} />
                   An address (another app opens in a new window)
                 </label>
               </div>
             </AdminField>
             {form.target === 'page' ? (
-              <AdminField label="Page" required error={errors.page_slug}>
-                <SelectField value={form.page_slug} onChange={(v) => setValue('page_slug', v)} options={pageOptions} placeholder="Choose a page" className={inputClass} />
+              <AdminField helpKey="admin.site_nav_links.page_slug" htmlFor="fh-site-nav-links-page-slug" label="Page" required error={errors.page_slug}>
+                <SelectField id="fh-site-nav-links-page-slug" value={form.page_slug} onChange={(v) => setValue('page_slug', v)} options={pageOptions} placeholder="Choose a page" className={inputClass} />
                 {err('page_slug')}
               </AdminField>
             ) : (
@@ -232,9 +232,9 @@ export default function PublicSiteLinkFormPage() {
             )}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {input('sort_order', 'Order', { type: 'number' })}
-              <AdminField label="Shown">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input type="checkbox" checked={form.is_active} onChange={set('is_active')} />
+              <AdminField helpKey="admin.site_nav_links.is_active" htmlFor="fh-site-nav-links-is-active" label="Shown">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-site-nav-links-is-active" type="checkbox" checked={form.is_active} onChange={set('is_active')} />
                   Visible in the menu
                 </label>
               </AdminField>

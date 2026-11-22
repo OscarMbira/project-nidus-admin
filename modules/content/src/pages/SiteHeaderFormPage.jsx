@@ -231,7 +231,7 @@ export default function SiteHeaderFormPage() {
             <fieldset disabled={isViewOnly} className="flex flex-col gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 md:p-4">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {COLOUR_FIELDS.map(([name, label]) => (
-                  <AdminField key={name} label={label} required error={errors[name]}>
+                  <AdminField helpKey={`admin.site_header_settings.${name}`} key={name} label={label} required error={errors[name]}>
                     <div className="flex items-center gap-2">
                       <input
                         type="color"
@@ -251,12 +251,12 @@ export default function SiteHeaderFormPage() {
                 <ContrastNote label="Button text on accent" ratio={ctaRatio} />
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <AdminField label="Button label" required error={errors.cta_label}>
-                  <input className={inputClass} value={form.cta_label} onChange={(e) => setValue('cta_label', e.target.value)} maxLength={40} placeholder="Request a demo" />
+                <AdminField helpKey="admin.site_header_settings.cta_label" htmlFor="fh-site-header-settings-cta-label" label="Button label" required error={errors.cta_label}>
+                  <input id="fh-site-header-settings-cta-label" className={inputClass} value={form.cta_label} onChange={(e) => setValue('cta_label', e.target.value)} maxLength={40} placeholder="Request a demo" />
                   {err('cta_label')}
                 </AdminField>
-                <AdminField label="Button goes to" error={errors.cta_url}>
-                  <input
+                <AdminField helpKey="admin.site_header_settings.cta_url" htmlFor="fh-site-header-settings-cta-url" label="Button goes to" error={errors.cta_url}>
+                  <input id="fh-site-header-settings-cta-url"
                     className={inputClass}
                     value={form.cta_url}
                     onChange={(e) => setValue('cta_url', e.target.value)}
@@ -265,9 +265,9 @@ export default function SiteHeaderFormPage() {
                   {err('cta_url')}
                 </AdminField>
               </div>
-              <AdminField label="Shown">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input type="checkbox" checked={form.is_active} onChange={(e) => setValue('is_active', e.target.checked)} />
+              <AdminField helpKey="admin.site_header_settings.is_active" htmlFor="fh-site-header-settings-is-active" label="Shown">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-site-header-settings-is-active" type="checkbox" checked={form.is_active} onChange={(e) => setValue('is_active', e.target.checked)} />
                   Use these settings (off = built-in colours and the product sign-up button)
                 </label>
               </AdminField>

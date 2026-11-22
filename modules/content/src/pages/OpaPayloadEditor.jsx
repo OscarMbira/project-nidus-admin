@@ -1,3 +1,5 @@
+
+import { AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 const OPA_TYPES = [
   'template', 'guideline', 'standard', 'procedure', 'policy',
   'historical_info', 'lessons_learned', 'other',
@@ -9,15 +11,15 @@ export default function OpaPayloadEditor({ value, onChange }) {
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm text-gray-300">
+      <AdminFieldLabelWithHelp helpKey="admin.opa_templates.title" className="block text-sm text-gray-300">
         Title
         <input
           value={v.title || ''}
           onChange={(e) => set({ title: e.target.value })}
           className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2"
         />
-      </label>
-      <label className="block text-sm text-gray-300">
+      </AdminFieldLabelWithHelp>
+      <AdminFieldLabelWithHelp helpKey="admin.opa_templates.description" className="block text-sm text-gray-300">
         Description
         <textarea
           value={v.description || ''}
@@ -25,9 +27,9 @@ export default function OpaPayloadEditor({ value, onChange }) {
           rows={3}
           className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2"
         />
-      </label>
+      </AdminFieldLabelWithHelp>
       <div className="grid gap-3 sm:grid-cols-3">
-        <label className="block text-sm text-gray-300">
+        <AdminFieldLabelWithHelp helpKey="admin.opa_templates.asset_type" className="block text-sm text-gray-300">
           Type
           <select
             value={v.opa_type || 'template'}
@@ -38,16 +40,16 @@ export default function OpaPayloadEditor({ value, onChange }) {
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
-        </label>
-        <label className="block text-sm text-gray-300">
+        </AdminFieldLabelWithHelp>
+        <AdminFieldLabelWithHelp helpKey="admin.opa_templates.version" className="block text-sm text-gray-300">
           Version
           <input
             value={v.version || '1.0'}
             onChange={(e) => set({ version: e.target.value })}
             className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2"
           />
-        </label>
-        <label className="block text-sm text-gray-300">
+        </AdminFieldLabelWithHelp>
+        <AdminFieldLabelWithHelp helpKey="admin.opa_templates.status" className="block text-sm text-gray-300">
           Status
           <select
             value={v.status || 'active'}
@@ -59,9 +61,9 @@ export default function OpaPayloadEditor({ value, onChange }) {
             <option value="archived">archived</option>
             <option value="deprecated">deprecated</option>
           </select>
-        </label>
+        </AdminFieldLabelWithHelp>
       </div>
-      <label className="block text-sm text-gray-300">
+      <AdminFieldLabelWithHelp helpKey="admin.opa_templates.notes" className="block text-sm text-gray-300">
         Notes
         <textarea
           value={v.notes || ''}
@@ -69,7 +71,7 @@ export default function OpaPayloadEditor({ value, onChange }) {
           rows={2}
           className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2"
         />
-      </label>
+      </AdminFieldLabelWithHelp>
     </div>
   )
 }

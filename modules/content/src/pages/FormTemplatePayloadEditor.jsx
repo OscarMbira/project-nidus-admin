@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ViewToggle } from '@nidus-admin/ui'
+import { ViewToggle, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 import {
   listRestoreCandidates,
   appendRestoredField,
@@ -506,7 +506,7 @@ export default function FormTemplatePayloadEditor({
     <div className="space-y-4">
       <fieldset disabled={structuralLocked} className="m-0 min-w-0 space-y-4 border-0 p-0 disabled:opacity-95">
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className={labelClass}>
+        <AdminFieldLabelWithHelp helpKey="admin.global_form_templates.template_code" className={labelClass}>
           Template code
           <input
             value={v.template_code || ''}
@@ -514,8 +514,8 @@ export default function FormTemplatePayloadEditor({
             className={inputClass}
             placeholder="F001"
           />
-        </label>
-        <label className={labelClass}>
+        </AdminFieldLabelWithHelp>
+        <AdminFieldLabelWithHelp helpKey="admin.global_form_templates.process_group" className={labelClass}>
           Process group
           <select
             value={v.process_group || 'planning'}
@@ -526,10 +526,10 @@ export default function FormTemplatePayloadEditor({
               <option key={g.value} value={g.value}>{g.label}</option>
             ))}
           </select>
-        </label>
+        </AdminFieldLabelWithHelp>
       </div>
 
-      <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+      <label data-help="exempt" className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
         <input
           type="checkbox"
           checked={v.is_active !== false}
@@ -579,7 +579,7 @@ export default function FormTemplatePayloadEditor({
         </div>
 
         <fieldset disabled={structuralLocked} className="m-0 min-w-0 space-y-3 border-0 p-0 disabled:opacity-95">
-        <label className={labelClass}>
+        <AdminFieldLabelWithHelp helpKey="admin.global_form_templates.form_title" className={labelClass}>
           Form title (shown on the form)
           <input
             value={schemaEditor.title}
@@ -587,7 +587,7 @@ export default function FormTemplatePayloadEditor({
             className={inputClass}
             placeholder="Defaults to template name if empty"
           />
-        </label>
+        </AdminFieldLabelWithHelp>
         </fieldset>
 
         {schemaEditor.sections.map((section, sIdx) => (
@@ -611,7 +611,7 @@ export default function FormTemplatePayloadEditor({
               )}
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className={labelClass}>
+              <AdminFieldLabelWithHelp helpKey="admin.global_form_template_sections.title" className={labelClass}>
                 Section title
                 <input
                   value={section.title}
@@ -622,8 +622,8 @@ export default function FormTemplatePayloadEditor({
                   }}
                   className={inputClass}
                 />
-              </label>
-              <label className={labelClass}>
+              </AdminFieldLabelWithHelp>
+              <AdminFieldLabelWithHelp helpKey="admin.global_form_template_sections.section_key" className={labelClass}>
                 Section key
                 <input
                   value={section.key}
@@ -631,7 +631,7 @@ export default function FormTemplatePayloadEditor({
                   className={inputClass}
                   placeholder="general"
                 />
-              </label>
+              </AdminFieldLabelWithHelp>
             </div>
             </fieldset>
 
@@ -777,7 +777,7 @@ export default function FormTemplatePayloadEditor({
                     </div>
                     <fieldset disabled={structuralLocked} className="m-0 min-w-0 space-y-3 border-0 p-0 disabled:opacity-95">
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <label className={labelClass}>
+                      <AdminFieldLabelWithHelp helpKey="admin.global_form_template_fields.label" className={labelClass}>
                         Label
                         <input
                           value={field.label}
@@ -788,16 +788,16 @@ export default function FormTemplatePayloadEditor({
                           }}
                           className={inputClass}
                         />
-                      </label>
-                      <label className={labelClass}>
+                      </AdminFieldLabelWithHelp>
+                      <AdminFieldLabelWithHelp helpKey="admin.global_form_template_fields.field_key" className={labelClass}>
                         Field key
                         <input
                           value={field.key}
                           onChange={(e) => updateField(sIdx, fIdx, { key: e.target.value })}
                           className={inputClass}
                         />
-                      </label>
-                      <label className={labelClass}>
+                      </AdminFieldLabelWithHelp>
+                      <AdminFieldLabelWithHelp helpKey="admin.global_form_template_fields.field_type" className={labelClass}>
                         Type
                         <select
                           value={field.type || 'text'}
@@ -808,8 +808,8 @@ export default function FormTemplatePayloadEditor({
                             <option key={t.value} value={t.value}>{t.label}</option>
                           ))}
                         </select>
-                      </label>
-                      <label className="flex items-end gap-2 pb-2 text-sm text-gray-700 dark:text-gray-300">
+                      </AdminFieldLabelWithHelp>
+                      <label data-help="exempt" className="flex items-end gap-2 pb-2 text-sm text-gray-700 dark:text-gray-300">
                         <input
                           type="checkbox"
                           checked={Boolean(field.required)}
@@ -820,7 +820,7 @@ export default function FormTemplatePayloadEditor({
                       </label>
                     </div>
                     {field.type === 'select' && (
-                      <label className={labelClass}>
+                      <AdminFieldLabelWithHelp helpKey="admin.global_form_template_fields.options" className={labelClass}>
                         Options (one per line; optional <code className="text-gray-500 dark:text-gray-400">value|Label</code>)
                         <textarea
                           rows={3}
@@ -829,10 +829,10 @@ export default function FormTemplatePayloadEditor({
                           className={`${inputClass} font-mono text-xs`}
                           placeholder={'draft|Draft\nactive|Active'}
                         />
-                      </label>
+                      </AdminFieldLabelWithHelp>
                     )}
                     </fieldset>
-                    <label className={labelClass}>
+                    <AdminFieldLabelWithHelp helpKey="admin.global_form_template_fields.guidance" className={labelClass}>
                       Guidance (offline / on-screen help)
                       <input
                         value={field.help || ''}
@@ -844,8 +844,8 @@ export default function FormTemplatePayloadEditor({
                       <span className="mt-1 block text-xs text-gray-500 dark:text-gray-400">
                         Shown under the field label on forms and in template exports (PDF/Word/etc.).
                       </span>
-                    </label>
-                    <label className={labelClass}>
+                    </AdminFieldLabelWithHelp>
+                    <AdminFieldLabelWithHelp helpKey="admin.global_form_template_fields.sample_value" className={labelClass}>
                       Sample / example value
                       <input
                         value={field.sample || ''}
@@ -857,7 +857,7 @@ export default function FormTemplatePayloadEditor({
                       <span className="mt-1 block text-xs text-gray-500 dark:text-gray-400">
                         Fills Completed (Sample) exports; on Plain Template exports appears as &quot;Example: …&quot;.
                       </span>
-                    </label>
+                    </AdminFieldLabelWithHelp>
                   </div>
                 ))}
                 {!structuralLocked && renderRestoreControls(sIdx)}

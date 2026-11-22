@@ -398,32 +398,32 @@ export default function IndustryPlanPayloadEditor({
           className="m-0 min-w-0 border-0 p-0 disabled:opacity-95"
         >
         <div className="grid gap-3 sm:grid-cols-2">
-          <AdminField label="Industry code" required>
-            <input
+          <AdminField helpKey="admin.industry_plan_templates.industry_code" htmlFor="fh-industry-plan-templates-industry-code" label="Industry code" required>
+            <input id="fh-industry-plan-templates-industry-code"
               className={inputClass}
               value={plan.industry_code}
               onChange={(e) => updateRoot('industry_code', e.target.value)}
               placeholder="financial_services"
             />
           </AdminField>
-          <AdminField label="Industry name">
-            <input
+          <AdminField helpKey="admin.industry_plan_templates.industry_name" htmlFor="fh-industry-plan-templates-industry-name" label="Industry name">
+            <input id="fh-industry-plan-templates-industry-name"
               className={inputClass}
               value={plan.industry_name}
               onChange={(e) => updateRoot('industry_name', e.target.value)}
               placeholder="Financial Services & Transformation"
             />
           </AdminField>
-          <AdminField label="Typical duration">
-            <input
+          <AdminField helpKey="admin.industry_plan_templates.typical_duration" htmlFor="fh-industry-plan-templates-typical-duration" label="Typical duration">
+            <input id="fh-industry-plan-templates-typical-duration"
               className={inputClass}
               value={plan.typical_duration}
               onChange={(e) => updateRoot('typical_duration', e.target.value)}
               placeholder="9–18 months"
             />
           </AdminField>
-          <AdminField label="Icon key">
-            <input
+          <AdminField helpKey="admin.industry_plan_templates.icon" htmlFor="fh-industry-plan-templates-icon" label="Icon key">
+            <input id="fh-industry-plan-templates-icon"
               className={inputClass}
               value={plan.icon}
               onChange={(e) => updateRoot('icon', e.target.value)}
@@ -431,8 +431,8 @@ export default function IndustryPlanPayloadEditor({
             />
           </AdminField>
           <div className="sm:col-span-2">
-            <AdminField label="Tags">
-              <input
+            <AdminField helpKey="admin.industry_plan_templates.tags" htmlFor="fh-industry-plan-templates-tags" label="Tags">
+              <input id="fh-industry-plan-templates-tags"
                 className={inputClass}
                 value={tagsToInput(plan.tags)}
                 onChange={(e) => updateRoot('tags', parseTagsInput(e.target.value))}
@@ -442,8 +442,8 @@ export default function IndustryPlanPayloadEditor({
             </AdminField>
           </div>
           <div className="sm:col-span-2">
-            <AdminField label="Catalog description">
-              <textarea
+            <AdminField helpKey="admin.industry_plan_templates.description" htmlFor="fh-industry-plan-templates-description" label="Catalog description">
+              <textarea id="fh-industry-plan-templates-description"
                 rows={4}
                 className={inputClass}
                 value={plan.description}

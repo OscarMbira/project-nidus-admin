@@ -8,7 +8,7 @@ import {
   PermissionGate,
   getAdminStorageClient,
 } from '@nidus-admin/shared'
-import { useToast, DetailAuditTabList } from '@nidus-admin/ui'
+import { useToast, DetailAuditTabList, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 /**
  * System Admin — Track B/C Global-tier upload into global_template_library,
@@ -125,7 +125,7 @@ export default function LegacyGlobalTemplateUpload() {
 
         {detailTab === 'details' && (
         <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-gray-700 bg-gray-900 p-4">
-          <label className="block text-sm text-gray-300">
+          <AdminFieldLabelWithHelp helpKey="admin.global_template_uploads.domain" className="block text-sm text-gray-300">
             Domain
             <select
               value={domain}
@@ -135,9 +135,9 @@ export default function LegacyGlobalTemplateUpload() {
               <option value="legacy_document">Reference document (Track B)</option>
               <option value="structured_list">Structured list (Track C)</option>
             </select>
-          </label>
+          </AdminFieldLabelWithHelp>
 
-          <label className="block text-sm text-gray-300">
+          <AdminFieldLabelWithHelp helpKey="admin.global_template_uploads.title" className="block text-sm text-gray-300">
             Title
             <input
               value={title}
@@ -145,11 +145,11 @@ export default function LegacyGlobalTemplateUpload() {
               className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2"
               required
             />
-          </label>
+          </AdminFieldLabelWithHelp>
 
           {domain === 'legacy_document' ? (
             <>
-              <label className="block text-sm text-gray-300">
+              <AdminFieldLabelWithHelp helpKey="admin.global_template_uploads.doc_category" className="block text-sm text-gray-300">
                 Category
                 <select
                   value={docCategory}
@@ -161,8 +161,8 @@ export default function LegacyGlobalTemplateUpload() {
                   <option value="status_report">Status report</option>
                   <option value="other">Other</option>
                 </select>
-              </label>
-              <label className="block text-sm text-gray-300">
+              </AdminFieldLabelWithHelp>
+              <label data-help="exempt" className="block text-sm text-gray-300">
                 File
                 <input
                   type="file"
@@ -174,7 +174,7 @@ export default function LegacyGlobalTemplateUpload() {
             </>
           ) : (
             <>
-              <label className="block text-sm text-gray-300">
+              <AdminFieldLabelWithHelp helpKey="admin.global_template_uploads.list_type" className="block text-sm text-gray-300">
                 List type
                 <select
                   value={listType}
@@ -186,8 +186,8 @@ export default function LegacyGlobalTemplateUpload() {
                   <option value="stakeholder_register">Stakeholder register</option>
                   <option value="budget">Budget</option>
                 </select>
-              </label>
-              <label className="block text-sm text-gray-300">
+              </AdminFieldLabelWithHelp>
+              <AdminFieldLabelWithHelp helpKey="admin.global_template_uploads.rows_json" className="block text-sm text-gray-300">
                 Rows (JSON array)
                 <textarea
                   value={rowsJson}
@@ -195,18 +195,18 @@ export default function LegacyGlobalTemplateUpload() {
                   rows={8}
                   className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2 font-mono text-xs"
                 />
-              </label>
+              </AdminFieldLabelWithHelp>
             </>
           )}
 
-          <label className="block text-sm text-gray-300">
+          <AdminFieldLabelWithHelp helpKey="admin.global_template_uploads.publish_notes" className="block text-sm text-gray-300">
             Publish notes (required to publish after create)
             <input
               value={publishNotes}
               onChange={(e) => setPublishNotes(e.target.value)}
               className="mt-1 w-full rounded border border-gray-600 bg-gray-950 px-3 py-2"
             />
-          </label>
+          </AdminFieldLabelWithHelp>
 
           <button
             type="submit"

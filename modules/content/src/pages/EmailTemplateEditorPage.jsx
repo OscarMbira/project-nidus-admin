@@ -263,8 +263,8 @@ export default function EmailTemplateEditorPage() {
       <div className="grid gap-6 xl:grid-cols-2">
         <div className="rounded-lg border border-gray-700 bg-gray-900 p-5 md:p-6">
           <AdminForm onSubmit={handleSubmit} className="space-y-4">
-            <AdminField label="Template Key" required>
-              <input
+            <AdminField helpKey="admin.email_templates.template_key" htmlFor="fh-email-templates-template-key" label="Template Key" required>
+              <input id="fh-email-templates-template-key"
                 className={inputClass}
                 value={form.template_key}
                 readOnly={isEdit}
@@ -272,23 +272,23 @@ export default function EmailTemplateEditorPage() {
                 placeholder="welcome_email"
               />
             </AdminField>
-            <AdminField label="Template Name" required>
-              <input
+            <AdminField helpKey="admin.email_templates.template_name" htmlFor="fh-email-templates-template-name" label="Template Name" required>
+              <input id="fh-email-templates-template-name"
                 className={inputClass}
                 value={form.template_name}
                 onChange={(e) => setForm((prev) => ({ ...prev, template_name: e.target.value }))}
               />
             </AdminField>
-            <AdminField label="Subject" required>
-              <input
+            <AdminField helpKey="admin.email_templates.subject" htmlFor="fh-email-templates-subject" label="Subject" required>
+              <input id="fh-email-templates-subject"
                 className={inputClass}
                 value={form.subject}
                 onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
               />
             </AdminField>
             <div className="grid gap-4 sm:grid-cols-2">
-              <AdminField label="Category">
-                <select
+              <AdminField helpKey="admin.email_templates.category" htmlFor="fh-email-templates-category" label="Category">
+                <select id="fh-email-templates-category"
                   className={inputClass}
                   value={form.category}
                   onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
@@ -298,8 +298,8 @@ export default function EmailTemplateEditorPage() {
                   ))}
                 </select>
               </AdminField>
-              <AdminField label="Target System">
-                <select
+              <AdminField helpKey="admin.email_templates.target_system" htmlFor="fh-email-templates-target-system" label="Target System">
+                <select id="fh-email-templates-target-system"
                   className={inputClass}
                   value={form.target_system}
                   onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}
@@ -310,22 +310,22 @@ export default function EmailTemplateEditorPage() {
                 </select>
               </AdminField>
             </div>
-            <AdminField label="HTML Body" required>
-              <textarea
+            <AdminField helpKey="admin.email_templates.body_html" htmlFor="fh-email-templates-body-html" label="HTML Body" required>
+              <textarea id="fh-email-templates-body-html"
                 className={`${inputClass} min-h-[180px] font-mono text-xs`}
                 value={form.body_html}
                 onChange={(e) => setForm((prev) => ({ ...prev, body_html: e.target.value }))}
               />
             </AdminField>
-            <AdminField label="Plain Text Body">
-              <textarea
+            <AdminField helpKey="admin.email_templates.body_text" htmlFor="fh-email-templates-body-text" label="Plain Text Body">
+              <textarea id="fh-email-templates-body-text"
                 className={`${inputClass} min-h-[100px] font-mono text-xs`}
                 value={form.body_text}
                 onChange={(e) => setForm((prev) => ({ ...prev, body_text: e.target.value }))}
               />
             </AdminField>
-            <AdminField label="Variables (JSON)">
-              <textarea
+            <AdminField helpKey="admin.email_templates.variables_json" htmlFor="fh-email-templates-variables-json" label="Variables (JSON)">
+              <textarea id="fh-email-templates-variables-json"
                 className={`${inputClass} min-h-[120px] font-mono text-xs`}
                 value={form.variables_json}
                 onChange={(e) => setForm((prev) => ({ ...prev, variables_json: e.target.value }))}
@@ -349,7 +349,7 @@ export default function EmailTemplateEditorPage() {
                 })}
               </div>
             )}
-            <label className="flex items-center gap-2 text-sm text-gray-300">
+            <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
               <input
                 type="checkbox"
                 checked={form.is_active}

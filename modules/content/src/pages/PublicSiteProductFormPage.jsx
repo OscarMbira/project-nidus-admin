@@ -121,7 +121,7 @@ export default function PublicSiteProductFormPage() {
   }
 
   const field = (name, label, props = {}) => (
-    <AdminField label={label} required={props.required} error={errors[name]}>
+    <AdminField helpKey={`admin.site_products.${name}`} label={label} required={props.required} error={errors[name]}>
       {props.multiline ? (
         <textarea className={inputClass} rows={props.rows || 3} value={form[name]} onChange={set(name)} />
       ) : (
@@ -211,23 +211,23 @@ export default function PublicSiteProductFormPage() {
               {field('docs_url', 'Documentation URL')}
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
-              <AdminField label="Icon">
+              <AdminField helpKey="admin.site_products.icon_key" htmlFor="fh-site-products-icon-key" label="Icon">
                 {/* Presentation keys the brand site knows how to draw (icons as presentation, Admin rule 15). */}
-                <select className={inputClass} value={form.icon_key} onChange={set('icon_key')}>
+                <select id="fh-site-products-icon-key" className={inputClass} value={form.icon_key} onChange={set('icon_key')}>
                   <option value="">Default</option>
                   {SITE_PRODUCT_ICON_KEYS.map((k) => <option key={k} value={k}>{k}</option>)}
                 </select>
               </AdminField>
-              <AdminField label="Accent colour">
-                <select className={inputClass} value={form.accent_key} onChange={set('accent_key')}>
+              <AdminField helpKey="admin.site_products.accent_key" htmlFor="fh-site-products-accent-key" label="Accent colour">
+                <select id="fh-site-products-accent-key" className={inputClass} value={form.accent_key} onChange={set('accent_key')}>
                   <option value="">Neutral</option>
                   {SITE_PRODUCT_ACCENT_KEYS.map((k) => <option key={k} value={k}>{k}</option>)}
                 </select>
               </AdminField>
               {field('sort_order', 'Card order', { type: 'number' })}
-              <AdminField label="Shown on public site">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input type="checkbox" checked={form.is_active} onChange={set('is_active')} />
+              <AdminField helpKey="admin.site_products.is_active" htmlFor="fh-site-products-is-active" label="Shown on public site">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-site-products-is-active" type="checkbox" checked={form.is_active} onChange={set('is_active')} />
                   Visible on the brand site and in the Products menu
                 </label>
               </AdminField>

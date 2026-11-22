@@ -128,8 +128,8 @@ export default function PublicSiteContentFormPage() {
         <AdminForm id="site-content-form" onSubmit={isViewOnly ? (e) => e.preventDefault() : handleSubmit}>
           <fieldset disabled={isViewOnly} className="flex flex-col gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 md:p-4">
             {record.description && <p className="text-sm text-gray-500 dark:text-gray-400">{record.description}</p>}
-            <AdminField label="Value">
-              <textarea className={inputClass} rows={4} value={value} onChange={(e) => setValue(e.target.value)} />
+            <AdminField helpKey="admin.site_content.value" htmlFor="fh-site-content-value" label="Value">
+              <textarea id="fh-site-content-value" className={inputClass} rows={4} value={value} onChange={(e) => setValue(e.target.value)} />
             </AdminField>
           </fieldset>
         </AdminForm>

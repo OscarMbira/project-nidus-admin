@@ -57,8 +57,7 @@ import {
   inputClass,
   useConfirmAction,
   useToast,
-  AdminDateInput,
-} from '@nidus-admin/ui'
+  AdminDateInput, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 import { BLOG_STATUS_BADGE } from './BlogPostsPage.jsx'
 import PasteImageButton from '../components/PasteImageButton.jsx'
 
@@ -137,7 +136,7 @@ function MarkdownEditor({ value, onChange, disabled, onError }) {
               <button key={t.label} type="button" title={t.title} aria-label={t.title} onClick={() => insert(t)}
                 className="rounded px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">{t.label}</button>
             ))}
-            <label className="cursor-pointer rounded px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" title="Insert image">
+            <label data-help="exempt" className="cursor-pointer rounded px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" title="Insert image">
               {uploading ? 'Uploading…' : 'Image'}
               <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={insertImage} disabled={uploading} />
             </label>
@@ -175,7 +174,7 @@ function CoverPicker({ url, onChange, disabled, onError }) {
     <div className="flex flex-wrap items-start gap-3">
       {url && <img src={url} alt="" className="h-16 w-28 rounded border border-gray-200 object-cover dark:border-gray-700" />}
       {!disabled && (
-        <label className={`${btn} cursor-pointer`}>
+        <label data-help="exempt" className={`${btn} cursor-pointer`}>
           {busy ? 'Uploading…' : url ? 'Replace image' : 'Upload cover image'}
           <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={pick} disabled={busy} />
         </label>
@@ -265,14 +264,14 @@ function Attachments({ post, attachments, privacyActive, canEdit, onChanged, con
       )}
       {canEdit && (
         <div className="grid gap-2 rounded border border-dashed border-gray-300 p-3 dark:border-gray-600 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
-          <label className="text-sm text-gray-700 dark:text-gray-300">File (PDF, Office, text, CSV or image; up to 10 MB)
+          <label data-help="exempt" className="text-sm text-gray-700 dark:text-gray-300">File (PDF, Office, text, CSV or image; up to 10 MB)
             <input type="file" accept={BLOG_ATTACHMENT_ACCEPT} className={`${inputClass} mt-1`}
               onChange={(e) => { const f = e.target.files?.[0] || null; setFile(f); if (f && !name) setName(f.name.replace(/\.[^.]+$/, '')) }} />
           </label>
-          <label className="text-sm text-gray-700 dark:text-gray-300">Name shown to readers
+          <AdminFieldLabelWithHelp helpKey="admin.site_blog_attachments.name" className="text-sm text-gray-700 dark:text-gray-300">Name shown to readers
             <input className={`${inputClass} mt-1`} value={name} onChange={(e) => setName(e.target.value)} maxLength={160} />
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          </AdminFieldLabelWithHelp>
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <input type="checkbox" checked={gated} onChange={(e) => setGated(e.target.checked)} /> Require email to download
           </label>
           <button type="button" onClick={upload} disabled={!file || !name.trim() || busy}
@@ -439,7 +438,7 @@ export default function BlogPostFormPage() {
   }
 
   const field = (name, label, props = {}) => (
-    <AdminField label={label} required={props.required} error={errors[name]}>
+    <AdminField helpKey={`admin.site_blog_posts.${name}`} label={label} required={props.required} error={errors[name]}>
       {props.multiline
         ? <textarea className={inputClass} rows={props.rows || 2} value={form[name]} onChange={set(name)} maxLength={props.maxLength} placeholder={props.placeholder} />
         : <input className={inputClass} value={form[name]} onChange={set(name)} maxLength={props.maxLength} placeholder={props.placeholder} disabled={props.disabled} />}
@@ -517,8 +516,8 @@ export default function BlogPostFormPage() {
               </div>
               {field('summary', 'Summary (shown in the list and to search engines)', { multiline: true, maxLength: 400 })}
               <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                <AdminField label="Category">
-                  <select className={inputClass} value={form.category_id} onChange={set('category_id')}>
+                <AdminField helpKey="admin.site_blog_posts.category_id" htmlFor="fh-site-blog-posts-category-id" label="Category">
+                  <select id="fh-site-blog-posts-category-id" className={inputClass} value={form.category_id} onChange={set('category_id')}>
                     <option value="">No category</option>
                     {categories.filter((c) => c.is_active || c.id === form.category_id).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
@@ -526,12 +525,12 @@ export default function BlogPostFormPage() {
                 {field('author_name', 'Author name', { maxLength: 120, placeholder: 'e.g. Project Nidus Team' })}
                 {field('author_role', 'Author role (optional)', { maxLength: 120 })}
               </div>
-              <AdminField label="Cover image (PNG, JPG or WebP, up to 2 MB)" error={errors.cover_image_alt}>
+              <AdminField helpKey="admin.site_blog_posts.cover_image" htmlFor="fh-site-blog-posts-cover-image" label="Cover image (PNG, JPG or WebP, up to 2 MB)" error={errors.cover_image_alt}>
                 <CoverPicker url={form.cover_image_url} onChange={(u) => setValue('cover_image_url', u)} disabled={isViewOnly} onError={showError} />
-                {form.cover_image_url && <input className={`${inputClass} mt-2`} placeholder="Describe the cover image for screen readers" value={form.cover_image_alt} onChange={set('cover_image_alt')} />}
+                {form.cover_image_url && <input id="fh-site-blog-posts-cover-image" className={`${inputClass} mt-2`} placeholder="Describe the cover image for screen readers" value={form.cover_image_alt} onChange={set('cover_image_alt')} />}
                 {errors.cover_image_alt && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.cover_image_alt}</p>}
               </AdminField>
-              <AdminField label="Article">
+              <AdminField helpKey="admin.site_blog_posts.body_md" label="Article">
                 <MarkdownEditor value={form.body_md} onChange={(v) => setValue('body_md', v)} disabled={isViewOnly} onError={showError} />
               </AdminField>
             </fieldset>
@@ -548,9 +547,9 @@ export default function BlogPostFormPage() {
                 <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Publishing</h2>
                 {status !== 'archived' ? (
                   <div className="flex flex-wrap items-end gap-2">
-                    <label className="text-sm text-gray-700 dark:text-gray-300">Publish date (leave empty for now{live ? ' / keep the current date' : ''})
+                    <AdminFieldLabelWithHelp helpKey="admin.site_blog_posts.publish_at" className="text-sm text-gray-700 dark:text-gray-300">Publish date (leave empty for now{live ? ' / keep the current date' : ''})
                       <AdminDateInput eventStyle withTime className={`${inputClass} mt-1 w-60`} value={publishAt} onChange={(e) => setPublishAt(e.target.value)} />
-                    </label>
+                    </AdminFieldLabelWithHelp>
                     <button type="button" onClick={publish} disabled={isDirty || busy === 'publish'}
                       title={isDirty ? 'Save your changes first' : undefined}
                       className="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 disabled:opacity-50">

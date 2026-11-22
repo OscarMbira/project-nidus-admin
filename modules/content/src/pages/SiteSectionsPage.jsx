@@ -34,8 +34,7 @@ import {
   LoadingState,
   inputClass,
   useConfirmAction,
-  useToast,
-} from '@nidus-admin/ui'
+  useToast, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const STATUS_BADGE = { new: { label: 'new — not published', variant: 'pending' }, draft: { label: 'draft changes', variant: 'pending' }, published: { label: 'published', variant: 'active' } }
 
@@ -202,14 +201,14 @@ export default function SiteSectionsPage() {
         <section className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Add a section</h2>
           <div className="mt-3 flex flex-wrap items-end gap-2">
-            <label className="text-sm text-gray-700 dark:text-gray-300">Type
+            <AdminFieldLabelWithHelp helpKey="admin.site_sections.section_type" className="text-sm text-gray-700 dark:text-gray-300">Type
               <select className={`${inputClass} mt-1 w-64`} value={newType} onChange={(e) => setNewType(e.target.value)}>
                 {SITE_SECTION_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
-            </label>
-            <label className="text-sm text-gray-700 dark:text-gray-300">Key (used for #links)
+            </AdminFieldLabelWithHelp>
+            <AdminFieldLabelWithHelp helpKey="admin.site_sections.section_key" className="text-sm text-gray-700 dark:text-gray-300">Key (used for #links)
               <input className={`${inputClass} mt-1 w-56`} value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="e.g. more-features" />
-            </label>
+            </AdminFieldLabelWithHelp>
             <button type="button" onClick={addSection} disabled={busy === 'add' || !newKey.trim()}
               className="rounded bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
               Add section

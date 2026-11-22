@@ -95,8 +95,8 @@ export default function LanguageListPage() {
 
   const renderFormFields = (form, setForm, isEdit = false) => (
     <>
-      <AdminField label="Language Code" required>
-        <input
+      <AdminField helpKey="admin.supported_languages.language_code" htmlFor="fh-supported-languages-language-code" label="Language Code" required>
+        <input id="fh-supported-languages-language-code"
           className={inputClass}
           value={form.language_code}
           readOnly={isEdit}
@@ -105,22 +105,22 @@ export default function LanguageListPage() {
           placeholder="en"
         />
       </AdminField>
-      <AdminField label="Language Name" required>
-        <input
+      <AdminField helpKey="admin.supported_languages.language_name" htmlFor="fh-supported-languages-language-name" label="Language Name" required>
+        <input id="fh-supported-languages-language-name"
           className={inputClass}
           value={form.language_name}
           onChange={(e) => setForm((prev) => ({ ...prev, language_name: e.target.value }))}
         />
       </AdminField>
-      <AdminField label="Native Name">
-        <input
+      <AdminField helpKey="admin.supported_languages.native_name" htmlFor="fh-supported-languages-native-name" label="Native Name">
+        <input id="fh-supported-languages-native-name"
           className={inputClass}
           value={form.native_name}
           onChange={(e) => setForm((prev) => ({ ...prev, native_name: e.target.value }))}
         />
       </AdminField>
-      <AdminField label="Target System">
-        <select
+      <AdminField helpKey="admin.supported_languages.target_system" htmlFor="fh-supported-languages-target-system" label="Target System">
+        <select id="fh-supported-languages-target-system"
           className={inputClass}
           value={form.target_system}
           onChange={(e) => setForm((prev) => ({ ...prev, target_system: e.target.value }))}
@@ -130,7 +130,7 @@ export default function LanguageListPage() {
           ))}
         </select>
       </AdminField>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input
           type="checkbox"
           checked={form.is_default}
@@ -138,7 +138,7 @@ export default function LanguageListPage() {
         />
         Default language
       </label>
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
         <input
           type="checkbox"
           checked={form.is_active}

@@ -143,11 +143,11 @@ export default function BlogCategoriesPage() {
           )}
           {tab === 'details' && (
             <form onSubmit={save} className="grid gap-3 md:grid-cols-2">
-              <AdminField label="Name" required><input className={inputClass} value={editing.name} onChange={set('name')} maxLength={60} /></AdminField>
-              <AdminField label="Key (used in links, e.g. /blog?category=pmo)" required><input className={inputClass} value={editing.slug} onChange={set('slug')} maxLength={60} /></AdminField>
-              <AdminField label="Description"><input className={inputClass} value={editing.description || ''} onChange={set('description')} maxLength={200} /></AdminField>
-              <AdminField label="Order"><input type="number" className={inputClass} value={editing.sort_order} onChange={set('sort_order')} /></AdminField>
-              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" checked={editing.is_active} onChange={set('is_active')} /> Shown in the blog filter</label>
+              <AdminField helpKey="admin.site_blog_categories.name" htmlFor="fh-site-blog-categories-name" label="Name" required><input id="fh-site-blog-categories-name" className={inputClass} value={editing.name} onChange={set('name')} maxLength={60} /></AdminField>
+              <AdminField helpKey="admin.site_blog_categories.slug" htmlFor="fh-site-blog-categories-slug" label="Key (used in links, e.g. /blog?category=pmo)" required><input id="fh-site-blog-categories-slug" className={inputClass} value={editing.slug} onChange={set('slug')} maxLength={60} /></AdminField>
+              <AdminField helpKey="admin.site_blog_categories.description" htmlFor="fh-site-blog-categories-description" label="Description"><input id="fh-site-blog-categories-description" className={inputClass} value={editing.description || ''} onChange={set('description')} maxLength={200} /></AdminField>
+              <AdminField helpKey="admin.site_blog_categories.sort_order" htmlFor="fh-site-blog-categories-sort-order" label="Order"><input id="fh-site-blog-categories-sort-order" type="number" className={inputClass} value={editing.sort_order} onChange={set('sort_order')} /></AdminField>
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" checked={editing.is_active} onChange={set('is_active')} /> Shown in the blog filter</label>
               <div className="flex justify-end gap-2 md:col-span-2">
                 <button type="button" onClick={close} className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">Cancel</button>
                 <button type="submit" disabled={saving || !isDirty} className="rounded bg-blue-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-600 disabled:opacity-60">{saving ? 'Saving...' : 'Save'}</button>

@@ -224,31 +224,31 @@ export default function EmailTemplateListPage() {
 
       <AdminModal open={showCreate} title="Create Email Template" onClose={() => setShowCreate(false)}>
         <AdminForm onSubmit={handleCreate} className="mt-2 space-y-3">
-          <AdminField label="Template Key" required>
-            <input
+          <AdminField helpKey="admin.email_templates.template_key" htmlFor="fh-email-templates-template-key" label="Template Key" required>
+            <input id="fh-email-templates-template-key"
               className={inputClass}
               value={createForm.template_key}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, template_key: e.target.value }))}
               placeholder="welcome_email"
             />
           </AdminField>
-          <AdminField label="Template Name" required>
-            <input
+          <AdminField helpKey="admin.email_templates.template_name" htmlFor="fh-email-templates-template-name" label="Template Name" required>
+            <input id="fh-email-templates-template-name"
               className={inputClass}
               value={createForm.template_name}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, template_name: e.target.value }))}
             />
           </AdminField>
-          <AdminField label="Subject" required>
-            <input
+          <AdminField helpKey="admin.email_templates.subject" htmlFor="fh-email-templates-subject" label="Subject" required>
+            <input id="fh-email-templates-subject"
               className={inputClass}
               value={createForm.subject}
               onChange={(e) => setCreateForm((prev) => ({ ...prev, subject: e.target.value }))}
             />
           </AdminField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminField label="Category">
-              <select
+            <AdminField helpKey="admin.email_templates.category" htmlFor="fh-email-templates-category" label="Category">
+              <select id="fh-email-templates-category"
                 className={inputClass}
                 value={createForm.category}
                 onChange={(e) => setCreateForm((prev) => ({ ...prev, category: e.target.value }))}
@@ -258,8 +258,8 @@ export default function EmailTemplateListPage() {
                 ))}
               </select>
             </AdminField>
-            <AdminField label="Target System">
-              <select
+            <AdminField helpKey="admin.email_templates.target_system" htmlFor="fh-email-templates-target-system" label="Target System">
+              <select id="fh-email-templates-target-system"
                 className={inputClass}
                 value={createForm.target_system}
                 onChange={(e) => setCreateForm((prev) => ({ ...prev, target_system: e.target.value }))}
@@ -270,7 +270,7 @@ export default function EmailTemplateListPage() {
               </select>
             </AdminField>
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-300">
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
             <input
               type="checkbox"
               checked={createForm.is_active}

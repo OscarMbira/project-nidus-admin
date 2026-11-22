@@ -88,7 +88,7 @@ function ImagePicker({ url, onChange, disabled, label = 'Upload image' }) {
     <div className="flex flex-wrap items-start gap-2">
       {url && <img src={url} alt="" className="h-10 w-10 rounded border border-gray-200 object-cover dark:border-gray-700" />}
       {!disabled && (
-        <label className="cursor-pointer rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
+        <label data-help="exempt" className="cursor-pointer rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
           {busy ? 'Uploading...' : url ? 'Replace' : label}
           <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={pick} disabled={busy} />
         </label>
@@ -198,7 +198,7 @@ export default function SiteSectionFormPage() {
   })
 
   const text = (name, label, props = {}) => (
-    <AdminField label={label} required={props.required} error={errors[name]}>
+    <AdminField helpKey={`admin.site_sections.${name}`} label={label} required={props.required} error={errors[name]}>
       {props.multiline
         ? <textarea className={inputClass} rows={props.rows || 3} value={form[name]} onChange={(e) => set(name, e.target.value)} placeholder={props.placeholder} />
         : <input className={inputClass} value={form[name]} onChange={(e) => set(name, e.target.value)} placeholder={props.placeholder} />}
@@ -206,7 +206,7 @@ export default function SiteSectionFormPage() {
     </AdminField>
   )
   const cta = (which, label) => (
-    <AdminField label={label} error={errors[which]}>
+    <AdminField helpKey={`admin.site_sections.${which}`} label={label} error={errors[which]}>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <input className={inputClass} placeholder="Button text" value={form[which].label} onChange={(e) => setCta(which, 'label', e.target.value)} />
         <input className={inputClass} placeholder="#get-started, /contact?topic=sales or https://…" value={form[which].href} onChange={(e) => setCta(which, 'href', e.target.value)} />
@@ -276,9 +276,9 @@ export default function SiteSectionFormPage() {
             {fields.includes('primary_cta') && cta('primary_cta', 'Main button')}
             {fields.includes('secondary_cta') && cta('secondary_cta', 'Second button (optional)')}
             {fields.includes('image') && (
-              <AdminField label="Image (PNG, JPG, WebP or SVG, up to 2 MB)" error={errors.image_alt}>
+              <AdminField helpKey="admin.site_sections.image" htmlFor="fh-site-sections-image" label="Image (PNG, JPG, WebP or SVG, up to 2 MB)" error={errors.image_alt}>
                 <ImagePicker url={form.image_url} onChange={(u) => set('image_url', u)} disabled={isViewOnly} />
-                {form.image_url && <input className={`${inputClass} mt-2`} placeholder="Describe the image for screen readers" value={form.image_alt} onChange={(e) => set('image_alt', e.target.value)} />}
+                {form.image_url && <input id="fh-site-sections-image" className={`${inputClass} mt-2`} placeholder="Describe the image for screen readers" value={form.image_alt} onChange={(e) => set('image_alt', e.target.value)} />}
                 {errors.image_alt && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.image_alt}</p>}
               </AdminField>
             )}
@@ -352,9 +352,9 @@ export default function SiteSectionFormPage() {
               </div>
             )}
 
-            <AdminField label="Shown on the page">
-              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <input type="checkbox" checked={form.is_active} onChange={(e) => set('is_active', e.target.checked)} />
+            <AdminField helpKey="admin.site_sections.is_active" htmlFor="fh-site-sections-is-active" label="Shown on the page">
+              <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <input id="fh-site-sections-is-active" type="checkbox" checked={form.is_active} onChange={(e) => set('is_active', e.target.checked)} />
                 Show this section to visitors (after publishing)
               </label>
             </AdminField>

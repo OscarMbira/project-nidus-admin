@@ -111,7 +111,7 @@ export default function PublicSitePageFormPage() {
   }
 
   const field = (name, label, props = {}) => (
-    <AdminField label={label} required={props.required} error={errors[name]}>
+    <AdminField helpKey={`admin.site_pages.${name}`} label={label} required={props.required} error={errors[name]}>
       {props.multiline ? (
         <textarea className={`${inputClass} ${props.mono ? 'font-mono text-xs' : ''}`} rows={props.rows || 3} value={form[name]} onChange={set(name)} placeholder={props.placeholder} />
       ) : (
@@ -191,15 +191,15 @@ export default function PublicSitePageFormPage() {
             {field('summary', 'Summary (intro line and search description)', { multiline: true, rows: 2 })}
             {field('body_md', 'Page content (Markdown)', { multiline: true, rows: 18, mono: true, placeholder: '## Heading\n\nParagraph text, **bold**, [links](https://example.com) and - bullet lists.' })}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <AdminField label="Kind">
-                <select className={inputClass} value={form.page_kind} onChange={set('page_kind')}>
+              <AdminField helpKey="admin.site_pages.page_kind" htmlFor="fh-site-pages-page-kind" label="Kind">
+                <select id="fh-site-pages-page-kind" className={inputClass} value={form.page_kind} onChange={set('page_kind')}>
                   {SITE_PAGE_KINDS.map((k) => <option key={k} value={k}>{k}</option>)}
                 </select>
               </AdminField>
               {field('sort_order', 'Order', { type: 'number' })}
-              <AdminField label="Shown on public site">
-                <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <input type="checkbox" checked={form.is_active} onChange={set('is_active')} />
+              <AdminField helpKey="admin.site_pages.is_active" htmlFor="fh-site-pages-is-active" label="Shown on public site">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <input id="fh-site-pages-is-active" type="checkbox" checked={form.is_active} onChange={set('is_active')} />
                   Visible (links to hidden pages are hidden too)
                 </label>
               </AdminField>

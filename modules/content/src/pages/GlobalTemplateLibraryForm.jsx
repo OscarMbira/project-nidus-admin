@@ -654,8 +654,8 @@ export default function GlobalTemplateLibraryForm() {
                 showError('You are in view mode. Switch to Edit to change this template.')
               }}
             >
-            <AdminField label="Name" required>
-              <input
+            <AdminField helpKey="admin.global_template_library.name" htmlFor="fh-global-template-library-name" label="Name" required>
+              <input id="fh-global-template-library-name"
                 className={inputClass}
                 value={form.name}
                 onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
@@ -665,8 +665,8 @@ export default function GlobalTemplateLibraryForm() {
               />
             </AdminField>
             <div className="grid gap-4 sm:grid-cols-2">
-              <AdminField label="Category">
-                <input
+              <AdminField helpKey="admin.global_template_library.category" htmlFor="fh-global-template-library-category" label="Category">
+                <input id="fh-global-template-library-category"
                   className={inputClass}
                   value={form.category}
                   onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}
@@ -679,8 +679,8 @@ export default function GlobalTemplateLibraryForm() {
                   readOnly={isReadOnly}
                 />
               </AdminField>
-              <AdminField label="Methodology">
-                <select
+              <AdminField helpKey="admin.global_template_library.methodology" htmlFor="fh-global-template-library-methodology" label="Methodology">
+                <select id="fh-global-template-library-methodology"
                   className={inputClass}
                   value={form.methodology || ''}
                   disabled={isReadOnly}
@@ -695,8 +695,8 @@ export default function GlobalTemplateLibraryForm() {
                 </p>
               </AdminField>
             </div>
-            <AdminField label="Description">
-              <textarea
+            <AdminField helpKey="admin.global_template_library.description" htmlFor="fh-global-template-library-description" label="Description">
+              <textarea id="fh-global-template-library-description"
                 rows={3}
                 className={inputClass}
                 value={form.description}
@@ -706,8 +706,8 @@ export default function GlobalTemplateLibraryForm() {
               />
             </AdminField>
             <div className="grid gap-4 sm:grid-cols-2">
-              <AdminField label="Domain" required>
-                <select
+              <AdminField helpKey="admin.global_template_library.domain" htmlFor="fh-global-template-library-domain" label="Domain" required>
+                <select id="fh-global-template-library-domain"
                   className={inputClass}
                   value={form.domain}
                   disabled={isEdit || isReadOnly}
@@ -800,23 +800,23 @@ export default function GlobalTemplateLibraryForm() {
                 {form.fields.map((field, index) => (
                   <div key={index} className="space-y-2 rounded border border-gray-700 p-3">
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <AdminField label="Field code" required>
-                        <input
+                      <AdminField helpKey="admin.global_template_fields.field_code" htmlFor="fh-global-template-fields-field-code" label="Field code" required>
+                        <input id="fh-global-template-fields-field-code"
                           className={inputClass}
                           value={field.field_code}
                           onChange={(e) => updateField(index, 'field_code', e.target.value)}
                           placeholder="risk_appetite"
                         />
                       </AdminField>
-                      <AdminField label="Label" required>
-                        <input
+                      <AdminField helpKey="admin.global_template_fields.label" htmlFor="fh-global-template-fields-label" label="Label" required>
+                        <input id="fh-global-template-fields-label"
                           className={inputClass}
                           value={field.label}
                           onChange={(e) => updateField(index, 'label', e.target.value)}
                         />
                       </AdminField>
-                      <AdminField label="Type">
-                        <select
+                      <AdminField helpKey="admin.global_template_fields.field_type" htmlFor="fh-global-template-fields-field-type" label="Type">
+                        <select id="fh-global-template-fields-field-type"
                           className={inputClass}
                           value={field.field_type}
                           onChange={(e) => updateField(index, 'field_type', e.target.value)}
@@ -824,9 +824,9 @@ export default function GlobalTemplateLibraryForm() {
                           {FIELD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                         </select>
                       </AdminField>
-                      <AdminField label="Required">
-                        <label className="flex items-center gap-2 text-sm text-gray-300">
-                          <input
+                      <AdminField helpKey="admin.global_template_fields.is_required" htmlFor="fh-global-template-fields-is-required" label="Required">
+                        <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-300">
+                          <input id="fh-global-template-fields-is-required"
                             type="checkbox"
                             checked={Boolean(field.required)}
                             onChange={(e) => updateField(index, 'required', e.target.checked)}
@@ -835,8 +835,8 @@ export default function GlobalTemplateLibraryForm() {
                         </label>
                       </AdminField>
                     </div>
-                    <AdminField label="Guidance (instructions)">
-                      <textarea
+                    <AdminField helpKey="admin.global_template_fields.guidance" htmlFor="fh-global-template-fields-guidance" label="Guidance (instructions)">
+                      <textarea id="fh-global-template-fields-guidance"
                         rows={3}
                         className={inputClass}
                         value={field.guidance_text || ''}
@@ -844,8 +844,8 @@ export default function GlobalTemplateLibraryForm() {
                         placeholder="How should users complete this field?"
                       />
                     </AdminField>
-                    <AdminField label="Sample default (pre-fills / sync override)">
-                      <textarea
+                    <AdminField helpKey="admin.global_template_fields.sample_default" htmlFor="fh-global-template-fields-sample-default" label="Sample default (pre-fills / sync override)">
+                      <textarea id="fh-global-template-fields-sample-default"
                         rows={3}
                         className={inputClass}
                         value={defaultValueToInput(field.default_value)}

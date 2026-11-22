@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ViewToggle } from '@nidus-admin/ui'
+import { ViewToggle, AdminFieldLabelWithHelp } from '@nidus-admin/ui'
 
 const DOCUMENT_TYPES = [
   { value: 'project_charters', label: 'Project Charter', category: 'Initiating' },
@@ -273,7 +273,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
 
     if (field.type === 'textarea' || isComplex) {
       return (
-        <label key={field.key} className={labelClass}>
+        <label data-help="exempt" key={field.key} className={labelClass}>
           {field.label}
           <textarea
             rows={rows || 3}
@@ -289,7 +289,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
     }
 
     return (
-      <label key={field.key} className={labelClass}>
+      <label data-help="exempt" key={field.key} className={labelClass}>
         {field.label}
         <input
           value={valueToInput(current)}
@@ -390,7 +390,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
   return (
     <div className="space-y-4">
       <fieldset disabled={readOnly} className="m-0 min-w-0 space-y-4 border-0 p-0 disabled:opacity-95">
-        <label className={labelClass}>
+        <AdminFieldLabelWithHelp helpKey="admin.process_templates.document_type" className={labelClass}>
           Document type
           <select
             value={documentType}
@@ -407,18 +407,18 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
               <option key={d.value} value={d.value}>{d.label} ({d.category})</option>
             ))}
           </select>
-        </label>
+        </AdminFieldLabelWithHelp>
 
-        <label className={labelClass}>
+        <AdminFieldLabelWithHelp helpKey="admin.process_templates.title" className={labelClass}>
           Title
           <input
             value={v.title || ''}
             onChange={(e) => set({ title: e.target.value })}
             className={inputClass}
           />
-        </label>
+        </AdminFieldLabelWithHelp>
 
-        <label className={labelClass}>
+        <AdminFieldLabelWithHelp helpKey="admin.process_templates.description" className={labelClass}>
           Description
           <textarea
             value={v.description || ''}
@@ -426,7 +426,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
             rows={2}
             className={inputClass}
           />
-        </label>
+        </AdminFieldLabelWithHelp>
       </fieldset>
 
       <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-950/40">
@@ -471,7 +471,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
                   const complex = val != null && typeof val === 'object'
                   return (
                     <div key={key} className="flex flex-col gap-2 sm:flex-row sm:items-start">
-                      <label className={`${labelClass} flex-1`}>
+                      <label data-help="exempt" className={`${labelClass} flex-1`}>
                         {humanizeKey(key)}
                         <textarea
                           rows={complex ? 4 : 2}
@@ -501,7 +501,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
 
         {!readOnly && (
           <div className="flex flex-wrap items-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-700">
-            <label className={`${labelClass} min-w-[12rem] flex-1`}>
+            <AdminFieldLabelWithHelp helpKey="admin.process_templates.custom_field_label" className={`${labelClass} min-w-[12rem] flex-1`}>
               Add custom field
               <input
                 value={newFieldLabel}
@@ -515,7 +515,7 @@ export default function ProcessTemplatePayloadEditor({ value, onChange, readOnly
                 className={inputClass}
                 placeholder="e.g. Contingency %"
               />
-            </label>
+            </AdminFieldLabelWithHelp>
             <button
               type="button"
               onClick={addCustomField}

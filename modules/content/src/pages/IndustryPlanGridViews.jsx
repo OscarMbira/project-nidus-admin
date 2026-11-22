@@ -131,16 +131,16 @@ function RemoveRowButton({ onClick, disabled }) {
 function PlanningDefaultsFields({ row, listKey, index, updateListItem, offsetLabel }) {
   return (
     <div className="grid gap-3 sm:grid-cols-5">
-      <AdminField label="Priority">
-        <SearchableSelect
+      <AdminField helpKey="admin.industry_plan_tasks.priority" htmlFor="fh-industry-plan-tasks-priority" label="Priority">
+        <SearchableSelect id="fh-industry-plan-tasks-priority"
           value={row.priority || ''}
           onChange={(v) => updateListItem(listKey, index, 'priority', v)}
           options={PRIORITIES.filter(Boolean).map((v) => ({ value: v, label: v }))}
           placeholder="—"
         />
       </AdminField>
-      <AdminField label="Planned hours">
-        <input
+      <AdminField helpKey="admin.industry_plan_tasks.planned_hours" htmlFor="fh-industry-plan-tasks-planned-hours" label="Planned hours">
+        <input id="fh-industry-plan-tasks-planned-hours"
           type="number"
           min={0}
           className={inputClass}
@@ -148,8 +148,8 @@ function PlanningDefaultsFields({ row, listKey, index, updateListItem, offsetLab
           onChange={(e) => updateListItem(listKey, index, 'planned_hours', e.target.value)}
         />
       </AdminField>
-      <AdminField label="Planned cost">
-        <input
+      <AdminField helpKey="admin.industry_plan_tasks.planned_cost" htmlFor="fh-industry-plan-tasks-planned-cost" label="Planned cost">
+        <input id="fh-industry-plan-tasks-planned-cost"
           type="number"
           min={0}
           step="0.01"
@@ -158,8 +158,8 @@ function PlanningDefaultsFields({ row, listKey, index, updateListItem, offsetLab
           onChange={(e) => updateListItem(listKey, index, 'planned_cost', e.target.value)}
         />
       </AdminField>
-      <AdminField label={offsetLabel || 'Offset from phase start (days)'}>
-        <input
+      <AdminField helpKey="admin.industry_plan_tasks.start_offset_days" htmlFor="fh-industry-plan-tasks-start-offset-days" label={offsetLabel || 'Offset from phase start (days)'}>
+        <input id="fh-industry-plan-tasks-start-offset-days"
           type="number"
           min={0}
           className={inputClass}
@@ -167,9 +167,9 @@ function PlanningDefaultsFields({ row, listKey, index, updateListItem, offsetLab
           onChange={(e) => updateListItem(listKey, index, 'start_offset_days', e.target.value)}
         />
       </AdminField>
-      <AdminField label="Locked">
-        <label className="flex items-center gap-2 pt-2 text-sm text-gray-700 dark:text-gray-300">
-          <input
+      <AdminField helpKey="admin.industry_plan_tasks.is_locked" htmlFor="fh-industry-plan-tasks-is-locked" label="Locked">
+        <label data-help="exempt" className="flex items-center gap-2 pt-2 text-sm text-gray-700 dark:text-gray-300">
+          <input id="fh-industry-plan-tasks-is-locked"
             type="checkbox"
             checked={Boolean(row.is_locked)}
             onChange={(e) => updateListItem(listKey, index, 'is_locked', e.target.checked)}
@@ -256,8 +256,8 @@ function CustomFieldsSection({ row, listKey, index, updateListItem, customDefs }
           const value = row.custom_fields?.[def.id]
           if (def.type === 'yes_no') {
             return (
-              <AdminField key={def.id} label={def.label}>
-                <label className="flex items-center gap-2 pt-2 text-sm text-gray-700 dark:text-gray-300">
+              <AdminField data-help="exempt" key={def.id} label={def.label}>
+                <label data-help="exempt" className="flex items-center gap-2 pt-2 text-sm text-gray-700 dark:text-gray-300">
                   <input
                     type="checkbox"
                     checked={Boolean(value)}
@@ -270,7 +270,7 @@ function CustomFieldsSection({ row, listKey, index, updateListItem, customDefs }
           }
           if (def.type === 'number') {
             return (
-              <AdminField key={def.id} label={def.label}>
+              <AdminField data-help="exempt" key={def.id} label={def.label}>
                 <input
                   type="number"
                   className={inputClass}
@@ -281,7 +281,7 @@ function CustomFieldsSection({ row, listKey, index, updateListItem, customDefs }
             )
           }
           return (
-            <AdminField key={def.id} label={def.label}>
+            <AdminField data-help="exempt" key={def.id} label={def.label}>
               <input
                 className={inputClass}
                 value={value ?? ''}
@@ -339,7 +339,7 @@ function WbsOutlineToolbar({ outlineLevel, maxLevel, onOutlineLevel }) {
       >
         Expand all
       </button>
-      <label className="ml-1 inline-flex items-center gap-1 text-[11px] text-gray-600 dark:text-gray-300">
+      <label data-help="exempt" className="ml-1 inline-flex items-center gap-1 text-[11px] text-gray-600 dark:text-gray-300">
         <span className="whitespace-nowrap">Outline level</span>
         <select
           className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-1.5 py-1 text-[11px] text-gray-800 dark:text-gray-100"
@@ -586,24 +586,24 @@ export function PhaseDetail({ row, index, updateListItem, removeListItem, canRem
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-3">
-        <AdminField label="Phase #">
-          <input type="number" min={1} className={inputClass} value={row.phase_number}
+        <AdminField helpKey="admin.industry_plan_phases.phase_number" htmlFor="fh-industry-plan-phases-phase-number" label="Phase #">
+          <input id="fh-industry-plan-phases-phase-number" type="number" min={1} className={inputClass} value={row.phase_number}
             onChange={(e) => updateListItem('phases', index, 'phase_number', e.target.value)} />
         </AdminField>
         <div className="sm:col-span-2">
-          <AdminField label="Phase name" required>
-            <input className={inputClass} value={row.phase_name}
+          <AdminField helpKey="admin.industry_plan_phases.phase_name" htmlFor="fh-industry-plan-phases-phase-name" label="Phase name" required>
+            <input id="fh-industry-plan-phases-phase-name" className={inputClass} value={row.phase_name}
               onChange={(e) => updateListItem('phases', index, 'phase_name', e.target.value)} />
           </AdminField>
         </div>
-        <AdminField label="Estimated duration">
-          <input className={inputClass} value={row.estimated_duration}
+        <AdminField helpKey="admin.industry_plan_phases.estimated_duration" htmlFor="fh-industry-plan-phases-estimated-duration" label="Estimated duration">
+          <input id="fh-industry-plan-phases-estimated-duration" className={inputClass} value={row.estimated_duration}
             onChange={(e) => updateListItem('phases', index, 'estimated_duration', e.target.value)}
             placeholder="2–4 weeks" />
         </AdminField>
         <div className="sm:col-span-2">
-          <AdminField label="Description">
-            <textarea rows={3} className={inputClass} value={row.phase_description}
+          <AdminField helpKey="admin.industry_plan_phases.phase_description" htmlFor="fh-industry-plan-phases-phase-description" label="Description">
+            <textarea id="fh-industry-plan-phases-phase-description" rows={3} className={inputClass} value={row.phase_description}
               onChange={(e) => updateListItem('phases', index, 'phase_description', e.target.value)} />
           </AdminField>
         </div>
@@ -624,27 +624,27 @@ export function ActivityDetail({ row, index, plan, updateListItem, removeListIte
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <AdminField label="Activity name" required>
-          <input className={inputClass} value={row.activity_name}
+        <AdminField helpKey="admin.industry_plan_activities.activity_name" htmlFor="fh-industry-plan-activities-activity-name" label="Activity name" required>
+          <input id="fh-industry-plan-activities-activity-name" className={inputClass} value={row.activity_name}
             onChange={(e) => updateListItem('activities', index, 'activity_name', e.target.value)} />
         </AdminField>
-        <AdminField label="Phase #">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_activities.phase_number" htmlFor="fh-industry-plan-activities-phase-number" label="Phase #">
+          <SearchableSelect id="fh-industry-plan-activities-phase-number"
             value={row.phase_number == null ? '' : String(row.phase_number)}
             onChange={(v) => updateListItem('activities', index, 'phase_number', v)}
             options={[{ value: '', label: '— Unassigned —' }, ...phaseOpts]}
             placeholder="Select phase"
           />
         </AdminField>
-        <AdminField label="Type">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_activities.activity_type" htmlFor="fh-industry-plan-activities-activity-type" label="Type">
+          <SearchableSelect id="fh-industry-plan-activities-activity-type"
             value={row.activity_type || ''}
             onChange={(v) => updateListItem('activities', index, 'activity_type', v)}
             options={ACTIVITY_TYPES.map((t) => ({ value: t, label: t }))}
           />
         </AdminField>
-        <AdminField label="Resource type">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_activities.resource_type" htmlFor="fh-industry-plan-activities-resource-type" label="Resource type">
+          <SearchableSelect id="fh-industry-plan-activities-resource-type"
             value={row.resource_type || ''}
             onChange={(v) => updateListItem('activities', index, 'resource_type', v)}
             options={resourceOpts}
@@ -652,16 +652,16 @@ export function ActivityDetail({ row, index, plan, updateListItem, removeListIte
             placeholder="Search or type resource type"
           />
         </AdminField>
-        <AdminField label="Typical duration">
-          <input className={inputClass} value={row.typical_duration}
+        <AdminField helpKey="admin.industry_plan_activities.typical_duration" htmlFor="fh-industry-plan-activities-typical-duration" label="Typical duration">
+          <input id="fh-industry-plan-activities-typical-duration" className={inputClass} value={row.typical_duration}
             onChange={(e) => updateListItem('activities', index, 'typical_duration', e.target.value)} />
         </AdminField>
-        <AdminField label="Typical effort">
-          <input className={inputClass} value={row.typical_effort}
+        <AdminField helpKey="admin.industry_plan_activities.typical_effort" htmlFor="fh-industry-plan-activities-typical-effort" label="Typical effort">
+          <input id="fh-industry-plan-activities-typical-effort" className={inputClass} value={row.typical_effort}
             onChange={(e) => updateListItem('activities', index, 'typical_effort', e.target.value)} />
         </AdminField>
         <div className="sm:col-span-2">
-          <AdminField label="Required skills / competencies">
+          <AdminField helpKey="admin.industry_plan_activities.required_skills" label="Required skills / competencies">
             <MultiSearchableSelect
               values={row.required_skills || []}
               onChange={(v) => updateListItem('activities', index, 'required_skills', v)}
@@ -672,8 +672,8 @@ export function ActivityDetail({ row, index, plan, updateListItem, removeListIte
           </AdminField>
         </div>
         <div className="sm:col-span-2">
-          <AdminField label="Description">
-            <textarea rows={3} className={inputClass} value={row.activity_description}
+          <AdminField helpKey="admin.industry_plan_activities.activity_description" htmlFor="fh-industry-plan-activities-activity-description" label="Description">
+            <textarea id="fh-industry-plan-activities-activity-description" rows={3} className={inputClass} value={row.activity_description}
               onChange={(e) => updateListItem('activities', index, 'activity_description', e.target.value)} />
           </AdminField>
         </div>
@@ -690,27 +690,27 @@ export function DeliverableDetail({ row, index, plan, updateListItem, removeList
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <AdminField label="Deliverable name" required>
-          <input className={inputClass} value={row.deliverable_name}
+        <AdminField helpKey="admin.industry_plan_deliverables.deliverable_name" htmlFor="fh-industry-plan-deliverables-deliverable-name" label="Deliverable name" required>
+          <input id="fh-industry-plan-deliverables-deliverable-name" className={inputClass} value={row.deliverable_name}
             onChange={(e) => updateListItem('deliverables', index, 'deliverable_name', e.target.value)} />
         </AdminField>
-        <AdminField label="Phase #">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_deliverables.phase_number" htmlFor="fh-industry-plan-deliverables-phase-number" label="Phase #">
+          <SearchableSelect id="fh-industry-plan-deliverables-phase-number"
             value={row.phase_number == null ? '' : String(row.phase_number)}
             onChange={(v) => updateListItem('deliverables', index, 'phase_number', v)}
             options={[{ value: '', label: '— Unassigned —' }, ...phaseOpts]}
           />
         </AdminField>
-        <AdminField label="Type">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_deliverables.deliverable_type" htmlFor="fh-industry-plan-deliverables-deliverable-type" label="Type">
+          <SearchableSelect id="fh-industry-plan-deliverables-deliverable-type"
             value={row.deliverable_type || ''}
             onChange={(v) => updateListItem('deliverables', index, 'deliverable_type', v)}
             options={DELIVERABLE_TYPES.map((t) => ({ value: t, label: t }))}
           />
         </AdminField>
-        <AdminField label="Mandatory">
-          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-            <input type="checkbox" checked={Boolean(row.is_mandatory)}
+        <AdminField helpKey="admin.industry_plan_deliverables.is_mandatory" htmlFor="fh-industry-plan-deliverables-is-mandatory" label="Mandatory">
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <input id="fh-industry-plan-deliverables-is-mandatory" type="checkbox" checked={Boolean(row.is_mandatory)}
               onChange={(e) => updateListItem('deliverables', index, 'is_mandatory', e.target.checked)} />
             Required deliverable
           </label>
@@ -747,12 +747,12 @@ export function RiskDetail({ row, index, updateListItem, removeListItem, customD
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <AdminField label="Risk title" required>
-          <input className={inputClass} value={row.risk_title}
+        <AdminField helpKey="admin.industry_plan_risks.risk_title" htmlFor="fh-industry-plan-risks-risk-title" label="Risk title" required>
+          <input id="fh-industry-plan-risks-risk-title" className={inputClass} value={row.risk_title}
             onChange={(e) => updateListItem('risks', index, 'risk_title', e.target.value)} />
         </AdminField>
-        <AdminField label="Category">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_risks.risk_category" htmlFor="fh-industry-plan-risks-risk-category" label="Category">
+          <SearchableSelect id="fh-industry-plan-risks-risk-category"
             value={row.risk_category || ''}
             onChange={(v) => updateListItem('risks', index, 'risk_category', v)}
             options={categoryOptions}
@@ -766,21 +766,21 @@ export function RiskDetail({ row, index, updateListItem, removeListItem, customD
             disabled={readOnly}
           />
         </AdminField>
-        <AdminField label="Likelihood">
-          <select className={inputClass} value={row.likelihood}
+        <AdminField helpKey="admin.industry_plan_risks.likelihood" htmlFor="fh-industry-plan-risks-likelihood" label="Likelihood">
+          <select id="fh-industry-plan-risks-likelihood" className={inputClass} value={row.likelihood}
             onChange={(e) => updateListItem('risks', index, 'likelihood', e.target.value)}>
             {LIKELIHOOD.map((v) => <option key={v || 'empty'} value={v}>{v || '—'}</option>)}
           </select>
         </AdminField>
-        <AdminField label="Impact">
-          <select className={inputClass} value={row.impact}
+        <AdminField helpKey="admin.industry_plan_risks.impact" htmlFor="fh-industry-plan-risks-impact" label="Impact">
+          <select id="fh-industry-plan-risks-impact" className={inputClass} value={row.impact}
             onChange={(e) => updateListItem('risks', index, 'impact', e.target.value)}>
             {LIKELIHOOD.map((v) => <option key={v || 'empty'} value={v}>{v || '—'}</option>)}
           </select>
         </AdminField>
         <div className="sm:col-span-2">
-          <AdminField label="Description">
-            <textarea rows={3} className={inputClass} value={row.risk_description}
+          <AdminField helpKey="admin.industry_plan_risks.risk_description" htmlFor="fh-industry-plan-risks-risk-description" label="Description">
+            <textarea id="fh-industry-plan-risks-risk-description" rows={3} className={inputClass} value={row.risk_description}
               onChange={(e) => updateListItem('risks', index, 'risk_description', e.target.value)} />
           </AdminField>
         </div>
@@ -796,20 +796,20 @@ export function MilestoneDetail({ row, index, plan, updateListItem, removeListIt
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <AdminField label="Milestone name" required>
-          <input className={inputClass} value={row.milestone_name}
+        <AdminField helpKey="admin.industry_plan_milestones.milestone_name" htmlFor="fh-industry-plan-milestones-milestone-name" label="Milestone name" required>
+          <input id="fh-industry-plan-milestones-milestone-name" className={inputClass} value={row.milestone_name}
             onChange={(e) => updateListItem('milestones', index, 'milestone_name', e.target.value)} />
         </AdminField>
-        <AdminField label="Phase #">
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_milestones.phase_number" htmlFor="fh-industry-plan-milestones-phase-number" label="Phase #">
+          <SearchableSelect id="fh-industry-plan-milestones-phase-number"
             value={row.phase_number == null ? '' : String(row.phase_number)}
             onChange={(v) => updateListItem('milestones', index, 'phase_number', v)}
             options={[{ value: '', label: '— Unassigned —' }, ...phaseOpts]}
           />
         </AdminField>
         <div className="sm:col-span-2">
-          <AdminField label="Description">
-            <textarea rows={3} className={inputClass} value={row.milestone_description}
+          <AdminField helpKey="admin.industry_plan_milestones.milestone_description" htmlFor="fh-industry-plan-milestones-milestone-description" label="Description">
+            <textarea id="fh-industry-plan-milestones-milestone-description" rows={3} className={inputClass} value={row.milestone_description}
               onChange={(e) => updateListItem('milestones', index, 'milestone_description', e.target.value)} />
           </AdminField>
         </div>
@@ -853,8 +853,8 @@ export function RoleDetail({ row, index, updateListItem, removeListItem, customD
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <AdminField label="Role title" required>
-          <SearchableSelect
+        <AdminField helpKey="admin.industry_plan_roles.role_title" htmlFor="fh-industry-plan-roles-role-title" label="Role title" required>
+          <SearchableSelect id="fh-industry-plan-roles-role-title"
             value={row.role_title || ''}
             onChange={onRoleTitleChange}
             options={roleOptions}
@@ -864,16 +864,16 @@ export function RoleDetail({ row, index, updateListItem, removeListItem, customD
             disabled={readOnly}
           />
         </AdminField>
-        <AdminField label="Key role">
-          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-            <input type="checkbox" checked={Boolean(row.is_key_role)}
+        <AdminField helpKey="admin.industry_plan_roles.is_key_role" htmlFor="fh-industry-plan-roles-is-key-role" label="Key role">
+          <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <input id="fh-industry-plan-roles-is-key-role" type="checkbox" checked={Boolean(row.is_key_role)}
               onChange={(e) => updateListItem('roles', index, 'is_key_role', e.target.checked)} />
             Mark as key role
           </label>
         </AdminField>
         <div className="sm:col-span-2">
-          <AdminField label="Description">
-            <textarea rows={3} className={inputClass} value={row.role_description}
+          <AdminField helpKey="admin.industry_plan_roles.role_description" htmlFor="fh-industry-plan-roles-role-description" label="Description">
+            <textarea id="fh-industry-plan-roles-role-description" rows={3} className={inputClass} value={row.role_description}
               onChange={(e) => updateListItem('roles', index, 'role_description', e.target.value)} />
           </AdminField>
         </div>
