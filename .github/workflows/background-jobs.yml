@@ -1,0 +1,28 @@
+name: Admin Background Jobs Check
+
+# Admin rule 25 (monorepo rule 80, v1352): Admin jobs are registered in the monorepo job catalogue and run by
+# the single monorepo tick. Fails on any cron.schedule in Admin SQL from v255 on.
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'SQL/**'
+      - 'scripts/check-background-jobs.mjs'
+      - '.github/workflows/background-jobs.yml'
+  pull_request:
+    paths:
+      - 'SQL/**'
+      - 'scripts/check-background-jobs.mjs'
+      - '.github/workflows/background-jobs.yml'
+
+jobs:
+  background-jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: No new pg_cron schedules in Admin SQL
+        run: node scripts/check-background-jobs.mjs

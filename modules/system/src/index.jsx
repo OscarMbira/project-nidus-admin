@@ -7,6 +7,8 @@ import MenuPlacementFormPage from './pages/MenuPlacementFormPage.jsx'
 import MenuSectionsPage from './pages/MenuSectionsPage.jsx'
 import MenuSectionFormPage from './pages/MenuSectionFormPage.jsx'
 import RegisterCustomFieldLimitsPage from './pages/RegisterCustomFieldLimitsPage.jsx'
+import BackgroundJobsPage from './pages/BackgroundJobsPage.jsx'
+import BackgroundJobDetailPage from './pages/BackgroundJobDetailPage.jsx'
 import MaintenanceModePage from './pages/MaintenanceModePage.jsx'
 import SystemHealthPage from './pages/SystemHealthPage.jsx'
 import CurrencyListPage from './pages/CurrencyListPage.jsx'
@@ -47,6 +49,9 @@ export default function SystemRoutes() {
       <Route path="menu-sections" element={<MenuSectionsPage />} />
       <Route path="menu-section-form" element={<MenuSectionFormPage />} />
       <Route path="register-custom-fields" element={<RegisterCustomFieldLimitsPage />} />
+      {/* v219 (monorepo v1352): background jobs catalogue, runs and work items */}
+      <Route path="background-jobs" element={<BackgroundJobsPage />} />
+      <Route path="background-jobs/:code" element={<BackgroundJobDetailPage />} />
       <Route path="maintenance-mode" element={<MaintenanceModePage />} />
       <Route path="system-health" element={<SystemHealthPage />} />
       <Route path="currencies" element={<CurrencyListPage />} />

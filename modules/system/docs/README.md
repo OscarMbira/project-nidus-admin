@@ -12,3 +12,4 @@ Markdown files in this folder are the **source of truth** for admin documentatio
 |-------|------|
 | System Settings | [System_Settings_Guide.md](./System_Settings_Guide.md) |
 | ID Generation: Capacity & Uniqueness | [ID_Generation_Capacity_Guide.md](./ID_Generation_Capacity_Guide.md) |
+| Background Jobs | [Background_Jobs_Guide.md](./Background_Jobs_Guide.md) |
