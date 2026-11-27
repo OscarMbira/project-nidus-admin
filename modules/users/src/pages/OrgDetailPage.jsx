@@ -23,6 +23,7 @@ import {
   AuditDetailsPanel,
   DetailAuditTabList,
 } from '@nidus-admin/ui'
+import OrgDataCompliancePanel from '../components/OrgDataCompliancePanel.jsx'
 
 export default function OrgDetailPage() {
   const [searchParams] = useSearchParams()
@@ -120,7 +121,7 @@ export default function OrgDetailPage() {
   }
 
   if (resolving || loading) return <LoadingState message="Loading organisation detail..." />
-  if (error) return <div className="p-6 text-red-400">{error}</div>
+  if (error) return <div className="p-6 text-red-600 dark:text-red-400">{error}</div>
   if (!accountId) return <EmptyState title="Missing organisation id" description="Open this page with ?id=<account-id>." />
   if (!account) return <EmptyState title="Organisation not found" description="No organisation exists for the provided id." />
 
@@ -130,13 +131,13 @@ export default function OrgDetailPage() {
         <div>
           <button
             type="button"
-            onClick={() => navigate('/users/org-list')}
-            className="mb-2 text-xs text-gray-400 hover:text-gray-200"
+            onClick={() => navigate(-1)}
+            className="mb-2 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
           >
-            ← Back to organisations
+            ← Back
           </button>
-          <h1 className="text-2xl font-semibold text-gray-100">{account.account_name || account.id}</h1>
-          <p className="text-sm text-gray-500">Organisation detail and related member/subscription records.</p>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{account.account_name || account.id}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Organisation detail and related member/subscription records.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <PermissionGate permission="orgs.verify">
@@ -144,7 +145,7 @@ export default function OrgDetailPage() {
               type="button"
               onClick={handleVerify}
               disabled={account.is_verified}
-              className="rounded border border-emerald-700 bg-emerald-900/40 px-3 py-1.5 text-xs font-medium text-emerald-200 hover:bg-emerald-900/70 disabled:opacity-50"
+              className="rounded border border-emerald-500 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-800 hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200 dark:hover:bg-emerald-900/70 disabled:opacity-50"
             >
               Verify
             </button>
@@ -153,7 +154,7 @@ export default function OrgDetailPage() {
             <button
               type="button"
               onClick={handleSuspend}
-              className="rounded border border-red-700 bg-red-900/40 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-900/70"
+              className="rounded border border-red-500 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-800 hover:bg-red-100 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200 dark:hover:bg-red-900/70"
             >
               Suspend
             </button>
@@ -161,7 +162,7 @@ export default function OrgDetailPage() {
         </div>
       </div>
 
-      {actionError && <div className="rounded border border-red-800 bg-red-900/30 px-3 py-2 text-sm text-red-300">{actionError}</div>}
+      {actionError && <div className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">{actionError}</div>}
 
       <DetailAuditTabList activeTab={detailTab} onChange={setDetailTab} />
 
@@ -190,44 +191,46 @@ export default function OrgDetailPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AdminCard title="Members" value={members.length} />
         <AdminCard title="Subscriptions" value={subscriptions.length} />
-        <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-          <p className="text-xs uppercase tracking-wide text-gray-500">Verification</p>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+          <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Verification</p>
           <div className="mt-2">
             <AdminBadge label={account.is_verified ? 'Verified' : 'Unverified'} variant={account.is_verified ? 'active' : 'pending_activation'} />
           </div>
         </div>
-        <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-          <p className="text-xs uppercase tracking-wide text-gray-500">Suspension</p>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+          <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Suspension</p>
           <div className="mt-2">
             <AdminBadge label={account.is_suspended ? 'Suspended' : 'Active'} variant={account.is_suspended ? 'suspended' : 'active'} />
           </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
-        <h2 className="text-sm font-semibold text-gray-200">Account info</h2>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Account info</h2>
         <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-          <div className="flex justify-between gap-6 rounded border border-gray-800 bg-gray-950/40 px-3 py-2">
-            <dt className="text-gray-500">Account ID</dt>
-            <dd className="text-gray-100">{account.id}</dd>
+          <div className="flex justify-between gap-6 rounded border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-950/40">
+            <dt className="text-gray-500 dark:text-gray-400">Account ID</dt>
+            <dd className="text-gray-900 dark:text-gray-100">{account.id}</dd>
           </div>
-          <div className="flex justify-between gap-6 rounded border border-gray-800 bg-gray-950/40 px-3 py-2">
-            <dt className="text-gray-500">Owner User ID</dt>
-            <dd className="text-gray-100">{account.owner_user_id || '—'}</dd>
+          <div className="flex justify-between gap-6 rounded border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-950/40">
+            <dt className="text-gray-500 dark:text-gray-400">Owner User ID</dt>
+            <dd className="text-gray-900 dark:text-gray-100">{account.owner_user_id || '—'}</dd>
           </div>
-          <div className="flex justify-between gap-6 rounded border border-gray-800 bg-gray-950/40 px-3 py-2">
-            <dt className="text-gray-500">Created</dt>
-            <dd className="text-gray-100">{formatDate(account.created_at)}</dd>
+          <div className="flex justify-between gap-6 rounded border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-950/40">
+            <dt className="text-gray-500 dark:text-gray-400">Created</dt>
+            <dd className="text-gray-900 dark:text-gray-100">{formatDate(account.created_at)}</dd>
           </div>
-          <div className="flex justify-between gap-6 rounded border border-gray-800 bg-gray-950/40 px-3 py-2">
-            <dt className="text-gray-500">Updated</dt>
-            <dd className="text-gray-100">{formatDate(account.updated_at)}</dd>
+          <div className="flex justify-between gap-6 rounded border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-950/40">
+            <dt className="text-gray-500 dark:text-gray-400">Updated</dt>
+            <dd className="text-gray-900 dark:text-gray-100">{formatDate(account.updated_at)}</dd>
           </div>
         </dl>
       </div>
 
+      <OrgDataCompliancePanel accountId={account.id} accountName={account.account_name} />
+
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold text-gray-200">Members</h2>
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Members</h2>
         {members.length === 0 ? (
           <EmptyState title="No members found" description="No users are currently associated with this account." />
         ) : (
@@ -248,7 +251,7 @@ export default function OrgDetailPage() {
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold text-gray-200">Subscription info</h2>
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Subscription info</h2>
         {subscriptions.length === 0 ? (
           <EmptyState title="No subscriptions found" description="No subscriptions are linked to this organisation." />
         ) : (
