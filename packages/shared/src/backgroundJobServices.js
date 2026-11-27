@@ -50,9 +50,12 @@ export function sortBackgroundJobsDefault(jobs = []) {
     || String(a.created_at || '').localeCompare(String(b.created_at || '')))
 }
 
-/** Human wording for the common cron shapes; anything else is shown as written. Times are UTC. */
-export function describeCron(cron, timeBasis = 'utc') {
-  if (!cron) return 'When work is queued'
+/**
+ * Human wording for the common cron shapes; anything else is shown as written. Times are UTC. A database job
+ * with no schedule is a manual job (v1352 Slice 3: back-fill, re-index).
+ */
+export function describeCron(cron, timeBasis = 'utc', kind = null) {
+  if (!cron) return kind === 'sql' ? 'Only when run by hand' : 'When work is queued'
   const zone = timeBasis === 'organisation' ? 'organisation time' : 'UTC'
   const parts = String(cron).trim().split(/\s+/)
   if (parts.length !== 5) return cron
@@ -101,4 +104,82 @@ export function minutesSinceTick(lastTickAt, now = Date.now()) {
   const t = new Date(lastTickAt).getTime()
   if (Number.isNaN(t)) return null
   return Math.max(0, Math.floor((now - t) / 60_000))
+}
+
+// ── v1352 Slice 3 — housekeeping settings (Admin SQL v262; permission system.background_jobs.view / .edit) ──
+
+export const KEEP_DAYS_MIN = 7
+export const KEEP_DAYS_MAX = 3650
+
+export const fetchBackgroundJobHousekeeping = async () => {
+  const { data, error } = await rpc('admin_background_job_housekeeping')
+  return { data: data || { run_history: null, retention_targets: [], storage_buckets: [] }, error }
+}
+
+export const setRunHistoryRetention = (successDays, failureDays, reason) =>
+  rpc('admin_background_job_set_run_history_retention', {
+    p_success_days: Number(successDays), p_failure_days: Number(failureDays), p_reason: reason,
+  })
+
+export const setRetentionTarget = (schema, table, retainDays, isActive, reason) =>
+  rpc('admin_background_job_set_retention_target', {
+    p_table_schema: schema, p_table_name: table, p_retain_days: Number(retainDays), p_is_active: Boolean(isActive), p_reason: reason,
+  })
+
+export const setStorageCleanupBucket = (bucketId, minAgeDays, deleteEnabled, isActive, reason) =>
+  rpc('admin_background_job_set_storage_bucket', {
+    p_bucket_id: bucketId, p_min_age_days: Number(minAgeDays), p_delete_enabled: Boolean(deleteEnabled),
+    p_is_active: Boolean(isActive), p_reason: reason,
+  })
+
+/** A whole number of days in the range the RPCs accept. */
+export function isValidKeepDays(value) {
+  const text = String(value ?? '').trim()
+  if (!/^\d+$/.test(text)) return false
+  const n = Number(text)
+  return n >= KEEP_DAYS_MIN && n <= KEEP_DAYS_MAX
+}
+
+/** Error text for the run-history form, or null when it can be saved. */
+export function validateRunHistoryRetention(successDays, failureDays) {
+  if (!isValidKeepDays(successDays) || !isValidKeepDays(failureDays)) {
+    return `Enter whole days from ${KEEP_DAYS_MIN} to ${KEEP_DAYS_MAX}.`
+  }
+  if (Number(failureDays) < Number(successDays)) return 'Keep failed runs at least as long as successful runs.'
+  return null
+}
+
+export function describeStatusFilter(column, values) {
+  if (!column) return 'All rows'
+  return `${column}: ${(values || []).join(', ')}`
+}
+
+/** Default list order (Admin rule 12.1): label A→Z (case-insensitive), then created_at oldest first. */
+export function sortByLabelThenCreated(rows = [], label = (r) => r.name) {
+  return [...rows].sort((a, b) =>
+    String(label(a) || '').localeCompare(String(label(b) || ''), undefined, { sensitivity: 'base' })
+    || String(a.created_at || '').localeCompare(String(b.created_at || '')))
+}
+
+/**
+ * The record and its editable values for a housekeeping edit route: kind 'run-history', 'retention'
+ * (key = schema.table) or 'storage' (key = bucket id). Null when it is not in the data.
+ */
+export function pickHousekeepingRecord(kind, key, data) {
+  if (kind === 'run-history') {
+    const r = data?.run_history
+    return r ? { record: r, form: { success: String(r.success_retention_days), failure: String(r.failure_retention_days) } } : null
+  }
+  if (kind === 'retention') {
+    const r = (data?.retention_targets || []).find((t) => t.target_key === key)
+    return r ? { record: r, form: { days: String(r.retain_days), active: r.is_active ? 'on' : 'off' } } : null
+  }
+  if (kind === 'storage') {
+    const r = (data?.storage_buckets || []).find((b) => b.bucket_id === key)
+    return r ? {
+      record: r,
+      form: { days: String(r.min_age_days), deletion: r.delete_enabled ? 'on' : 'off', active: r.is_active ? 'on' : 'off' },
+    } : null
+  }
+  return null
 }

@@ -190,7 +190,7 @@ export default function BackgroundJobDetailPage() {
             <Fact helpKey="admin.background_jobs.owner_system" label="Owner">{BACKGROUND_JOB_OWNER_LABELS[job.owner_system] || job.owner_system}</Fact>
             <Fact helpKey="admin.background_jobs.kind" label="Runs as">{BACKGROUND_JOB_KIND_LABELS[job.kind] || job.kind}</Fact>
             <Fact helpKey="admin.background_jobs.cron" label="Schedule">
-              {describeCron(job.cron, job.time_basis)}
+              {describeCron(job.cron, job.time_basis, job.kind)}
               {job.cron && <span className="block font-mono text-xs text-gray-500 dark:text-gray-400">{job.cron}</span>}
             </Fact>
             <Fact helpKey="admin.background_jobs.time_basis" label="Time basis">{job.time_basis === 'organisation' ? 'Each organisation’s time zone' : 'UTC'}</Fact>

@@ -9,6 +9,8 @@ import MenuSectionFormPage from './pages/MenuSectionFormPage.jsx'
 import RegisterCustomFieldLimitsPage from './pages/RegisterCustomFieldLimitsPage.jsx'
 import BackgroundJobsPage from './pages/BackgroundJobsPage.jsx'
 import BackgroundJobDetailPage from './pages/BackgroundJobDetailPage.jsx'
+import BackgroundJobHousekeepingPage from './pages/BackgroundJobHousekeepingPage.jsx'
+import BackgroundJobHousekeepingEditPage from './pages/BackgroundJobHousekeepingEditPage.jsx'
 import MaintenanceModePage from './pages/MaintenanceModePage.jsx'
 import SystemHealthPage from './pages/SystemHealthPage.jsx'
 import CurrencyListPage from './pages/CurrencyListPage.jsx'
@@ -51,6 +53,11 @@ export default function SystemRoutes() {
       <Route path="register-custom-fields" element={<RegisterCustomFieldLimitsPage />} />
       {/* v219 (monorepo v1352): background jobs catalogue, runs and work items */}
       <Route path="background-jobs" element={<BackgroundJobsPage />} />
+      {/* monorepo v1352 Slice 3: housekeeping settings (static paths before :code) */}
+      <Route path="background-jobs/housekeeping" element={<BackgroundJobHousekeepingPage />} />
+      <Route path="background-jobs/housekeeping/run-history" element={<BackgroundJobHousekeepingEditPage kind="run-history" />} />
+      <Route path="background-jobs/housekeeping/retention/:key" element={<BackgroundJobHousekeepingEditPage kind="retention" />} />
+      <Route path="background-jobs/housekeeping/storage/:key" element={<BackgroundJobHousekeepingEditPage kind="storage" />} />
       <Route path="background-jobs/:code" element={<BackgroundJobDetailPage />} />
       <Route path="maintenance-mode" element={<MaintenanceModePage />} />
       <Route path="system-health" element={<SystemHealthPage />} />

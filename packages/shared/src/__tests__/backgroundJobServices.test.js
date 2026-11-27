@@ -87,3 +87,92 @@ describe('background job helpers', () => {
     expect(minutesSinceTick('2026-11-23T10:00:00Z', Date.parse('2026-11-23T10:07:30Z'))).toBe(7)
   })
 })
+
+// v1352 Slice 3 — housekeeping settings (Admin SQL v262)
+import {
+  describeStatusFilter,
+  fetchBackgroundJobHousekeeping,
+  isValidKeepDays,
+  setRetentionTarget,
+  setRunHistoryRetention,
+  setStorageCleanupBucket,
+  sortByLabelThenCreated,
+  validateRunHistoryRetention,
+} from '../backgroundJobServices.js'
+
+describe('background job housekeeping', () => {
+  it('reads the housekeeping settings and falls back to an empty shape', async () => {
+    rpc.mockResolvedValueOnce({ data: null, error: null })
+    const { data } = await fetchBackgroundJobHousekeeping()
+    expect(rpc).toHaveBeenCalledWith('admin_background_job_housekeeping', {})
+    expect(data).toEqual({ run_history: null, retention_targets: [], storage_buckets: [] })
+  })
+
+  it('sends numbers, switches and the reason, never an admin id', async () => {
+    rpc.mockResolvedValue({ data: {}, error: null })
+    await setRunHistoryRetention('120', '400', 'Longer history')
+    await setRetentionTarget('public', 'email_logs', '200', false, 'Pause')
+    await setStorageCleanupBucket('risk-attachments', '45', true, true, 'Counts checked')
+    expect(rpc.mock.calls).toEqual([
+      ['admin_background_job_set_run_history_retention', { p_success_days: 120, p_failure_days: 400, p_reason: 'Longer history' }],
+      ['admin_background_job_set_retention_target', {
+        p_table_schema: 'public', p_table_name: 'email_logs', p_retain_days: 200, p_is_active: false, p_reason: 'Pause',
+      }],
+      ['admin_background_job_set_storage_bucket', {
+        p_bucket_id: 'risk-attachments', p_min_age_days: 45, p_delete_enabled: true, p_is_active: true, p_reason: 'Counts checked',
+      }],
+    ])
+  })
+
+  it('validates keep periods', () => {
+    expect(isValidKeepDays('90')).toBe(true)
+    expect(isValidKeepDays(7)).toBe(true)
+    expect(isValidKeepDays(3650)).toBe(true)
+    expect(isValidKeepDays('6')).toBe(false)
+    expect(isValidKeepDays('12.5')).toBe(false)
+    expect(isValidKeepDays('')).toBe(false)
+    expect(validateRunHistoryRetention('90', '365')).toBeNull()
+    expect(validateRunHistoryRetention('400', '365')).toMatch(/at least as long/)
+    expect(validateRunHistoryRetention('2', '365')).toMatch(/7 to 3650/)
+  })
+
+  it('describes a status filter and sorts by label then created', () => {
+    expect(describeStatusFilter(null, null)).toBe('All rows')
+    expect(describeStatusFilter('is_read', ['true'])).toBe('is_read: true')
+    expect(describeStatusFilter('status', ['succeeded', 'skipped'])).toBe('status: succeeded, skipped')
+    const rows = [
+      { key: 'sim.b', created_at: '2026-11-02' },
+      { key: 'public.a', created_at: '2026-11-03' },
+      { key: 'Public.a', created_at: '2026-11-01' },
+    ]
+    expect(sortByLabelThenCreated(rows, (r) => r.key).map((r) => r.created_at)).toEqual(['2026-11-01', '2026-11-03', '2026-11-02'])
+  })
+
+  it('describes manual database jobs', () => {
+    expect(describeCron(null, 'utc', 'sql')).toBe('Only when run by hand')
+    expect(describeCron(null, 'utc', 'handler')).toBe('When work is queued')
+  })
+})
+
+import { pickHousekeepingRecord } from '../backgroundJobServices.js'
+
+describe('housekeeping edit pages', () => {
+  const data = {
+    run_history: { success_retention_days: 90, failure_retention_days: 365 },
+    retention_targets: [{ target_key: 'public.email_logs', retain_days: 365, is_active: true }],
+    storage_buckets: [{ bucket_id: 'risk-attachments', min_age_days: 30, delete_enabled: false, is_active: true }],
+  }
+
+  it('picks the record and its form values for each kind', () => {
+    expect(pickHousekeepingRecord('run-history', '', data).form).toEqual({ success: '90', failure: '365' })
+    expect(pickHousekeepingRecord('retention', 'public.email_logs', data).form).toEqual({ days: '365', active: 'on' })
+    expect(pickHousekeepingRecord('storage', 'risk-attachments', data).form).toEqual({ days: '30', deletion: 'off', active: 'on' })
+  })
+
+  it('returns null for an unknown key or kind', () => {
+    expect(pickHousekeepingRecord('retention', 'public.nope', data)).toBeNull()
+    expect(pickHousekeepingRecord('storage', 'nope', data)).toBeNull()
+    expect(pickHousekeepingRecord('other', 'x', data)).toBeNull()
+    expect(pickHousekeepingRecord('run-history', '', {})).toBeNull()
+  })
+})

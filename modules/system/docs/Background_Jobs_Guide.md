@@ -33,6 +33,25 @@ Click the eye icon to open a job.
 | **Re-run** (Run history, failed / partly failed / skipped runs) | Starts a new run linked to the failed one. Fix the cause first. |
 | **Replay** (Work items, failed-for-good items) | Puts one item back in the queue with a fresh set of attempts. |
 
+## Housekeeping
+
+**Background Jobs › Housekeeping** (button on the list page) shows how long job history and logs are kept and
+which uploaded files the weekly clean-up may remove. Open a row with the pencil to change it; every change needs a
+reason and is audited.
+
+- **Run history** — how long successful and failed job runs are kept (default 90 and 365 days). Failed runs are
+  kept at least as long as successful ones.
+- **Log retention** — the tables the weekly *Log retention* job trims, with the date column it reads and the keep
+  period. Audit and security logs start **off**: turn them on only when you have decided how long to keep them.
+  New tables are added by monorepo SQL, not here. *Last run* shows what was deleted, or why a table was skipped.
+- **Storage clean-up** — the buckets the weekly *Storage clean-up* job checks for files no record points to any
+  more. Each bucket is **report only** until you switch *Delete orphaned files* on. Do that only after a
+  report-only run's counts look right (the page refuses it before the first scan). Deleted files cannot be
+  recovered; files newer than the safety window are never touched.
+
+**Manual jobs** — *Global Template back-fill* and *Search re-index* have no schedule (“Only when run by hand”).
+Start them with **Run now** on their job page.
+
 ## Alerts
 
 When a job fails (after its retries), or was due but has not started within 15 minutes, every active Admin

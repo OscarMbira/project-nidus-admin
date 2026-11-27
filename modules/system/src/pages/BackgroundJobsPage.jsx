@@ -70,7 +70,7 @@ export default function BackgroundJobsPage() {
     ...j,
     owner_label: BACKGROUND_JOB_OWNER_LABELS[j.owner_system] || j.owner_system,
     kind_label: BACKGROUND_JOB_KIND_LABELS[j.kind] || j.kind,
-    schedule_label: describeCron(j.cron, j.time_basis),
+    schedule_label: describeCron(j.cron, j.time_basis, j.kind),
     status_label: j.enabled ? 'On' : 'Off',
     last_finished_label: formatJobTime(j.last_finished_at),
     next_run_label: formatJobTime(j.next_run_at),
@@ -94,7 +94,13 @@ export default function BackgroundJobsPage() {
             Every scheduled and queued job in Platform, Simulator and Admin. Open a job to see its runs, run it now or turn it off.
           </p>
         </div>
-        <ExportListMenu columns={EXPORT_COLUMNS} data={visible} baseFilename="background_jobs" disabled={!visible.length} />
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" onClick={() => navigate('/system/background-jobs/housekeeping')}
+            className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
+            Housekeeping
+          </button>
+          <ExportListMenu columns={EXPORT_COLUMNS} data={visible} baseFilename="background_jobs" disabled={!visible.length} />
+        </div>
       </div>
 
       {error && <div className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">{error}</div>}
