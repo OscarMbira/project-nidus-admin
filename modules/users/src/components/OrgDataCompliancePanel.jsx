@@ -5,7 +5,8 @@
  *     audited; both owners emailed). A small action dialog, not a record form (Admin rule 18 exclusion).
  *   - This organisation's export and deletion requests; deletion: open on the customer's behalf, approve / reject,
  *     cancel (organisations.data.approve; reason required, audited — Slice 3a, Admin SQL v266).
- * All data comes from the public.admin_organisation_* RPCs (Admin SQL v265, v266).
+ *   - The deletion record and its PDF certificate once the deletion has started (Slice 3b, Admin SQL v267).
+ * All data comes from the public.admin_organisation_* RPCs (Admin SQL v265–v267).
  */
 import { useCallback, useEffect, useState } from 'react'
 import {
@@ -32,6 +33,7 @@ import {
   useConfirmAction,
   useToast,
 } from '@nidus-admin/ui'
+import OrgDeletionRecordCard from './OrgDeletionRecordCard.jsx'
 
 const CARD = 'rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900'
 const LABEL = 'text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400'
@@ -131,7 +133,10 @@ export default function OrgDataCompliancePanel({ accountId, accountName, onChang
   if (error) return <div className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">{error}</div>
   if (!data) return null
 
-  const openDeletionRequest = (data.requests || []).some((r) => r.kind === 'deletion' && [...CANCELLABLE_DELETION_STATUSES, 'deleting'].includes(r.status))
+  const deletionRecords = data.deletion_records || []
+  const deleted = Boolean(data.is_deleted) || deletionRecords.length > 0
+  const openDeletionRequest = deleted
+    || (data.requests || []).some((r) => r.kind === 'deletion' && [...CANCELLABLE_DELETION_STATUSES, 'deleting'].includes(r.status))
   const candidates = (data.candidates || []).map((c) => ({ value: c.user_id, label: `${c.name}${c.email && c.email !== c.name ? ` (${c.email})` : ''}` }))
 
   return (
@@ -199,14 +204,15 @@ export default function OrgDataCompliancePanel({ accountId, accountName, onChang
               type="button"
               onClick={openDeletion}
               disabled={openDeletionRequest}
-              title={openDeletionRequest ? 'A deletion request is already open' : undefined}
+              title={openDeletionRequest ? (deleted ? 'This organisation has been deleted' : 'A deletion request is already open') : undefined}
               className={`${BUTTON} border-red-400 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30`}
             >
               Open deletion request
             </button>
           </PermissionGate>
         </div>
-        {data.locked_at && (
+        {deletionRecords.map((record) => <OrgDeletionRecordCard key={record.id} record={record} />)}
+        {data.locked_at && !deleted && (
           <p className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-200">
             Locked since {formatDate(data.locked_at)}. Deleted permanently on {formatDate(data.deletion_due_at)}{data.legal_hold ? ' — paused while the legal hold is on' : ''}.
           </p>

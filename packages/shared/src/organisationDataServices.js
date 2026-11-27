@@ -2,8 +2,10 @@
  * Monorepo v1358 Slice 2 — organisation data: requests list, legal hold, ownership transfer. Every call goes
  * through the public.admin_organisation_* RPCs (Admin SQL v265; permissions organisations.data.view / .hold /
  * .transfer; changes need a reason and are audited). The acting admin comes from the session.
+ * Slice 3a: deletion open / decide / cancel (Admin SQL v266). Slice 3b: deletion records and their PDF
+ * certificates (Admin SQL v267; private bucket organisation-deletion-certificates, read with organisations.data.view).
  */
-import { getPublicDb } from './supabase.js'
+import { getAdminStorageClient, getPublicDb } from './supabase.js'
 
 async function rpc(fn, params = {}) {
   const db = getPublicDb()
@@ -56,6 +58,24 @@ export const decideOrganisationDeletion = (requestId, approve, reason) =>
 
 export const cancelOrganisationDeletion = (requestId, reason) =>
   rpc('admin_organisation_deletion_cancel', { p_request_id: requestId, p_reason: reason })
+
+/** Deletion records (monorepo SQL v1606): being deleted, then completed. */
+export const DELETION_RECORD_STATUS_LABELS = { deleting: 'Being deleted', completed: 'Deleted' }
+export const DELETION_CERTIFICATES_BUCKET = 'organisation-deletion-certificates'
+
+export const fetchOrganisationDeletionRecords = async () => {
+  const { data, error } = await rpc('admin_organisation_deletion_records')
+  return { data: Array.isArray(data) ? data : [], error }
+}
+
+/** A short-lived link to a deletion certificate (the Storage policy checks organisations.data.view). */
+export async function getDeletionCertificateUrl(path) {
+  if (!path) return { url: null, error: 'This deletion has no certificate yet' }
+  const client = getAdminStorageClient()
+  if (!client) return { url: null, error: 'Database not configured' }
+  const { data, error } = await client.storage.from(DELETION_CERTIFICATES_BUCKET).createSignedUrl(path, 300, { download: true })
+  return { url: data?.signedUrl || null, error: error?.message || error || null }
+}
 
 export function formatDataSize(bytes) {
   const n = Number(bytes) || 0

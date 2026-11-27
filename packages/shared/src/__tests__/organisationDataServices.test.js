@@ -2,7 +2,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const rpc = vi.fn()
-vi.mock('../supabase.js', () => ({ getPublicDb: () => ({ rpc }) }))
+const createSignedUrl = vi.fn()
+const from = vi.fn(() => ({ createSignedUrl }))
+vi.mock('../supabase.js', () => ({ getPublicDb: () => ({ rpc }), getAdminStorageClient: () => ({ storage: { from } }) }))
 import {
   fetchOrganisationDataOverview,
   fetchOrganisationDataRequests,
@@ -60,5 +62,27 @@ describe('organisation deletion RPC calls (v1358 slice 3a)', () => {
     await cancelOrganisationDeletion('req-1', 'Customer changed their mind')
     expect(rpc).toHaveBeenLastCalledWith('admin_organisation_deletion_cancel', { p_request_id: 'req-1', p_reason: 'Customer changed their mind' })
     for (const [, params] of rpc.mock.calls) expect(params).not.toHaveProperty('p_admin_user_id')
+  })
+})
+
+describe('organisation deletion records and certificates (v1358 slice 3b)', () => {
+  it('lists deletion records, falling back to an empty list', async () => {
+    const { fetchOrganisationDeletionRecords } = await import('../organisationDataServices.js')
+    rpc.mockResolvedValueOnce({ data: null, error: null })
+    const res = await fetchOrganisationDeletionRecords()
+    expect(rpc).toHaveBeenCalledWith('admin_organisation_deletion_records', {})
+    expect(res).toEqual({ data: [], error: null })
+  })
+
+  it('makes a short download link for a certificate from the private bucket', async () => {
+    const { getDeletionCertificateUrl, DELETION_CERTIFICATES_BUCKET } = await import('../organisationDataServices.js')
+    createSignedUrl.mockResolvedValueOnce({ data: { signedUrl: 'https://files.example/cert.pdf?token=x' }, error: null })
+    const res = await getDeletionCertificateUrl('rec-1/deletion-certificate-ODL-001.pdf')
+    expect(from).toHaveBeenCalledWith(DELETION_CERTIFICATES_BUCKET)
+    expect(createSignedUrl).toHaveBeenCalledWith('rec-1/deletion-certificate-ODL-001.pdf', 300, { download: true })
+    expect(res).toEqual({ url: 'https://files.example/cert.pdf?token=x', error: null })
+    expect(await getDeletionCertificateUrl(null)).toEqual({ url: null, error: 'This deletion has no certificate yet' })
+    createSignedUrl.mockResolvedValueOnce({ data: null, error: { message: 'Object not found' } })
+    expect(await getDeletionCertificateUrl('x.pdf')).toEqual({ url: null, error: 'Object not found' })
   })
 })
