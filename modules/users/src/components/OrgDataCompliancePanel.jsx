@@ -3,15 +3,20 @@
  *   - Legal hold: place / lift (organisations.data.hold; reason required, audited). Blocks deletion, not exports.
  *   - Account Owner: transfer to a PMO Admin of this organisation (organisations.data.transfer; reason required,
  *     audited; both owners emailed). A small action dialog, not a record form (Admin rule 18 exclusion).
- *   - This organisation's export (later deletion) requests.
- * All data comes from the public.admin_organisation_* RPCs (Admin SQL v265).
+ *   - This organisation's export and deletion requests; deletion: open on the customer's behalf, approve / reject,
+ *     cancel (organisations.data.approve; reason required, audited — Slice 3a, Admin SQL v266).
+ * All data comes from the public.admin_organisation_* RPCs (Admin SQL v265, v266).
  */
 import { useCallback, useEffect, useState } from 'react'
 import {
+  CANCELLABLE_DELETION_STATUSES,
   ORGANISATION_DATA_KIND_LABELS,
   ORGANISATION_DATA_STATUS_LABELS,
   PermissionGate,
+  cancelOrganisationDeletion,
+  decideOrganisationDeletion,
   fetchOrganisationDataOverview,
+  openOrganisationDeletion,
   formatDataSize,
   formatDate,
   setOrganisationLegalHold,
@@ -70,6 +75,45 @@ export default function OrgDataCompliancePanel({ accountId, accountName, onChang
     })
   }
 
+  // Deletion (Slice 3a): every action needs a reason and is audited; approval still needs the owner's email confirmation.
+  const deletionAction = ({ title, message, confirmLabel, danger, run, done }) => confirm({
+    title, message, confirmLabel, danger, requireReason: true,
+    reasonLabel: 'Reason (required)',
+    onConfirm: async (why) => {
+      const { error: err } = await run(why)
+      if (err) { showError(err); throw new Error(err) }
+      showSuccess(done)
+      await load()
+      onChanged?.()
+    },
+  })
+  const openDeletion = () => deletionAction({
+    title: `Open a deletion request for ${accountName || 'this organisation'}?`,
+    message: 'Use this when the customer asked support to delete the organisation. It still needs approval, and the Account Owner must confirm by the emailed link before anything is locked.',
+    confirmLabel: 'Open request',
+    run: (why) => openOrganisationDeletion(accountId, why),
+    done: 'Deletion request opened. It is waiting for approval.',
+  })
+  const decide = (row, approve) => deletionAction({
+    title: approve ? `Approve deletion request ${row.reference || ''}?` : `Reject deletion request ${row.reference || ''}?`,
+    message: approve
+      ? 'The Account Owner is emailed a confirmation link valid for 7 days. Only when they confirm is the organisation locked; it is deleted permanently 30 days later.'
+      : 'The Account Owner is told it was not approved, with your reason. Nothing is changed.',
+    confirmLabel: approve ? 'Approve' : 'Reject',
+    danger: approve,
+    run: (why) => decideOrganisationDeletion(row.id, approve, why),
+    done: approve ? 'Approved. The Account Owner has been emailed a confirmation link.' : 'Deletion request rejected.',
+  })
+  const cancelRequest = (row) => deletionAction({
+    title: `Cancel deletion request ${row.reference || ''}?`,
+    message: row.status === 'locked'
+      ? 'The organisation is unlocked and its integrations switched back on. A cancelled subscription is not restarted.'
+      : 'The request is closed and nothing is changed.',
+    confirmLabel: 'Cancel the deletion',
+    run: (why) => cancelOrganisationDeletion(row.id, why),
+    done: 'Deletion cancelled.',
+  })
+
   const openTransfer = () => { setNewOwner(''); setReason(''); setTransferOpen(true) }
 
   const doTransfer = async () => {
@@ -87,6 +131,7 @@ export default function OrgDataCompliancePanel({ accountId, accountName, onChang
   if (error) return <div className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">{error}</div>
   if (!data) return null
 
+  const openDeletionRequest = (data.requests || []).some((r) => r.kind === 'deletion' && [...CANCELLABLE_DELETION_STATUSES, 'deleting'].includes(r.status))
   const candidates = (data.candidates || []).map((c) => ({ value: c.user_id, label: `${c.name}${c.email && c.email !== c.name ? ` (${c.email})` : ''}` }))
 
   return (
@@ -147,7 +192,25 @@ export default function OrgDataCompliancePanel({ accountId, accountName, onChang
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Export and deletion requests</h3>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Export and deletion requests</h3>
+          <PermissionGate permission="organisations.data.approve">
+            <button
+              type="button"
+              onClick={openDeletion}
+              disabled={openDeletionRequest}
+              title={openDeletionRequest ? 'A deletion request is already open' : undefined}
+              className={`${BUTTON} border-red-400 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30`}
+            >
+              Open deletion request
+            </button>
+          </PermissionGate>
+        </div>
+        {data.locked_at && (
+          <p className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-200">
+            Locked since {formatDate(data.locked_at)}. Deleted permanently on {formatDate(data.deletion_due_at)}{data.legal_hold ? ' — paused while the legal hold is on' : ''}.
+          </p>
+        )}
         {(data.requests || []).length === 0 ? (
           <EmptyState title="No requests" description="This organisation has not asked for an export or a deletion." />
         ) : (
@@ -162,7 +225,37 @@ export default function OrgDataCompliancePanel({ accountId, accountName, onChang
               { key: 'status', label: 'Status', render: (r) => <span title={r.error || undefined}>{ORGANISATION_DATA_STATUS_LABELS[r.status] || r.status}</span> },
               { key: 'created_at', label: 'Requested', render: (r) => formatDate(r.created_at) },
               { key: 'byte_size', label: 'Size', render: (r) => formatDataSize(r.byte_size) },
-              { key: 'expires_at', label: 'Available until', render: (r) => (r.status === 'ready' ? formatDate(r.expires_at) : '—') },
+              { key: 'reason', label: <AdminFieldLabelWithHelp as="span" helpKey="admin.organisation_data_requests.deletion_reason">Reason</AdminFieldLabelWithHelp>, render: (r) => r.reason || '—' },
+              {
+                key: 'when',
+                label: <AdminFieldLabelWithHelp as="span" helpKey="admin.organisation_data_requests.deletion_due_at">Due / available</AdminFieldLabelWithHelp>,
+                sortable: false,
+                render: (r) => (r.kind === 'deletion'
+                  ? (r.deletion_due_at ? `Delete ${formatDate(r.deletion_due_at)}` : r.confirm_expires_at && r.status === 'awaiting_confirmation' ? `Confirm by ${formatDate(r.confirm_expires_at)}` : '—')
+                  : (r.status === 'ready' ? formatDate(r.expires_at) : '—')),
+              },
+              {
+                key: 'actions',
+                label: 'Actions',
+                sortable: false,
+                render: (r) => (r.kind !== 'deletion' ? null : (
+                  <PermissionGate permission="organisations.data.approve">
+                    <div className="flex flex-wrap gap-1">
+                      {r.status === 'pending_approval' && (
+                        <>
+                          <button type="button" onClick={() => decide(r, true)} disabled={data.legal_hold}
+                            title={data.legal_hold ? 'Lift the legal hold first' : undefined}
+                            className={`${BUTTON} border-red-400 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30`}>Approve</button>
+                          <button type="button" onClick={() => decide(r, false)} className={`${BUTTON} border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800`}>Reject</button>
+                        </>
+                      )}
+                      {CANCELLABLE_DELETION_STATUSES.includes(r.status) && (
+                        <button type="button" onClick={() => cancelRequest(r)} className={`${BUTTON} border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800`}>Cancel</button>
+                      )}
+                    </div>
+                  </PermissionGate>
+                )),
+              },
             ]}
           />
         )}

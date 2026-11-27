@@ -48,3 +48,17 @@ describe('formatDataSize', () => {
     expect(formatDataSize(3 * 1073741824)).toBe('3.00 GB')
   })
 })
+
+describe('organisation deletion RPC calls (v1358 slice 3a)', () => {
+  it('opens, decides and cancels with a reason and never an admin id', async () => {
+    const { openOrganisationDeletion, decideOrganisationDeletion, cancelOrganisationDeletion } = await import('../organisationDataServices.js')
+    rpc.mockResolvedValue({ data: {}, error: null })
+    await openOrganisationDeletion('acc-1', 'Contract ended')
+    expect(rpc).toHaveBeenLastCalledWith('admin_organisation_deletion_open', { p_account_id: 'acc-1', p_reason: 'Contract ended' })
+    await decideOrganisationDeletion('req-1', 0, 'Contract still running')
+    expect(rpc).toHaveBeenLastCalledWith('admin_organisation_deletion_decide', { p_request_id: 'req-1', p_approve: false, p_reason: 'Contract still running' })
+    await cancelOrganisationDeletion('req-1', 'Customer changed their mind')
+    expect(rpc).toHaveBeenLastCalledWith('admin_organisation_deletion_cancel', { p_request_id: 'req-1', p_reason: 'Customer changed their mind' })
+    for (const [, params] of rpc.mock.calls) expect(params).not.toHaveProperty('p_admin_user_id')
+  })
+})

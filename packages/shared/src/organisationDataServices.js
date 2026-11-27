@@ -18,7 +18,18 @@ export const ORGANISATION_DATA_STATUS_LABELS = {
   ready: 'Ready',
   failed: 'Failed',
   expired: 'Expired',
+  pending_approval: 'Waiting for approval',
+  rejected: 'Rejected',
+  awaiting_confirmation: 'Waiting for owner confirmation',
+  lapsed: 'Lapsed (not confirmed)',
+  locked: 'Locked — deletion scheduled',
+  deleting: 'Being deleted',
+  deleted: 'Deleted',
+  cancelled: 'Cancelled',
 }
+
+/** Deletion states an admin can still cancel (monorepo SQL v1604). */
+export const CANCELLABLE_DELETION_STATUSES = ['pending_approval', 'awaiting_confirmation', 'locked']
 export const ORGANISATION_DATA_KIND_LABELS = { export: 'Export', deletion: 'Deletion' }
 
 export const fetchOrganisationDataRequests = async () => {
@@ -36,6 +47,15 @@ export const setOrganisationLegalHold = (accountId, on, reason) =>
 
 export const transferOrganisationOwner = (accountId, newOwnerUserId, reason) =>
   rpc('admin_organisation_transfer_owner', { p_account_id: accountId, p_new_owner_user_id: newOwnerUserId, p_reason: reason })
+
+export const openOrganisationDeletion = (accountId, reason) =>
+  rpc('admin_organisation_deletion_open', { p_account_id: accountId, p_reason: reason })
+
+export const decideOrganisationDeletion = (requestId, approve, reason) =>
+  rpc('admin_organisation_deletion_decide', { p_request_id: requestId, p_approve: Boolean(approve), p_reason: reason })
+
+export const cancelOrganisationDeletion = (requestId, reason) =>
+  rpc('admin_organisation_deletion_cancel', { p_request_id: requestId, p_reason: reason })
 
 export function formatDataSize(bytes) {
   const n = Number(bytes) || 0
