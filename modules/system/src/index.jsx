@@ -11,6 +11,7 @@ import BackgroundJobsPage from './pages/BackgroundJobsPage.jsx'
 import BackgroundJobDetailPage from './pages/BackgroundJobDetailPage.jsx'
 import BackgroundJobHousekeepingPage from './pages/BackgroundJobHousekeepingPage.jsx'
 import BackgroundJobHousekeepingEditPage from './pages/BackgroundJobHousekeepingEditPage.jsx'
+import ApiUsagePage from './pages/ApiUsagePage.jsx'
 import MaintenanceModePage from './pages/MaintenanceModePage.jsx'
 import SystemHealthPage from './pages/SystemHealthPage.jsx'
 import CurrencyListPage from './pages/CurrencyListPage.jsx'
@@ -59,6 +60,7 @@ export default function SystemRoutes() {
       <Route path="background-jobs/housekeeping/retention/:key" element={<BackgroundJobHousekeepingEditPage kind="retention" />} />
       <Route path="background-jobs/housekeeping/storage/:key" element={<BackgroundJobHousekeepingEditPage kind="storage" />} />
       <Route path="background-jobs/:code" element={<BackgroundJobDetailPage />} />
+      <Route path="api-usage" element={<ApiUsagePage />} />
       <Route path="maintenance-mode" element={<MaintenanceModePage />} />
       <Route path="system-health" element={<SystemHealthPage />} />
       <Route path="currencies" element={<CurrencyListPage />} />

@@ -76,6 +76,11 @@ function emptyForm(scope = 'platform') {
     is_popular: false,
     is_active: true,
     display_order: '0',
+    api_enabled: false,
+    scim_enabled: false,
+    api_rate_per_minute: '120',
+    api_rate_per_day: '50000',
+    scim_rate_per_minute: '60',
     reason: '',
   }
 }
@@ -98,6 +103,11 @@ function planToForm(plan) {
     is_popular: Boolean(plan.is_popular),
     is_active: plan.is_active !== false,
     display_order: String(plan.display_order ?? 0),
+    api_enabled: Boolean(plan.api_enabled),
+    scim_enabled: Boolean(plan.scim_enabled),
+    api_rate_per_minute: String(plan.api_rate_per_minute ?? 120),
+    api_rate_per_day: String(plan.api_rate_per_day ?? 50000),
+    scim_rate_per_minute: String(plan.scim_rate_per_minute ?? 60),
     reason: '',
   }
 }
@@ -339,6 +349,11 @@ export default function PlanCatalogFormPage() {
       is_popular: form.is_popular,
       is_active: form.is_active,
       display_order: displayOrder ?? 0,
+      api_enabled: form.api_enabled,
+      scim_enabled: form.scim_enabled,
+      api_rate_per_minute: parseOptionalInteger(form.api_rate_per_minute) ?? 120,
+      api_rate_per_day: parseOptionalInteger(form.api_rate_per_day) ?? 50000,
+      scim_rate_per_minute: parseOptionalInteger(form.scim_rate_per_minute) ?? 60,
     }
 
     setSaving(true)
@@ -631,6 +646,41 @@ export default function PlanCatalogFormPage() {
                     : `${featureOptions.length} features available — search or browse by category.`
                 }
               />
+            </AdminCard>
+
+            <AdminCard title="Public API & SCIM (v1356)" className="!p-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-200">
+                  <input
+                    type="checkbox"
+                    checked={form.api_enabled}
+                    disabled={isReadOnly}
+                    onChange={(e) => setForm((p) => ({ ...p, api_enabled: e.target.checked }))}
+                  />
+                  API enabled
+                </label>
+                <label data-help="exempt" className="flex items-center gap-2 text-sm text-gray-200">
+                  <input
+                    type="checkbox"
+                    checked={form.scim_enabled}
+                    disabled={isReadOnly}
+                    onChange={(e) => setForm((p) => ({ ...p, scim_enabled: e.target.checked }))}
+                  />
+                  SCIM enabled
+                </label>
+                <AdminField helpKey="admin.subscription_plans.api_rate_per_minute" htmlFor="fh-api-rpm" label="API rate / minute">
+                  <input id="fh-api-rpm" type="number" min="1" className={`${inputClass} py-1.5 text-sm`} disabled={isReadOnly}
+                    value={form.api_rate_per_minute} onChange={(e) => setForm((p) => ({ ...p, api_rate_per_minute: e.target.value }))} />
+                </AdminField>
+                <AdminField helpKey="admin.subscription_plans.api_rate_per_day" htmlFor="fh-api-rpd" label="API rate / day">
+                  <input id="fh-api-rpd" type="number" min="1" className={`${inputClass} py-1.5 text-sm`} disabled={isReadOnly}
+                    value={form.api_rate_per_day} onChange={(e) => setForm((p) => ({ ...p, api_rate_per_day: e.target.value }))} />
+                </AdminField>
+                <AdminField helpKey="admin.subscription_plans.scim_rate_per_minute" htmlFor="fh-scim-rpm" label="SCIM rate / minute">
+                  <input id="fh-scim-rpm" type="number" min="1" className={`${inputClass} py-1.5 text-sm`} disabled={isReadOnly}
+                    value={form.scim_rate_per_minute} onChange={(e) => setForm((p) => ({ ...p, scim_rate_per_minute: e.target.value }))} />
+                </AdminField>
+              </div>
             </AdminCard>
             </fieldset>
 
