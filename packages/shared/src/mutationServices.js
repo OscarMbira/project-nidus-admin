@@ -44,11 +44,13 @@ export function buildAdminInvitationEmail(details, link) {
 }
 
 /**
- * Email the account-setup link of a pending invitation (Admin SQL v268). Returns { link, error }: the link is always
- * returned when the invitation exists, so the page can show it if the email could not be sent.
+ * Email the account-setup link of a pending invitation (Admin SQL v269). `ref` is the invitation id returned by
+ * inviteAdminUser, an admin user id, or the invitee's email (to resend an invitation that already exists).
+ * Returns { link, error }: the link is returned whenever the invitation exists, so the page can show it if the email
+ * could not be sent.
  */
-export async function sendAdminInvitationEmail(adminUserId, origin = globalThis.location?.origin || '') {
-  const { data, error } = await rpc('admin_invitation_link_details', { p_admin_user_id: adminUserId })
+export async function sendAdminInvitationEmail(ref, origin = globalThis.location?.origin || '') {
+  const { data, error } = await rpc('admin_invitation_link_details', { p_ref: String(ref || '') })
   if (error || !data?.token) return { link: null, error: error || 'The invitation could not be found' }
   const link = `${String(origin).replace(/\/$/, '')}/setup/${encodeURIComponent(data.token)}`
   const { subject, html } = buildAdminInvitationEmail(data, link)

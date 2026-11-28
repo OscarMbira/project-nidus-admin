@@ -25,8 +25,8 @@ describe('admin invitation email', () => {
   it('emails the invitee the /setup/<token> link', async () => {
     rpc.mockResolvedValueOnce({ data: DETAILS, error: null })
     dispatchEmail.mockResolvedValueOnce({ data: {}, error: null })
-    const out = await sendAdminInvitationEmail('user-9', 'http://localhost:5175/')
-    expect(rpc).toHaveBeenCalledWith('admin_invitation_link_details', { p_admin_user_id: 'user-9' })
+    const out = await sendAdminInvitationEmail('inv-9', 'http://localhost:5175/')
+    expect(rpc).toHaveBeenCalledWith('admin_invitation_link_details', { p_ref: 'inv-9' })
     expect(out).toEqual({ link: 'http://localhost:5175/setup/tok123', error: null })
     expect(dispatchEmail.mock.calls[0][0].to).toBe('head.of.it@company.example')
   })

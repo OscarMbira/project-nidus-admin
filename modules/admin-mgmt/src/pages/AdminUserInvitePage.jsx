@@ -41,15 +41,17 @@ export default function AdminUserInvitePage() {
     if (Object.keys(nextErrors).length > 0) return
 
     setSubmitting(true)
-    const { data: adminUserId, error } = await inviteAdminUser(email.trim(), targetRole, customMessage.trim(), Number(expiryHours))
-    if (error) {
+    const { data: invitationId, error } = await inviteAdminUser(email.trim(), targetRole, customMessage.trim(), Number(expiryHours))
+    // A pending invitation for this email already exists: email its link again instead of failing.
+    const resend = Boolean(error) && /pending invitation already exists/i.test(error.message || String(error))
+    if (error && !resend) {
       setSubmitting(false)
       showError(error.message || String(error))
       return
     }
 
-    // The invitation exists; now email the account-setup link (Admin SQL v268).
-    const sent = await sendAdminInvitationEmail(adminUserId)
+    // The invitation exists; now email the account-setup link (Admin SQL v269).
+    const sent = await sendAdminInvitationEmail(resend ? email.trim() : invitationId)
     setSubmitting(false)
     if (sent.error) {
       setFailedLink(sent.link)
@@ -57,7 +59,7 @@ export default function AdminUserInvitePage() {
       return
     }
 
-    showSuccess(`Invitation emailed to ${email.trim()}.`)
+    showSuccess(resend ? `The pending invitation was emailed again to ${email.trim()}.` : `Invitation emailed to ${email.trim()}.`)
     navigate('../admin-user-list', { relative: 'path' })
   }
 
