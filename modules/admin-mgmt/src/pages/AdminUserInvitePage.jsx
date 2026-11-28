@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { inviteAdminUser } from '@nidus-admin/shared'
+import { inviteAdminUser, sendAdminInvitationEmail } from '@nidus-admin/shared'
 import { AdminField, AdminForm, inputClass, useToast, DetailAuditTabList } from '@nidus-admin/ui'
 
 const INVITABLE_ROLES = [
@@ -20,6 +20,7 @@ export default function AdminUserInvitePage() {
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
   const [detailTab, setDetailTab] = useState('details')
+  const [failedLink, setFailedLink] = useState(null)
 
   const validate = () => {
     const nextErrors = {}
@@ -40,15 +41,23 @@ export default function AdminUserInvitePage() {
     if (Object.keys(nextErrors).length > 0) return
 
     setSubmitting(true)
-    const { error } = await inviteAdminUser(email.trim(), targetRole, customMessage.trim(), Number(expiryHours))
-    setSubmitting(false)
-
+    const { data: adminUserId, error } = await inviteAdminUser(email.trim(), targetRole, customMessage.trim(), Number(expiryHours))
     if (error) {
+      setSubmitting(false)
       showError(error.message || String(error))
       return
     }
 
-    showSuccess('Admin invitation sent successfully.')
+    // The invitation exists; now email the account-setup link (Admin SQL v268).
+    const sent = await sendAdminInvitationEmail(adminUserId)
+    setSubmitting(false)
+    if (sent.error) {
+      setFailedLink(sent.link)
+      showError(`The invitation was created, but the email could not be sent: ${sent.error}${sent.link ? ' Copy the setup link below and send it yourself.' : ''}`)
+      return
+    }
+
+    showSuccess(`Invitation emailed to ${email.trim()}.`)
     navigate('../admin-user-list', { relative: 'path' })
   }
 
@@ -129,6 +138,12 @@ export default function AdminUserInvitePage() {
               Cancel
             </button>
           </div>
+          {failedLink && (
+            <div role="status" className="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-200">
+              <p className="mb-1 font-medium">Account setup link (send it to the invitee):</p>
+              <code className="break-all">{failedLink}</code>
+            </div>
+          )}
         </AdminForm>
       </div>
       )}

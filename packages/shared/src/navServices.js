@@ -31,6 +31,7 @@ export function buildAdminNavTree(nodes) {
   const buildGroups = (parentKey) => sorted
     .filter((n) => n.node_type === 'group' && n.parent_key === parentKey)
     .map((group) => ({
+      id: group.node_key,
       label: group.label,
       items: sorted
         .filter((n) => n.node_type === 'item' && n.parent_key === group.node_key)
@@ -52,6 +53,7 @@ export function buildAdminNavTree(nodes) {
       const subsections = sorted
         .filter((n) => n.node_type === 'subsection' && n.parent_key === section.node_key)
         .map((subsection) => ({
+          id: subsection.node_key,
           label: subsection.label,
           groups: buildGroups(subsection.node_key),
         }))

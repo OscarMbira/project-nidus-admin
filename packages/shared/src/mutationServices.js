@@ -2,6 +2,7 @@ import { getAdminDb, getPublicDb, getSimDb } from './supabase.js'
 import { getCurrentAdminUserId } from './adminContext.jsx'
 import { fetchAllSubscriptionPlans, fetchSubscriptionPlansCatalog } from './dataServices.js'
 import { normalizePlanTypeForCatalog } from './subscriptionPreviewCatalog.js'
+import { dispatchEmail } from './emailCentreServices.js'
 
 async function rpc(fn, params = {}) {
   const db = getAdminDb()
@@ -21,6 +22,38 @@ export async function inviteAdminUser(email, role, message, expiryHours = 72) {
     p_expiry_hours: expiryHours,
     p_invited_by_id: invitedBy,
   })
+}
+
+const escapeHtml = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+
+/** The invitation email (Admin SQL v268): subject and HTML with the account-setup link. */
+export function buildAdminInvitationEmail(details, link) {
+  const message = details?.message ? `<p>${escapeHtml(details.message)}</p>` : ''
+  const expires = details?.expires_at ? new Date(details.expires_at).toUTCString() : ''
+  return {
+    subject: 'You are invited to the Project Nidus Admin Console',
+    html: [
+      '<p>Hello,</p>',
+      `<p>${escapeHtml(details?.invited_by || 'A system administrator')} has invited you to the Project Nidus Admin Console as <strong>${escapeHtml(details?.role_label || details?.role || 'Admin')}</strong>.</p>`,
+      message,
+      `<p><a href="${escapeHtml(link)}">Set up your account</a></p>`,
+      expires ? `<p>This link works until ${escapeHtml(expires)}. After you set up your account, an administrator activates it and you then set up two-factor authentication.</p>` : '',
+      '<p>If you were not expecting this invitation, ignore this email.</p>',
+    ].join('\n'),
+  }
+}
+
+/**
+ * Email the account-setup link of a pending invitation (Admin SQL v268). Returns { link, error }: the link is always
+ * returned when the invitation exists, so the page can show it if the email could not be sent.
+ */
+export async function sendAdminInvitationEmail(adminUserId, origin = globalThis.location?.origin || '') {
+  const { data, error } = await rpc('admin_invitation_link_details', { p_admin_user_id: adminUserId })
+  if (error || !data?.token) return { link: null, error: error || 'The invitation could not be found' }
+  const link = `${String(origin).replace(/\/$/, '')}/setup/${encodeURIComponent(data.token)}`
+  const { subject, html } = buildAdminInvitationEmail(data, link)
+  const sent = await dispatchEmail({ to: data.email, subject, html })
+  return { link, error: sent.error ? (sent.error.message || String(sent.error)) : null }
 }
 
 export async function activateAdminUser(adminUserId) {

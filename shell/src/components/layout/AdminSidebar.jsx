@@ -253,7 +253,7 @@ function NavSubsection({ sectionId, subsection, sectionItems, pathname, role, gr
         <AdminSidebarNavTier>
           {subsection.groups.map((group) => (
             <NavGroup
-              key={group.label}
+              key={group.id || group.label}
               sectionId={subScopeId}
               group={group}
               siblingGroups={subsection.groups}
@@ -289,7 +289,7 @@ function NavSection({ section, isOpen, pathname, role, groupOpenState, subsectio
         <AdminSidebarNavTier>
           {section.groups.map((group) => (
             <NavGroup
-              key={group.label}
+              key={group.id || group.label}
               sectionId={section.id}
               group={group}
               siblingGroups={section.groups}
@@ -302,7 +302,7 @@ function NavSection({ section, isOpen, pathname, role, groupOpenState, subsectio
           ))}
           {(section.subsections || []).map((subsection) => (
             <NavSubsection
-              key={subsection.label}
+              key={subsection.id || subsection.label}
               sectionId={section.id}
               subsection={subsection}
               sectionItems={sectionItems}
