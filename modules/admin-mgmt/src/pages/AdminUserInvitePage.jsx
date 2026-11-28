@@ -42,17 +42,23 @@ export default function AdminUserInvitePage() {
 
     setSubmitting(true)
     const { data: invitationId, error } = await inviteAdminUser(email.trim(), targetRole, customMessage.trim(), Number(expiryHours))
-    // A pending invitation for this email already exists: email its link again instead of failing.
-    const resend = Boolean(error) && /pending invitation already exists/i.test(error.message || String(error))
+    // Already invited (the admin record exists, or a pending invitation does): email the pending invitation's link
+    // again instead of failing. If nothing is pending (e.g. the admin is already active), show the original message.
+    const message = error ? (error.message || String(error)) : ''
+    const resend = Boolean(error) && /pending invitation already exists|admin user already exists/i.test(message)
     if (error && !resend) {
       setSubmitting(false)
-      showError(error.message || String(error))
+      showError(message)
       return
     }
 
     // The invitation exists; now email the account-setup link (Admin SQL v269).
     const sent = await sendAdminInvitationEmail(resend ? email.trim() : invitationId)
     setSubmitting(false)
+    if (resend && sent.error && !sent.link) {
+      showError(message)
+      return
+    }
     if (sent.error) {
       setFailedLink(sent.link)
       showError(`The invitation was created, but the email could not be sent: ${sent.error}${sent.link ? ' Copy the setup link below and send it yourself.' : ''}`)
