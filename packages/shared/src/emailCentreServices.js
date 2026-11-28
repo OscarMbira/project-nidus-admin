@@ -1,4 +1,4 @@
-import { getAdminDb, getPublicDb } from './supabase.js'
+import { getAdminDb, getPublicDb, getAdminSupabaseConfig } from './supabase.js'
 import { getCurrentAdminUserId } from './adminContext.jsx'
 
 const q = (client, table, select, opts = {}) => {
@@ -46,8 +46,7 @@ export async function dispatchEmail({ to, subject, html, text }) {
   const db = getAdminDb()
   if (!db) return { data: null, error: new Error('Database not configured') }
 
-  const url = import.meta.env.VITE_ADMIN_SUPABASE_URL
-  const anonKey = import.meta.env.VITE_ADMIN_SUPABASE_ANON_KEY
+  const { url, key: anonKey } = getAdminSupabaseConfig()
   if (!url || !anonKey) return { data: null, error: new Error('Supabase not configured') }
 
   const { data: { session } } = await db.auth.getSession()

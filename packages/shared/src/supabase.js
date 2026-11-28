@@ -8,6 +8,14 @@ function readRuntimeConfig() {
   }
 }
 
+/**
+ * Supabase address and public key. Federated module pages may be built without the VITE_ variables; the shell then
+ * injects them on globalThis.__NIDUS_ADMIN_SUPABASE__. Use this instead of reading import.meta.env directly.
+ */
+export function getAdminSupabaseConfig() {
+  return readRuntimeConfig()
+}
+
 const { url, key } = readRuntimeConfig()
 
 const GLOBAL_KEY = '__nidus_admin_supabase__'

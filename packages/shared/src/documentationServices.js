@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { getAdminDb } from './supabase.js'
+import { getAdminDb, getAdminSupabaseConfig } from './supabase.js'
 import { getCurrentAdminUserId } from './adminContext.jsx'
 
 const q = (client, table, select, opts = {}) => {
@@ -21,7 +21,7 @@ const q = (client, table, select, opts = {}) => {
   return query
 }
 
-const supabaseUrl = () => import.meta.env.VITE_ADMIN_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseUrl = () => getAdminSupabaseConfig().url || import.meta.env.VITE_SUPABASE_URL || ''
 
 export const documentationStorageUrl = (module, fileName) => {
   const base = supabaseUrl().replace(/\/$/, '')
@@ -141,8 +141,7 @@ export async function deactivateDocumentationGuide(guideId) {
 }
 
 export async function saveDocumentationToStorage(module, fileName, content) {
-  const url = import.meta.env.VITE_ADMIN_SUPABASE_URL
-  const key = import.meta.env.VITE_ADMIN_SUPABASE_ANON_KEY
+  const { url, key } = getAdminSupabaseConfig()
   if (!url || !key) return { error: 'Supabase not configured' }
   const client = createClient(url, key, {
     auth: { storageKey: 'nidus-admin-auth', storage: window.sessionStorage },
@@ -156,8 +155,7 @@ export async function saveDocumentationToStorage(module, fileName, content) {
 }
 
 export async function deleteDocumentationFromStorage(module, fileName) {
-  const url = import.meta.env.VITE_ADMIN_SUPABASE_URL
-  const key = import.meta.env.VITE_ADMIN_SUPABASE_ANON_KEY
+  const { url, key } = getAdminSupabaseConfig()
   if (!url || !key) return { error: 'Supabase not configured' }
   const client = createClient(url, key, {
     auth: { storageKey: 'nidus-admin-auth', storage: window.sessionStorage },

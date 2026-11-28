@@ -1,4 +1,4 @@
-import { getAdminDb, getPublicDb } from './supabase.js'
+import { getAdminDb, getPublicDb, getAdminSupabaseConfig } from './supabase.js'
 import { getCurrentAdminUserId } from './adminContext.jsx'
 
 const remoteUrl = (envKey, port) =>
@@ -195,7 +195,7 @@ export async function runDiagnosticChecks(environment = 'local') {
   })
 
   await timed('storage.docs', 'Documentation bucket', async () => {
-    const base = (import.meta.env.VITE_ADMIN_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '')
+    const base = (getAdminSupabaseConfig().url || import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '')
     const res = await fetch(`${base}/storage/v1/object/public/documentation/admin/general/Getting_Started.md`)
     if (res.ok || res.status === 404) return { status: res.ok ? 'pass' : 'warn', message: res.ok ? 'Documentation reachable' : 'Bucket OK; Getting_Started.md not uploaded yet' }
     return { status: 'fail', message: `HTTP ${res.status}` }
